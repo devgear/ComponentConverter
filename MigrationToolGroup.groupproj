@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{1583AD04-9628-4C27-9C76-8B19972425E6}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="CompMigrationTool\CompMigrationTool.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="SrcMigrationTool\SrcMigrationTool.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="CompMigrationTool">
+        <MSBuild Projects="CompMigrationTool\CompMigrationTool.dproj"/>
+    </Target>
+    <Target Name="CompMigrationTool:Clean">
+        <MSBuild Projects="CompMigrationTool\CompMigrationTool.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="CompMigrationTool:Make">
+        <MSBuild Projects="CompMigrationTool\CompMigrationTool.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SrcMigrationTool">
+        <MSBuild Projects="SrcMigrationTool\SrcMigrationTool.dproj"/>
+    </Target>
+    <Target Name="SrcMigrationTool:Clean">
+        <MSBuild Projects="SrcMigrationTool\SrcMigrationTool.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SrcMigrationTool:Make">
+        <MSBuild Projects="SrcMigrationTool\SrcMigrationTool.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="CompMigrationTool;SrcMigrationTool"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="CompMigrationTool:Clean;SrcMigrationTool:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="CompMigrationTool:Make;SrcMigrationTool:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
