@@ -30,7 +30,6 @@ type
     chkAllFiles: TCheckBox;
     chkAllConverter: TCheckBox;
     btnExtractProps: TButton;
-    chkConvertFormsWH: TCheckBox;
     procedure btnSelectDirClick(Sender: TObject);
     procedure btnLoadFilesClick(Sender: TObject);
     procedure chkAllConverterClick(Sender: TObject);
@@ -110,10 +109,8 @@ begin
 
   TConvertManager.Instance.Init;
   TConvertManager.Instance.UseBackup := chkBackup.Checked;
-  TConvertManager.Instance.ConvertFormsWH := chkConvertFormsWH.Checked;
 
   TEnv.Instance.UseBackup := chkBackup.Checked;
-  TEnv.Instance.ConvertFormsWH := chkConvertFormsWH.Checked;
   // 선택 파일을 위 컨버터들로 전환실행
   for I := 0 to lvFiles.Items.Count - 1 do
   begin

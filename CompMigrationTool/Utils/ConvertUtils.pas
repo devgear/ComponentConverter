@@ -49,7 +49,8 @@ function UnicodeStrToStr(AUnicode: string): string;
 /// <param name="UsesIdx">uses 절 구조체(Interface, Implimentation)</param>
 procedure SearchUsesIndex(ASourceCode: TStringList; var UsesIdx: TUsesIndex);
 
-function GetCompStartIndex(ADfmFile: TStrings; AStartIdx: Integer; ACompName: string): Integer;
+function GetCompStartIndex(ADfmFile: TStrings; AStartIdx: Integer; ACompClassName: string): Integer;
+function GetCompStartIndexFromCompNamee(ADfmFile: TStrings; AStartIdx: Integer; ACompName: string): Integer;
 function GetCompEndIndex(ADfmFile: TStrings; AStartIdx: Integer): Integer;
 function GetPropValueFromPropText(APropText: string; var Prop, Value: string): Boolean;
 
@@ -135,10 +136,15 @@ end;
 //  end;
 //end;
 
+{
+컴포넌트 정보 첫줄에서 컴포넌트 이름을 추출해 반환
+object qry_Master: TFDQuery
+inherited PnlSkinSetting: TPanel
+}
 function GetNameFromObjectText(AText: string): string;
 begin
   Result := AText.Trim;
-  Result := Copy(Result, 8, Length(Result));
+  Result := Copy(Result, Pos(' ', Result)+1, Length(Result));
   Result := Copy(Result, 1, Pos(':', Result)-1);
 end;
 
@@ -536,7 +542,10 @@ begin
   end;
 end;
 
-function GetCompStartIndex(ADfmFile: TStrings; AStartIdx: Integer; ACompName: string): Integer;
+{
+  컴포넌트 클래스명으로 찾기
+}
+function GetCompStartIndex(ADfmFile: TStrings; AStartIdx: Integer; ACompClassName: string): Integer;
 var
   I: Integer;
   S: string;
@@ -546,8 +555,27 @@ begin
   for I := AStartIdx to ADfmFile.Count - 1 do
   begin
     S := ADfmFile[I];
-    if S.EndsWith(ACompName) or (S.Contains(' ' + ACompName + ' ')) then
-//    if S.Contains(ACompName) then
+    if S.EndsWith(ACompClassName) or (S.Contains(' ' + ACompClassName + ' ')) then
+      Exit(I);
+  end;
+  ADfmFile.EndUpdate;
+end;
+
+{
+  컴포넌트 이름으로 찾기
+  inherited PnlSkinSetting: TPanel    // ACompName : PnlSkinSetting
+}
+function GetCompStartIndexFromCompNamee(ADfmFile: TStrings; AStartIdx: Integer; ACompName: string): Integer;
+var
+  I: Integer;
+  S: string;
+begin
+  Result := -1;
+  ADfmFile.BeginUpdate;
+  for I := AStartIdx to ADfmFile.Count - 1 do
+  begin
+    S := ADfmFile[I];
+    if S.Contains(' ' + ACompName + ':') then
       Exit(I);
   end;
   ADfmFile.EndUpdate;

@@ -230,16 +230,6 @@ object frmCompMigTool: TfrmCompMigTool
       TabOrder = 2
       OnClick = btnExtractPropsClick
     end
-    object chkConvertFormsWH: TCheckBox
-      Left = 218
-      Top = 12
-      Width = 123
-      Height = 17
-      Caption = 'Convert Forms W/H'
-      Checked = True
-      State = cbChecked
-      TabOrder = 3
-    end
   end
   object FileOpenDialog1: TFileOpenDialog
     FavoriteLinks = <>

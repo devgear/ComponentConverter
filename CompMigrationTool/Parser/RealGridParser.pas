@@ -21,6 +21,13 @@ type
     Items: TArray<string>;
     Values: TArray<string>;
     FooterStyle: string;
+
+    //
+    Level: Integer;
+    Color: string;
+    TitleColor: string;
+    FieldName: string;
+    GrpWidth: Integer;
   end;
 
   // 리얼그리드 그룹 정보
@@ -29,6 +36,7 @@ type
     TitleVisible: Boolean;
     Visible: Boolean;
     Width: Integer;
+    Levels: Integer;
   end;
 
   TRealGridEventInfo = record
@@ -47,6 +55,7 @@ type
     FColumnInfos: TList<TRealGridColumnInfo>;
     FGroupInfos: TList<TRealGridGroupInfo>;
     FEventInfos: TList<TRealGridEventInfo>;
+    function GetGroupMaxLevels: Integer;
   protected
     procedure BeginCollection(AName: string); override;
     procedure EndCollection(AName: string); override;
@@ -64,6 +73,7 @@ type
     property GroupInfos: TList<TRealGridGroupInfo> read FGroupInfos;    // 그리드 그룹(밴드) 정보
     property EventInfos: TList<TRealGridEventInfo> read FEventInfos;    // 그리드 이벤트 정보
     property FooterVisible: Boolean read FUseFooter;
+    property GroupMaxLevels: Integer read GetGroupMaxLevels;
   end;
 
 
@@ -120,11 +130,18 @@ begin
     FColumn.Group := 0;
     FColumn.ReadOnly := False;
     FColumn.DataType := '';
+    FColumn.Level := 0;
     FColumn.LevelIndex := 0;
     FColumn.Items := [];
     FColumn.Values := [];
     FColumn.FooterStyle := '';
     FColumn.Width := 64;
+    FColumn.Alignment := 'taLeftJustify';
+
+    FColumn.Color := '';
+    FColumn.TitleColor := '';
+    FColumn.FieldName := '';
+    FColumn.GrpWidth := 64;
   end
   else
   begin
@@ -132,6 +149,7 @@ begin
     FGroup.Visible := True;
     FGroup.Width := 0;
     FGroup.TitleVisible := True;
+    FGroup.Levels := 1;
   end;
 end;
 
@@ -143,6 +161,18 @@ begin
     FColumnInfos.Add(FColumn)
   else if LowerCase(FCollection) = 'groups' then
     FGroupInfos.Add(FGroup);
+end;
+
+function TRealGridParser.GetGroupMaxLevels: Integer;
+var
+  Group: TRealGridGroupInfo;
+begin
+  Result := 1;
+  for Group in FGroupInfos do
+  begin
+    if Group.Levels > Result then
+      Result := Group.Levels;
+  end;
 end;
 
 procedure TRealGridParser.WriteProperty(AProp, AValue: string);
@@ -182,7 +212,25 @@ begin
     else if AProp = 'DisplayFormat' then
       FColumn.DisplayFormat := AValue
     else if AProp = 'ColWidth' then
-      FColumn.Width := StrToIntDef(AValue, 0);
+      FColumn.Width := StrToIntDef(AValue, 0)
+
+    else if AProp = 'Color' then
+      FColumn.Color := AValue
+    else if AProp = 'Title.Color' then
+      FColumn.TitleColor := AValue
+    else if AProp = 'FieldName' then
+      FColumn.FieldName := AValue
+    else if AProp = 'GrpWidth' then
+      FColumn.GrpWidth := StrToIntDef(AValue, 0)
+    else if AProp = 'Level' then
+      FColumn.Level := StrToIntDef(AValue, 0)
+    ;
+
+//    Color: string;
+//    TitleColor: string;
+//    FieldName: string;
+//    GrpWidth: string;
+
   end
   else if LowerCase(FCollection) = 'groups' then
   begin
@@ -193,7 +241,10 @@ begin
     else if AProp = 'Width' then
       FGroup.Width := StrToIntDef(AValue, 0)
     else if AProp = 'Title.Caption' then
-      FGroup.TitleCaption := AValue;
+      FGroup.TitleCaption := AValue
+    else if AProp = 'Levels' then
+      FGroup.Levels := StrToIntDef(AValue, 1)
+    ;
   end
   else if LowerCase(FCollection) = 'footers' then
   begin

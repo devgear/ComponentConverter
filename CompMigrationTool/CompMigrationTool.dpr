@@ -6,19 +6,17 @@ uses
   CompConverter in 'Converter\CompConverter.pas',
   ConvertUtils in 'Utils\ConvertUtils.pas',
   CompConverterTypes in 'Converter\Types\CompConverterTypes.pas',
-  cxGridConverter in 'Converter\cxGridConverter.pas',
-  RealGridToCXGridConverter in 'Converter\RealGridToCXGridConverter.pas',
   ObjectTextParser in 'Parser\ObjectTextParser.pas',
   RealGridParser in 'Parser\RealGridParser.pas',
   cxGridTagDefine in 'Converter\Types\cxGridTagDefine.pas',
   ViewerForm in 'Utils\ViewerForm.pas' {frmViewer},
   Environments in '..\Common\Environments.pas',
-  OraSessionConverter in 'Converter\OraSessionConverter.pas',
   ODACTagDefine in 'Converter\Types\ODACTagDefine.pas',
-  RemoveConnectDialogConv in 'Converter\RemoveConnectDialogConv.pas',
   ExtractPropForm in 'ExtractPropForm.pas' {frmExtractProperties},
-  cxDateEditConverter in 'Converter\cxDateEditConverter.pas',
-  Logger in '..\Common\Logger.pas';
+  Logger in '..\Common\Logger.pas',
+  RemovePnlSkinSettingConv in 'Converter\RemovePnlSkinSettingConv.pas',
+  ReadDBGridToCXGridConverter in 'Converter\ReadDBGridToCXGridConverter.pas',
+  cxDBGridTagDefine in 'Converter\Types\cxDBGridTagDefine.pas';
 
 {$R *.res}
 

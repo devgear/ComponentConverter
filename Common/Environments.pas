@@ -18,8 +18,6 @@ type
     function GetPropertyName: string;
     procedure SetClassName(const Value: string);
     procedure SetPropertyName(const Value: string);
-    function GetConvertFormsWH: Boolean;
-    procedure SetConvertFormsWH(const Value: Boolean);
     function GetLogLevel: Integer;
     procedure SetLogLevel(const Value: Integer);
   public
@@ -29,7 +27,6 @@ type
     property RootPath: string read GetRootPath write SetRootPath;
     property Recursively: Boolean read GetRecursively write SetRecursively;
     property UseBackup: Boolean read GetUseBackup write SetUseBackup;
-    property ConvertFormsWH: Boolean read GetConvertFormsWH write SetConvertFormsWH;
 
     property ClassName: string read GetClassName write SetClassName;
     property PropertyName: string read GetPropertyName write SetPropertyName;
@@ -62,15 +59,6 @@ var
 begin
   IniFile := TIniFile.Create(ExtractFilePath(Application.ExeName) + INI_FILEPATH);
   Result := IniFile.ReadString('ExtractProp', 'ClassName', '');
-  IniFile.Free;
-end;
-
-function TEnv.GetConvertFormsWH: Boolean;
-var
-  IniFile: TIniFile;
-begin
-  IniFile := TIniFile.Create(ExtractFilePath(Application.ExeName) + INI_FILEPATH);
-  Result := IniFile.ReadBool('base', 'ConvFormsWH', False);
   IniFile.Free;
 end;
 
@@ -125,15 +113,6 @@ var
 begin
   IniFile := TIniFile.Create(ExtractFilePath(Application.ExeName) + INI_FILEPATH);
   IniFile.WriteString('ExtractProp', 'ClassName', Value);
-  IniFile.Free;
-end;
-
-procedure TEnv.SetConvertFormsWH(const Value: Boolean);
-var
-  IniFile: TIniFile;
-begin
-  IniFile := TIniFile.Create(ExtractFilePath(Application.ExeName) + INI_FILEPATH);
-  IniFile.WriteBool('base', 'ConvFormsWH', Value);
   IniFile.Free;
 end;
 

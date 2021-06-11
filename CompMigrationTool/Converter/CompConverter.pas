@@ -71,8 +71,6 @@ type
     FConverterInstances: TList<TConverter>;
     FRootPath: string;
     FUseBackup: Boolean;
-    FConvertFormsWH: Boolean;
-
     function GetBackupFolderName: string; virtual;
     procedure RunBackup(AData: TFileInfo);
   public
@@ -89,7 +87,6 @@ type
     procedure Regist(AClass: TConverterClass);
 
     property UseBackup: Boolean read FUseBackup write FUseBackup;
-    property ConvertFormsWH: Boolean read FConvertFormsWH write FConvertFormsWH;
     property RootPath: string read FRootPath write FRootPath;
 
     property ConvertInstance: TList<TConverter> read FConverterInstances;
@@ -187,30 +184,6 @@ begin
     ConvData.LoadFromFile(FRootPath);
     ConvData.FormName := GetFormNameFromDfmText(ConvData.SrcDfm[0]);
 
-    if FConvertFormsWH and not ExtractFileName(ConvData.FileInfo.Filename).EndsWith('Q.dfm') then
-    begin
-      for I := 1 to ConvData.SrcDfm.Count - 1 do
-      begin
-        S := ConvData.SrcDfm[I];
-        if S.Contains('object ') or S.Contains('inherited ') then
-          Break;
-
-        // Form.Width > Form.ClientWidth
-        if S.Contains(' Width = ') then
-        begin
-          SW := S.Replace('Width =', '').Trim;
-          if TryStrToInt(SW, W) then
-            ConvData.SrcDfm[I] := Format('  ClientWidth = %d', [W - 16]);
-        end;
-        if S.Contains(' Height = ') then
-        begin
-          SH := S.Replace('Height =', '').Trim;
-          if TryStrToInt(SH, H) then
-            ConvData.SrcDfm[I] := Format('  ClientHeight = %d', [H - 39]);
-        end;
-      end;
-    end;
-
     for Converter in FConverterInstances do
       if _InArray(AConverters, Converter) then
         Result := Result + Converter.Convert(ConvData);
@@ -220,7 +193,7 @@ begin
       RunBackup(AFileData);
 
     // Save
-    if (FConvertFormsWH) or (Result > 0) then
+    if (Result > 0) then
     ConvData.SaveToFile(FRootPath);
   finally
     ConvData.Free;
@@ -305,9 +278,9 @@ var
   I: Integer;
   Strs: TStringList;
 begin
-  // 상속받은 폼의 컴포넌트는 컴포넌트 클래스명만 변경
+  // 상속받은 폼의 컴포넌트는 컴포넌트 클래스명만 변경, 제거인 경우 제외
   // inherited RealGrid2: TRealGrid [31]
-  if AData.IsInherited then
+  if AData.IsInherited and (GetConvertCompClassName <> '') then
   begin
     AData.SrcDfm[AData.CompStartIndex] := AData.SrcDfm[AData.CompStartIndex].Replace(
         GetComponentClassName,
