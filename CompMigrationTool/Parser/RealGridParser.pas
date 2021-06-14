@@ -13,7 +13,7 @@ type
     TitleCaption: string;
     Visible: Boolean;
     ReadOnly: Boolean;
-    Width: Integer;
+    ColWidth: Integer;
     Group: Integer;
     DataType: string; // wdtFloat
     DisplayFormat: string;
@@ -28,12 +28,15 @@ type
     TitleColor: string;
     FieldName: string;
     GrpWidth: Integer;
+
+    EditStyle: string;
   end;
 
   // 리얼그리드 그룹 정보
   TRealGridGroupInfo = record
     TitleCaption: string;
     TitleVisible: Boolean;
+    TitleColor: string;
     Visible: Boolean;
     Width: Integer;
     Levels: Integer;
@@ -127,7 +130,7 @@ begin
   begin
     FColumn := Default(TRealGridColumnInfo);
     FColumn.Visible := True;
-    FColumn.Group := 0;
+    FColumn.Group := -1;
     FColumn.ReadOnly := False;
     FColumn.DataType := '';
     FColumn.Level := 0;
@@ -135,13 +138,15 @@ begin
     FColumn.Items := [];
     FColumn.Values := [];
     FColumn.FooterStyle := '';
-    FColumn.Width := 64;
+    FColumn.ColWidth := 64;
     FColumn.Alignment := 'taLeftJustify';
 
     FColumn.Color := '';
     FColumn.TitleColor := '';
     FColumn.FieldName := '';
     FColumn.GrpWidth := 64;
+
+    FColumn.EditStyle := '';
   end
   else
   begin
@@ -149,6 +154,7 @@ begin
     FGroup.Visible := True;
     FGroup.Width := 0;
     FGroup.TitleVisible := True;
+    FGroup.TitleColor := '';
     FGroup.Levels := 1;
   end;
 end;
@@ -212,7 +218,7 @@ begin
     else if AProp = 'DisplayFormat' then
       FColumn.DisplayFormat := AValue
     else if AProp = 'ColWidth' then
-      FColumn.Width := StrToIntDef(AValue, 0)
+      FColumn.ColWidth := StrToIntDef(AValue, 0)
 
     else if AProp = 'Color' then
       FColumn.Color := AValue
@@ -224,6 +230,10 @@ begin
       FColumn.GrpWidth := StrToIntDef(AValue, 0)
     else if AProp = 'Level' then
       FColumn.Level := StrToIntDef(AValue, 0)
+
+    else if AProp = 'EditStyle' then
+      FColumn.EditStyle := AValue
+
     ;
 
 //    Color: string;
@@ -244,6 +254,8 @@ begin
       FGroup.TitleCaption := AValue
     else if AProp = 'Levels' then
       FGroup.Levels := StrToIntDef(AValue, 1)
+    else if AProp = 'Title.Color' then
+      FGroup.TitleColor := AValue
     ;
   end
   else if LowerCase(FCollection) = 'footers' then

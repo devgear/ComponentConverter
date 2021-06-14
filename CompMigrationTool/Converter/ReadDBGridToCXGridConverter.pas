@@ -151,6 +151,10 @@ var
   Item, Value, ItemText, ItemsText: string;
   FooterItem, FooterItems: string;
   ShowBand: Boolean;
+
+  SeqColIdx: Integer;
+  NoGroup: Boolean;
+  RowHeight, HeadHeight: Integer;
 begin
   if not Assigned(FParser) then
     FParser.Free;
@@ -192,38 +196,112 @@ begin
     GroupText := GroupText.Replace('[[VISIBLE]]', BoolToStr(GroupInfo.Visible, True));
     GroupText := GroupText.Replace('[[WIDTH]]',   IntToStr(GroupInfo.Width));
 
+    if GroupInfo.TitleColor = '' then
+      GroupText := GroupText.Replace('[[STYLE_HEADER]]', '')
+    else
+      GroupText := GroupText.Replace('[[STYLE_HEADER]]', 'Styles.Header = ' + GetColorToStyleName(GroupInfo.TitleColor));
+
     GroupList := GroupList + GroupText;
     if GroupInfo.TitleVisible then
       ShowBand := True;
   end;
+
+  NoGroup := False;
   if GroupList = '' then
+  begin
     GroupList := TAG_CXGRID_GROUP_NULL;
+    NoGroup := True;
+  end;
+
   GridText := GridText.Replace('[[GROUP_LIST]]', GroupList);
   GridText := GridText.Replace('[[BAND_HEADERS]]', BoolToStr(ShowBand, True));
 
+  if NoGroup then
+  begin
+    GridText := GridText.Replace('[[BAND_HEADER_HEIGHT]]', '0');
+    GridText := GridText.Replace('[[HEADER_HEIGHT]]',      FParser.Properties.ValuesDef['Headers.ColHeight', '0']);
+  end
+  else
+  begin
+    if ShowBand then
+    begin
+      RowHeight := StrToIntDef(FParser.Properties.ValuesDef['GrpRowHeight', '25'], 25);
+      HeadHeight := StrToIntDef(FParser.Properties.ValuesDef['Headers.GrpHeight', '50'], 50);
+      GridText := GridText.Replace('[[BAND_HEADER_HEIGHT]]', IntToStr(HeadHeight - RowHeight));
+      GridText := GridText.Replace('[[HEADER_HEIGHT]]',      FParser.Properties.ValuesDef['GrpRowHeight', '0']);
+    end
+    else
+    begin
+      GridText := GridText.Replace('[[BAND_HEADER_HEIGHT]]', '0');
+      GridText := GridText.Replace('[[HEADER_HEIGHT]]',      FParser.Properties.ValuesDef['Headers.GrpHeight', '0']);
+    end;
+  end;
+  GridText := GridText.Replace('[[DATAROW_HEIGHT]]',     FParser.Properties.ValuesDef['RowHeight', '25']);
 
   // 컬럼 설정
   ColList := '';
   FooterItems := '';
   FColumnCompList := ''; //GetConvertCompList에서 사용할 컬럼 컴포넌트 목록
   Idx := 1;
+  SeqColIdx := 0;
   for ColumnInfo in FParser.ColumnInfos do
   begin
-    ColText := TAG_CXGRID_COLUMN_DEF;
+    if ColumnInfo.EditStyle = 'wesCheckBox' then
+    begin
+      ColText := TAG_CXGRID_COLUMN_BOOL;
+    end
+    else if Length(ColumnInfo.Items) > 0 then
+    begin
+      ColText := TAG_CXGRID_COLUMN_ITEMS;
+      ItemsText := '';
+      for I := 0 to Length(ColumnInfo.Items) - 1 do
+      begin
+        Item := ColumnInfo.Items[I];
+        if Length(ColumnInfo.Values) > I then
+          Value := ColumnInfo.Values[I]
+        else
+          Value := '';
+
+        ItemText := TAG_CXGRID_COLUMN_ITEM;
+        ItemText := ItemText.Replace('[[ITEM]]',  Item);
+        ItemText := ItemText.Replace('[[VALUE]]', Value);
+
+        ItemsText := ItemsText + ItemText;
+      end;
+
+      ColText := ColText.Replace('[[ITEMS]]', ItemsText);
+    end
+    else
+    begin
+      ColText := TAG_CXGRID_COLUMN_DEF;
+    end;
 
     FColumnCompList := FColumnCompList + #13#10'    ' + Format(ColName, [Idx]) + ': TcxGridDBBandedColumn;';
 
     ColText := ColText.Replace('[[COLUMN_NAME]]',     Format(ColName, [Idx]));
     ColText := ColText.Replace('[[COLUMN_CAPTION]]',  ColumnInfo.TitleCaption);
     // RealGrid Group이 미지정(-1)인 경우 컬럼 감춤
-    if ColumnInfo.Group = -1 then
+    if (not NoGroup) and (ColumnInfo.Group = -1) then
       ColText := ColText.Replace('[[VISIBLE]]',         'False')
     else
       ColText := ColText.Replace('[[VISIBLE]]',       BoolToStr(ColumnInfo.Visible, True));
     ColText := ColText.Replace('[[READONLY]]',        BoolToStr(ColumnInfo.ReadOnly, True));
-    ColText := ColText.Replace('[[BAND_INDEX]]',      IntToStr(ColumnInfo.Group));
-    ColText := ColText.Replace('[[WIDTH]]',           IntToStr(ColumnInfo.GrpWidth));
-    ColText := ColText.Replace('[[COL_INDEX]]',       IntToStr(ColumnInfo.LevelIndex));
+
+    // 리얼그리드에서 Group과 LevelIndex를 설정하지 않은 경우(TbF_0006I)
+      // BandIndex = 0, ColIndex는 순번(0..)으로 설정해야 함
+    if NoGroup then
+    begin
+      ColText := ColText.Replace('[[BAND_INDEX]]',      '0');
+      ColText := ColText.Replace('[[COL_INDEX]]',       IntToStr(SeqColIdx));
+      ColText := ColText.Replace('[[WIDTH]]',           IntToStr(ColumnInfo.ColWidth));
+      Inc(SeqColIdx);
+    end
+    else
+    begin
+      ColText := ColText.Replace('[[BAND_INDEX]]',      IntToStr(ColumnInfo.Group));
+      ColText := ColText.Replace('[[COL_INDEX]]',       IntToStr(ColumnInfo.LevelIndex));
+      ColText := ColText.Replace('[[WIDTH]]',           IntToStr(ColumnInfo.GrpWidth));
+    end;
 
     ColText := ColText.Replace('[[HORZ_ALIGN]]',      ColumnInfo.Alignment);
     ColText := ColText.Replace('[[FIELD_NAME]]',      ColumnInfo.FieldName);
