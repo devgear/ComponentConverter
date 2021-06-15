@@ -12,7 +12,7 @@ const
     '  Align = [[COMP_ALIGN]]'#13#10 +
     '  Font.Charset = DEFAULT_CHARSET'#13#10 +
     '  Font.Color = clWindowText'#13#10 +
-    '  Font.Height = -12'#13#10 +
+    '  Font.Height = -11'#13#10 +
     '  Font.Name = #44404#47548'#13#10 +
     '  Font.Style = []'#13#10 +
     '  ParentFont = False'#13#10 +
@@ -197,14 +197,18 @@ const
   TAG_PROC_VIEW_CUST_DRAW = TAG_PROC_VIEW_COMMON + '('#13#10 +
     '      Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;'#13#10 +
     '      AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);';
+  TAG_PROC_VIEW_CELL_CLICK = TAG_PROC_VIEW_COMMON + '('#13#10 +
+    '      Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;'#13#10 +
+    '      AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);';
 
 const
-  EventTagInfos: array[0..3] of TEventTagInfo =
+  EventTagInfos: array[0..4] of TEventTagInfo =
     (
       (EventName: 'DblClick';           RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_SENDER),
       (EventName: 'KeyPress';           RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_KEYPRESS),
       (EventName: 'ColumnHeaderClick';  RGEvent: 'OnColumnTitleClick';  EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_COL_HDR),
-      (EventName: 'CustomDrawCell';     RGEvent: 'OnDrawCell';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CUST_DRAW)
+      (EventName: 'CustomDrawCell';     RGEvent: 'OnDrawCell';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CUST_DRAW),
+      (EventName: 'CellClick';          RGEvent: 'OnClick';             EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CELL_CLICK)
     );
 
 function GetEventTagInfo(ARGEventProp: string; var OutInfo: TEventTagInfo): Boolean;
