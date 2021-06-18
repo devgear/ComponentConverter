@@ -13,15 +13,23 @@ const
 //              + '|RGrid\_Style|RGrid\_Shop|RGrid\_ExpSty\d|RGrid\_Point|RGrid\_Template
 //              + ')';
 
+// baba
+//  GRIDNAME_REGEX = '(' +
+//    '(Pop02\_RGrid|RealGrid\_First)' +
+//    '|([Rr]eal[Gg]rid\d+)' +
+//    '|(rgd\_(Su[Ss]un(Search)?|Tel))' +
+//    '|(RGrid\_('+
+//        'ExpSty\d|Company|(Exp)?Style|(Hp)?History|Point|Pop01|Return|RevYn' +
+//        '|Sale(Gubun)?|Save\d|sCompany|Search|Shop(Brand)?|(s)?Sty\d(_\d)?|Staff|Template|Trust)' +
+//    ')' +
+//    '|(RGrid\d+(_\d)?)' +
+//  ')';
+
+// ktbook
   GRIDNAME_REGEX = '(' +
-    '(Pop02\_RGrid|RealGrid\_First)' +
-    '|([Rr]eal[Gg]rid\d+)' +
-    '|(rgd\_(Su[Ss]un(Search)?|Tel))' +
-    '|(RGrid\_('+
-        'ExpSty\d|Company|(Exp)?Style|(Hp)?History|Point|Pop01|Return|RevYn' +
-        '|Sale(Gubun)?|Save\d|sCompany|Search|Shop(Brand)?|(s)?Sty\d(_\d)?|Staff|Template|Trust)' +
-    ')' +
-    '|(RGrid\d+(_\d)?)' +
+    'RDBGrid[a-zA-Z\d_]+' +
+    '|' +
+    'RealDBGrid[a-zA-Z\d_]+' +
   ')';
 
   VIEWNAME_REGEX = '(SetRGrid|aRGrid|R1)';
@@ -32,6 +40,13 @@ type
     atRead          // 할당(:=) 기준 우항, 조건 문 내 등
   );
 
+  ImplAttribute = class(TCustomAttribute)
+  end;
+
+  IntfAttribute = class(TCustomAttribute)
+  end;
+
+
   // 실제 전환 작업은 해당 클래스를 상속받아 구현한다.
   // protected의 virtual 메소드를 전환대상에 맞춰 재구현해야 한다.
   TConverter = class
@@ -40,8 +55,12 @@ type
     // 컨버터 설명
     function GetCvtCompClassName: string; virtual; abstract; // 변환 대상 컴포넌트 클래스명
     function GetDescription: string; virtual;
-    function ConvertSource(AProc, ASrc: string; var ADest: string): Boolean; virtual; abstract;
-    function ConvertIntfSource(ASrc: string; var ADest: string): Boolean; virtual;
+
+    function ConvertSource(AProc, ASrc: string; var ADest: string): Integer; virtual;
+    function ConvertIntfSource(ASrc: string; var ADest: string): Integer; virtual;
+
+    function IsContainsRegEx(ASrc: string; ASearchPattern: string): Boolean;
+    function TryRegExGridConvert(ASrc: string; ASearchPattern, AReplacePattern: string; var ADest: string): Boolean;
   public
     function Convert(AData: TConvertData): Integer;
     property Description: string read GetDescription;
@@ -83,7 +102,8 @@ implementation
 
 uses
 //  ConvertUtils,
-  System.IOUtils, Logger;
+  System.IOUtils, Logger, System.RegularExpressions,
+  System.Rtti, System.TypInfo;
 
 { TConvertManager }
 
@@ -183,19 +203,127 @@ end;
 
 { TConverter }
 
-function TConverter.ConvertIntfSource(ASrc: string; var ADest: string): Boolean;
+function TConverter.ConvertSource(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Cnt: Integer;
+  LCtx: TRttiContext;
+  LType: TRttiType;
+  LMethod: TRttiMethod;
+  LAttr: TCustomAttribute;
+  Args: TArray<TValue>;
 begin
-  Result := False;
+  Result := 0;
+
+  LCtx := TRttiContext.Create;
+  LType := LCtx.GetType(Self.ClassInfo);
+
+  ADest := ASrc;
+  for LMethod in LType.GetMethods do
+  begin
+    if LMethod.Name.StartsWith('Convert') then
+    begin
+      for LAttr in LMethod.GetAttributes do
+      begin
+        if LAttr is ImplAttribute then
+        begin
+          Args := TArray<TValue>.Create(AProc, ASrc, ADest);
+
+          Cnt := LMethod.Invoke(Self, Args).AsInteger;
+          if Cnt > 0 then
+            ADest := Args[2].AsString;
+          Inc(Result, Cnt);
+        end;
+      end;
+    end;
+  end;
+end;
+
+function TConverter.ConvertIntfSource(ASrc: string; var ADest: string): Integer;
+var
+  Cnt: Integer;
+  LCtx: TRttiContext;
+  LType: TRttiType;
+  LMethod: TRttiMethod;
+  LAttr: TCustomAttribute;
+  Args: TArray<TValue>;
+begin
+  Result := 0;
+
+  LCtx := TRttiContext.Create;
+  LType := LCtx.GetType(Self.ClassInfo);
+
+  for LMethod in LType.GetMethods do
+  begin
+    if LMethod.Name.StartsWith('Convert') then
+    begin
+      for LAttr in LMethod.GetAttributes do
+      begin
+        if LAttr is IntfAttribute then
+        begin
+          Args := TArray<TValue>.Create('', ASrc, ADest);
+          Cnt := LMethod.Invoke(Self, Args).AsInteger;
+          Inc(Result, Cnt);
+
+          ADest := Args[2].AsString;
+        end;
+      end;
+    end;
+  end;
 end;
 
 function TConverter.GetDescription: string;
 begin
 end;
 
+function TConverter.IsContainsRegEx(ASrc, ASearchPattern: string): Boolean;
+var
+  Matchs: TMatchCollection;
+begin
+  Result := False;
+  Matchs := TRegEx.Matches(ASrc, ASearchPattern, [roIgnoreCase]);
+  Result := Matchs.Count > 0;
+end;
+
+function TConverter.TryRegExGridConvert(ASrc, ASearchPattern,
+  AReplacePattern: string; var ADest: string): Boolean;
+var
+  I: Integer;
+  Matchs: TMatchCollection;
+  Match: TMatch;
+  Comp: string;
+  Src, Dest: string;
+begin
+  Result := False;
+
+  Matchs := TRegEx.Matches(ASrc, ASearchPattern, [roIgnoreCase]);
+  if Matchs.Count = 0 then
+    Exit;
+  ADest := ASrc;
+  for I := 0 to Matchs.Count - 1 do
+  begin
+    Match := Matchs[I];
+    Src := Match.Value;
+
+    Comp  := TRegEx.Match(Src, GRIDNAME_REGEX).Value.Replace('.', '').Trim;
+
+    // 이미 변환된 TableView를 그리드로 인식하는 경우 제외
+    if Comp.Contains('TableView') then
+      Exit;
+
+    Dest := AReplacePattern;
+    Dest := Dest.Replace('[[COMP_NAME]]', Comp);
+
+    ADest := ADest.Replace(Src, Dest);
+
+    Result := True;
+  end;
+end;
+
 function TConverter.Convert(AData: TConvertData): Integer;
 var
   Src, Dest, CompTag, Converted, CompClassName: string;
-  I, ImplIdx, Idx: Integer;
+  I, ImplIdx, Idx, Cnt: Integer;
   HasComp: Boolean;
   FProcName: string;
 begin
@@ -239,26 +367,28 @@ begin
       FProcName := Copy(Src, Idx+1, Pos('(', Src)-Idx-1);
     end;
 
-    if ConvertSource(FProcName, Src, Dest) then
+    Cnt := ConvertSource(FProcName, Src, Dest);
+    if Cnt > 0 then
     begin
       AData.Source[I] := Dest;
 
       TLogger.Log('[%s|%d]%s     >     %s', [AData.FileInfo.Filename, I+1, Src, Dest]);
 
-      Inc(Result);
+      Inc(Result, Cnt);
     end;
   end;
 
   for I := 0 to ImplIdx-1 do
   begin
     Src := AData.Source[I];
-    if ConvertIntfSource(Src, Dest) then
+    Cnt := ConvertIntfSource(Src, Dest);
+    if Cnt > 0 then
     begin
       AData.Source[I] := Dest;
 
       TLogger.Log('[%s|%d]%s     >     %s', [AData.FileInfo.Filename, I+1, Src, Dest]);
 
-      Inc(Result);
+      Inc(Result, Cnt);
     end;
   end;
 end;

@@ -204,9 +204,8 @@ object frmSrcMainForm: TfrmSrcMainForm
     object lblCount: TLabel
       Left = 750
       Top = 14
-      Width = 39
+      Width = 3
       Height = 13
-      Caption = 'lblCount'
     end
     object btnRunConvert: TButton
       Left = 8

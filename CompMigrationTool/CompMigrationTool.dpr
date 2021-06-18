@@ -11,14 +11,13 @@ uses
   cxGridTagDefine in 'Converter\Types\cxGridTagDefine.pas',
   ViewerForm in 'Utils\ViewerForm.pas' {frmViewer},
   Environments in '..\Common\Environments.pas',
-  ODACTagDefine in 'Converter\Types\ODACTagDefine.pas',
   ExtractPropForm in 'ExtractPropForm.pas' {frmExtractProperties},
   Logger in '..\Common\Logger.pas',
   RemovePnlSkinSettingConv in 'Converter\RemovePnlSkinSettingConv.pas',
   ReadDBGridToCXGridConverter in 'Converter\ReadDBGridToCXGridConverter.pas',
   cxDBGridTagDefine in 'Converter\Types\cxDBGridTagDefine.pas',
   RemoveSkinManager in 'Converter\RemoveSkinManager.pas',
-  RmPropCbxAlignment in 'Converter\RmPropCbxAlignment.pas';
+  RemoveSkinProvider in 'Converter\RemoveSkinProvider.pas';
 
 {$R *.res}
 

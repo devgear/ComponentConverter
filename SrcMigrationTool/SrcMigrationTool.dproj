@@ -105,19 +105,16 @@
         <DCCReference Include="..\Common\Environments.pas"/>
         <DCCReference Include="Converter\SrcConverterTypes.pas"/>
         <DCCReference Include="Converter\SrcConverter.pas"/>
-        <DCCReference Include="Converter\CellsConverter.pas"/>
-        <DCCReference Include="Converter\ColumnsConverter.pas"/>
-        <DCCReference Include="Converter\RowConverter.pas"/>
-        <DCCReference Include="Converter\SelectedConverter.pas"/>
-        <DCCReference Include="Converter\DataSetConverter.pas"/>
-        <DCCReference Include="Converter\ComFuncConverter.pas"/>
         <DCCReference Include="..\Common\Logger.pas"/>
         <DCCReference Include="Utils\SrcConvertUtils.pas"/>
-        <DCCReference Include="Converter\EventConverter.pas"/>
-        <DCCReference Include="Converter\GridViewConverter.pas"/>
         <DCCReference Include="..\Common\ConverterManager.pas"/>
         <DCCReference Include="..\Common\Converter.pas"/>
         <DCCReference Include="..\Common\ConverterTypes.pas"/>
+        <DCCReference Include="Converter\SelectedConverter.pas"/>
+        <DCCReference Include="Converter\EtcEventConverter.pas"/>
+        <DCCReference Include="Converter\DataControllerConverter.pas"/>
+        <DCCReference Include="Converter\GridEventConverter.pas"/>
+        <DCCReference Include="Converter\ColumnConverter.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

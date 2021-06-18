@@ -6,19 +6,16 @@ uses
   Environments in '..\Common\Environments.pas',
   SrcConverterTypes in 'Converter\SrcConverterTypes.pas',
   SrcConverter in 'Converter\SrcConverter.pas',
-  CellsConverter in 'Converter\CellsConverter.pas',
-  ColumnsConverter in 'Converter\ColumnsConverter.pas',
-  RowConverter in 'Converter\RowConverter.pas',
-  SelectedConverter in 'Converter\SelectedConverter.pas',
-  DataSetConverter in 'Converter\DataSetConverter.pas',
-  ComFuncConverter in 'Converter\ComFuncConverter.pas',
   Logger in '..\Common\Logger.pas',
   SrcConvertUtils in 'Utils\SrcConvertUtils.pas',
-  EventConverter in 'Converter\EventConverter.pas',
-  GridViewConverter in 'Converter\GridViewConverter.pas',
   ConverterManager in '..\Common\ConverterManager.pas',
   Converter in '..\Common\Converter.pas',
-  ConverterTypes in '..\Common\ConverterTypes.pas';
+  ConverterTypes in '..\Common\ConverterTypes.pas',
+  SelectedConverter in 'Converter\SelectedConverter.pas',
+  EtcEventConverter in 'Converter\EtcEventConverter.pas',
+  DataControllerConverter in 'Converter\DataControllerConverter.pas',
+  GridEventConverter in 'Converter\GridEventConverter.pas',
+  ColumnConverter in 'Converter\ColumnConverter.pas';
 
 {$R *.res}
 

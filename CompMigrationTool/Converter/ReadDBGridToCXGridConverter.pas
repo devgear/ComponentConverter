@@ -20,7 +20,6 @@ type
 
     function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
-    function GetMainUsesUnit: string; override;
 
     function GetConvertedCompText(ACompText: TStrings): string; override;
 
@@ -152,9 +151,11 @@ var
   FooterItem, FooterItems: string;
   ShowBand: Boolean;
 
-  SeqColIdx: Integer;
-  NoGroup: Boolean;
+  Seq: Integer;
+  GroupMode: Boolean;
   RowHeight, HeadHeight: Integer;
+
+  GrpFixedCount, ColFixedCount: Integer;
 begin
   if not Assigned(FParser) then
     FParser.Free;
@@ -185,38 +186,61 @@ begin
 
   GridText := GridText.Replace('[[FOOTER_VISIBLE]]',  BoolToStr(FParser.FooterVisible, True));
 
+  GroupMode := StrToBoolDef(FParser.Properties.ValuesDef['GroupMode', 'False'], False);
+  GrpFixedCount := StrToIntDef(FParser.Properties.ValuesDef['GrpFixedCount', '0'], 0);
+  ColFixedCount := StrToIntDef(FParser.Properties.ValuesDef['ColFixedCount', '0'], 0);
+  {
+    FixedCount 참조
+    [Col]
+      Bus2010\FRM\TbF_006P
+      Bus2010\FRM\TbF_203I
+      Acct2010\FRM\TaF_772P
+    [Grp]
+      Bus2010\FRM\TbF_004P
+  }
 
   // 밴드(그룹) 설정
   GroupList := '';
+
   ShowBand := False;
-  for GroupInfo in FParser.GroupInfos do
+  if GroupMode then
   begin
-    GroupText := TAG_CXGRID_GROUP;
-    GroupText := GroupText.Replace('[[CAPTION]]', GroupInfo.TitleCaption);
-    GroupText := GroupText.Replace('[[VISIBLE]]', BoolToStr(GroupInfo.Visible, True));
-    GroupText := GroupText.Replace('[[WIDTH]]',   IntToStr(GroupInfo.Width));
+    Seq := 0;
+    for GroupInfo in FParser.GroupInfos do
+    begin
+      GroupText := TAG_CXGRID_GROUP;
+      GroupText := GroupText.Replace('[[CAPTION]]', GroupInfo.TitleCaption);
+      GroupText := GroupText.Replace('[[VISIBLE]]', BoolToStr(GroupInfo.Visible, True));
+      GroupText := GroupText.Replace('[[WIDTH]]',   IntToStr(GroupInfo.Width));
+      if Seq < GrpFixedCount then
+        GroupText := GroupText.Replace('[[FIXED_KIND]]', 'fkLeft')
+      else
+        GroupText := GroupText.Replace('[[FIXED_KIND]]', 'fkNone');
 
-    if GroupInfo.TitleColor = '' then
-      GroupText := GroupText.Replace('[[STYLE_HEADER]]', '')
+      if GroupInfo.TitleColor = '' then
+        GroupText := GroupText.Replace('[[STYLE_HEADER]]', '')
+      else
+        GroupText := GroupText.Replace('[[STYLE_HEADER]]', 'Styles.Header = ' + GetColorToStyleName(GroupInfo.TitleColor));
+
+      GroupList := GroupList + GroupText;
+      if GroupInfo.TitleVisible then
+        ShowBand := True;
+      Inc(Seq);
+    end;
+  end
+  else
+  begin
+    if ColFixedCount = 0 then
+      GroupList := TAG_CXGRID_GROUP_UNFIXEDCOL
     else
-      GroupText := GroupText.Replace('[[STYLE_HEADER]]', 'Styles.Header = ' + GetColorToStyleName(GroupInfo.TitleColor));
-
-    GroupList := GroupList + GroupText;
-    if GroupInfo.TitleVisible then
-      ShowBand := True;
-  end;
-
-  NoGroup := False;
-  if GroupList = '' then
-  begin
-    GroupList := TAG_CXGRID_GROUP_NULL;
-    NoGroup := True;
+      GroupList := TAG_CXGRID_GROUP_FIXEDCOL;
+//    GroupMode := False;
   end;
 
   GridText := GridText.Replace('[[GROUP_LIST]]', GroupList);
   GridText := GridText.Replace('[[BAND_HEADERS]]', BoolToStr(ShowBand, True));
 
-  if NoGroup then
+  if not GroupMode then
   begin
     GridText := GridText.Replace('[[BAND_HEADER_HEIGHT]]', '0');
     GridText := GridText.Replace('[[HEADER_HEIGHT]]',      FParser.Properties.ValuesDef['Headers.ColHeight', '0']);
@@ -243,12 +267,14 @@ begin
   FooterItems := '';
   FColumnCompList := ''; //GetConvertCompList에서 사용할 컬럼 컴포넌트 목록
   Idx := 1;
-  SeqColIdx := 0;
+  Seq := 0;
   for ColumnInfo in FParser.ColumnInfos do
   begin
-    if ColumnInfo.EditStyle = 'wesCheckBox' then
+    if (ColumnInfo.EditStyle = 'wesCheckBox') or (ColumnInfo.EditStyle = 'wesBoolean') then
     begin
       ColText := TAG_CXGRID_COLUMN_BOOL;
+      ColText := ColText.Replace('[[VALUE_UNCHK]]', ColumnInfo.Values[0]);
+      ColText := ColText.Replace('[[VALUE_CHK]]', ColumnInfo.Values[1]);
     end
     else if Length(ColumnInfo.Items) > 0 then
     begin
@@ -281,7 +307,7 @@ begin
     ColText := ColText.Replace('[[COLUMN_NAME]]',     Format(ColName, [Idx]));
     ColText := ColText.Replace('[[COLUMN_CAPTION]]',  ColumnInfo.TitleCaption);
     // RealGrid Group이 미지정(-1)인 경우 컬럼 감춤
-    if (not NoGroup) and (ColumnInfo.Group = -1) then
+    if (GroupMode) and (ColumnInfo.Group = -1) then
       ColText := ColText.Replace('[[VISIBLE]]',         'False')
     else
       ColText := ColText.Replace('[[VISIBLE]]',       BoolToStr(ColumnInfo.Visible, True));
@@ -289,12 +315,20 @@ begin
 
     // 리얼그리드에서 Group과 LevelIndex를 설정하지 않은 경우(TbF_0006I)
       // BandIndex = 0, ColIndex는 순번(0..)으로 설정해야 함
-    if NoGroup then
+    if not GroupMode then
     begin
-      ColText := ColText.Replace('[[BAND_INDEX]]',      '0');
-      ColText := ColText.Replace('[[COL_INDEX]]',       IntToStr(SeqColIdx));
+      if ColFixedCount = 0 then
+        ColText := ColText.Replace('[[BAND_INDEX]]', '0')
+      else
+      begin
+        if Seq < ColFixedCount then
+          ColText := ColText.Replace('[[BAND_INDEX]]', '0')
+        else
+          ColText := ColText.Replace('[[BAND_INDEX]]', '1');
+      end;
+      ColText := ColText.Replace('[[COL_INDEX]]',       IntToStr(Seq));
       ColText := ColText.Replace('[[WIDTH]]',           IntToStr(ColumnInfo.ColWidth));
-      Inc(SeqColIdx);
+      Inc(Seq);
     end
     else
     begin
@@ -385,15 +419,10 @@ begin
   Result := GridText;
 end;
 
-function TConverterRealDBGridToCXGrid.GetMainUsesUnit: string;
-begin
-  Result := 'cxGrid';
-end;
-
 function TConverterRealDBGridToCXGrid.GetAddedUses: TArray<string>;
 begin
   Result := [
-      'Variants', 'TzzU_DataBase',
+      'Variants', 'TzzU_DataBase', 'RealGridHelper',
       'cxGridLevel', 'cxGridCustomTableView',
       'cxGridTableView', 'cxGridBandedTableView', 'cxGridDBBandedTableView', 'cxClasses',
       'cxGridCustomView', 'cxGrid', 'cxGraphics', 'cxControls', 'cxLookAndFeels',

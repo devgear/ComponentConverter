@@ -42,8 +42,6 @@ type
     function GetRemoveUses: TArray<string>; virtual; abstract;
     //  추가할 Uses 구문
     function GetAddedUses: TArray<string>; virtual;
-    // 이미 uses절에 포함되었는지 확인하기 위한 Unit 이름제공
-    function GetMainUsesUnit: string; virtual;
 
     // PAS 파일에 이벤트 코드 추가 여부(향후 Interface 처리 할 것)
     function IsWantWriteEvnetCodeToPas: Boolean; virtual;
@@ -242,11 +240,6 @@ begin
   Result := Format('%s to %s 변화', [GetComponentClassName, GetConvertCompClassName])
 end;
 
-function TConverter.GetMainUsesUnit: string;
-begin
-  Result := '';
-end;
-
 procedure TConverter.InsertCompCodeToPas(AInsertLine: Integer; ASource: TStrings; ACompCode: string);
 var
   I: Integer;
@@ -348,6 +341,13 @@ var
 
     Result := False;
     for I := UsesIdx.InterfaceUsesStartIndex to UsesIdx.InterfaceUsesEndIndex do
+    begin
+      Line := AData.SrcPas[I];
+      if IsIncludeUnitNameInUses(AUnitName, Line) then
+        Exit(True);
+    end;
+
+    for I := UsesIdx.ImplimentationUsesStartIndex to UsesIdx.ImplimentationUsesEndIndex do
     begin
       Line := AData.SrcPas[I];
       if IsIncludeUnitNameInUses(AUnitName, Line) then
@@ -532,9 +532,9 @@ begin
       end
       else
       begin
-//        // [선언부] 기존 이벤트 주석 처리
-//        for I := CompEventStart to CompEventEnd do
-//          AData.SrcPas[I] := '//' + AData.SrcPas[I];
+        // [선언부] 기존 이벤트 주석 처리
+        for I := CompEventStart to CompEventEnd do
+          AData.SrcPas[I] := '//' + AData.SrcPas[I];
 
         // [선언부] 교체할 이벤트 추가
         Code := Format('    // %s > %s'#13#10, [CompCodeInfo.BeforeEventName, CompCodeInfo.EventName]);
@@ -562,16 +562,16 @@ begin
           Continue;
         end;
 
-//        // [구현부] 기존 이벤트 주석 처리
-//        for I := CompEventStart to CompEventEnd do
-//          AData.SrcPas[I] := '//' + AData.SrcPas[I];
-        Code := 'begin'#13#10;
-        Code := Code + Format('  { TODO : %s 이벤트를 호출하는 코드를 %s로 변경 후 해당 이벤트를 제거하세요. }'#13#10, [CompCodeInfo.BeforeEventName, CompCodeInfo.EventName]);
-        Code := Code + 'end;'#13#10#13#10;
+        // [구현부] 기존 이벤트 주석 처리
+        for I := CompEventStart to CompEventEnd do
+          AData.SrcPas[I] := '//' + AData.SrcPas[I];
+//        Code := 'begin'#13#10;
+//        Code := Code + Format('  { TODO : %s 이벤트를 호출하는 코드를 %s로 변경 후 해당 이벤트를 제거하세요. }'#13#10, [CompCodeInfo.BeforeEventName, CompCodeInfo.EventName]);
+//        Code := Code + 'end;'#13#10#13#10;
 
         // [구현부] 교체할 이벤트 추가
   //      Code := Format('// %s 대체'#13#10, [CompCodeInfo.BeforeEventName]);
-        Code := Code + CompCodeInfo.ImplCode;
+        Code := CompCodeInfo.ImplCode;
         InsertCompCodeToPas(CompEventEnd+1, AData.SrcPas, Code);
       end;
     end;

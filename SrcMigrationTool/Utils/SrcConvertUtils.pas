@@ -16,12 +16,14 @@ type
     procedure Add(ASource, ADest: string);
   end;
 
-function ReplaceKeyword(var AValue: string; ASource, ADest: string): Boolean;
-function ReplaceKeywords(var AValue: string; ADatas: TChangeDatas): Boolean;
+function ReplaceKeyword(var AValue: string; ASource, ADest: string): Integer;
+function ReplaceKeywords(var AValue: string; ADatas: TChangeDatas): Integer;
 
-function AddTodo(var AValue: string; AKeyword: string; ATodo: string): Boolean;
-function AddComment(var AValue: string; AKeyword: string; ATodo: string = ''): Boolean;
-function AddComments(var AValue: string; AKeywords: TArray<string>): Boolean;
+function RemoveKeyword(var AValue: string; AKeyword: string): Integer;
+
+function AddTodo(var AValue: string; AKeyword: string; ATodo: string): Integer;
+function AddComment(var AValue: string; AKeyword: string; ATodo: string = ''): Integer;
+function AddComments(var AValue: string; AKeywords: TArray<string>): Integer;
 
 function GetIndent(ASource: string): string;
 
@@ -39,60 +41,66 @@ begin
   Self := Self + [Data];
 end;
 
-
-function ReplaceKeyword(var AValue: string; ASource, ADest: string): Boolean;
+function RemoveKeyword(var AValue: string; AKeyword: string): Integer;
 begin
-  Result := False;
-  if AValue.Contains(ASource) then
+  Result := 0;
+  if AValue.Contains(AKeyword) then
   begin
-    AValue := AValue.Replace(ASource, ADest);
-    Result := True;
+    AValue := '';
+    Inc(Result);
   end;
 end;
 
-function ReplaceKeywords(var AValue: string; ADatas: TChangeDatas): Boolean;
+function ReplaceKeyword(var AValue: string; ASource, ADest: string): Integer;
+begin
+  Result := 0;
+  if AValue.Contains(ASource) then
+  begin
+    AValue := AValue.Replace(ASource, ADest);
+    Inc(Result);
+  end;
+end;
+
+function ReplaceKeywords(var AValue: string; ADatas: TChangeDatas): Integer;
 var
   Data: TChangeData;
 begin
-  Result := False;
+  Result := 0;
   for Data in ADatas do
-    if ReplaceKeyword(AValue, Data.Source, Data.Dest) then
-      Result := True;
+    Inc(Result, ReplaceKeyword(AValue, Data.Source, Data.Dest));
 end;
 
-function AddComment(var AValue: string; AKeyword: string; ATodo: string): Boolean;
+function AddComment(var AValue: string; AKeyword: string; ATodo: string): Integer;
 begin
-  Result := False;
+  Result := 0;
   if AValue.Contains(AKeyword) and (not AValue.StartsWith('//')) then
   begin
     if ATodo = '' then
       AValue := '//(*mig*)' + AValue
     else
       AValue := '//(* TODO : ' + ATodo + ' *)' + AValue;
-    Result := True;
+    Inc(Result);
 
   end;
 end;
 
-function AddTodo(var AValue: string; AKeyword: string; ATodo: string): Boolean;
+function AddTodo(var AValue: string; AKeyword: string; ATodo: string): Integer;
 begin
-  Result := False;
+  Result := 0;
   if AValue.Contains(AKeyword) and (not AValue.StartsWith('//')) then
   begin
     AValue := '(* TODO : ' + ATodo + ' *)' + AValue;
-    Result := True;
-
+    Inc(Result);
   end;
 end;
 
-function AddComments(var AValue: string; AKeywords: TArray<string>): Boolean;
+function AddComments(var AValue: string; AKeywords: TArray<string>): Integer;
 var
   Keyword: string;
 begin
-  Result := False;
+  Result := 0;
   for Keyword in AKeywords do
-    if AddComment(AValue, Keyword) then
-      Result := True;
+    Inc(Result, AddComment(AValue, Keyword));
 end;
 
 function GetIndent(ASource: string): string;

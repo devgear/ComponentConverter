@@ -1,4 +1,4 @@
-unit RemoveSkinManager;
+unit RemoveSkinProvider;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   CompConverter, System.SysUtils, System.Classes, Vcl.Forms;
 
 type
-  TConverterRemoveSkinManager = class(TConverter)
+  TConverterRemoveSkinProvider = class(TConverter)
   protected
     function GetDescription: string; override;
 
@@ -23,38 +23,38 @@ implementation
 
 { TConverterRealGridToCXGrid }
 
-function TConverterRemoveSkinManager.GetAddedUses: TArray<string>;
+function TConverterRemoveSkinProvider.GetAddedUses: TArray<string>;
 begin
   Result := [];
 end;
 
-function TConverterRemoveSkinManager.GetComponentClassName: string;
+function TConverterRemoveSkinProvider.GetComponentClassName: string;
 begin
-  Result := 'TsSkinManager';
+  Result := 'TsSkinProvider';
 end;
 
-function TConverterRemoveSkinManager.GetConvertCompClassName: string;
+function TConverterRemoveSkinProvider.GetConvertCompClassName: string;
 begin
   Result := ''; // 제거
 end;
 
-function TConverterRemoveSkinManager.GetConvertedCompText(ACompText: TStrings): string;
+function TConverterRemoveSkinProvider.GetConvertedCompText(ACompText: TStrings): string;
 begin
   Result := '';
 end;
 
-function TConverterRemoveSkinManager.GetDescription: string;
+function TConverterRemoveSkinProvider.GetDescription: string;
 begin
-  Result := 'TsSkinManager 제거';
+  Result := 'TsSkinProvider 제거';
 end;
 
-function TConverterRemoveSkinManager.GetRemoveUses: TArray<string>;
+function TConverterRemoveSkinProvider.GetRemoveUses: TArray<string>;
 begin
   Result := [];
 end;
 
 initialization
-  TConvertManager.Instance.Regist(TConverterRemoveSkinManager);
+  TConvertManager.Instance.Regist(TConverterRemoveSkinProvider);
 
 end.
 

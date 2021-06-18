@@ -125,7 +125,9 @@ begin
       Continue;
 
     Data := TFileInfo(lvFiles.Items[I].Data);
+    // *****
     UpdateCount := TConvertManager.Instance.RunConvert(Data, Convs);
+    // *****
 
     if UpdateCount = 0 then
       lvFiles.Items[I].SubItems[1] := '-'

@@ -12,7 +12,7 @@ const
     '  Align = [[COMP_ALIGN]]'#13#10 +
     '  Font.Charset = DEFAULT_CHARSET'#13#10 +
     '  Font.Color = clWindowText'#13#10 +
-    '  Font.Height = -12'#13#10 +
+    '  Font.Height = -11'#13#10 +
     '  Font.Name = #44404#47548'#13#10 +
     '  Font.Style = []'#13#10 +
     '  ParentFont = False'#13#10 +
@@ -83,8 +83,8 @@ const
     '      Properties.DisplayChecked = ''True'''#13#10 +
     '      Properties.DisplayUnchecked = ''False'''#13#10 +
     '      Properties.NullStyle = nssUnchecked'#13#10 +
-    '      Properties.ValueChecked = ''1'''#13#10 +
-    '      Properties.ValueUnchecked = ''0'''#13#10 +
+    '      Properties.ValueChecked = ''[[VALUE_CHK]]'''#13#10 +
+    '      Properties.ValueUnchecked = ''[[VALUE_UNCHK]]'''#13#10 +
 
 
     '      Properties.ReadOnly = [[READONLY]]'#13#10 +
@@ -146,13 +146,28 @@ const
   TAG_CXGRID_GROUP = '' +
     '      item'#13#10 +
     '        Caption = ''[[CAPTION]]'''#13#10 +
+    '        FixedKind = [[FIXED_KIND]]'#13#10 +
     '        Visible = [[VISIBLE]]'#13#10 +
     '        Width = [[WIDTH]]'#13#10 +
     '        [[STYLE_HEADER]]'#13#10 +
     '      end'#13#10
   ;
-  TAG_CXGRID_GROUP_NULL = '' +
+  TAG_CXGRID_GROUP_UNFIXEDCOL = '' +
     '      item'#13#10 +
+    '        Caption = ''Fixed band'''#13#10 +
+    '      end'#13#10 +
+    '      item'#13#10 +
+    '        Caption = ''Normal band'''#13#10 +
+    '        Visible = False'#13#10 +
+    '      end'#13#10
+  ;
+  TAG_CXGRID_GROUP_FIXEDCOL = '' +
+    '      item'#13#10 +
+    '        Caption = ''Normal band'''#13#10 +
+    '        FixedKind = fkLeft'#13#10 +
+    '      end'#13#10 +
+    '      item'#13#10 +
+    '        Caption = ''Hidden band'''#13#10 +
     '      end'#13#10
   ;
 
@@ -197,14 +212,18 @@ const
   TAG_PROC_VIEW_CUST_DRAW = TAG_PROC_VIEW_COMMON + '('#13#10 +
     '      Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;'#13#10 +
     '      AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);';
+  TAG_PROC_VIEW_CELL_CLICK = TAG_PROC_VIEW_COMMON + '('#13#10 +
+    '      Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;'#13#10 +
+    '      AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);';
 
 const
-  EventTagInfos: array[0..3] of TEventTagInfo =
+  EventTagInfos: array[0..4] of TEventTagInfo =
     (
       (EventName: 'DblClick';           RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_SENDER),
       (EventName: 'KeyPress';           RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_KEYPRESS),
       (EventName: 'ColumnHeaderClick';  RGEvent: 'OnColumnTitleClick';  EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_COL_HDR),
-      (EventName: 'CustomDrawCell';     RGEvent: 'OnDrawCell';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CUST_DRAW)
+      (EventName: 'CustomDrawCell';     RGEvent: 'OnDrawCell';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CUST_DRAW),
+      (EventName: 'CellClick';          RGEvent: 'OnClick';             EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CELL_CLICK)
     );
 
 function GetEventTagInfo(ARGEventProp: string; var OutInfo: TEventTagInfo): Boolean;
