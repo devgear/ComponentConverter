@@ -31,7 +31,7 @@ uses
   dxSkinsDefaultPainters, dxSkinValentine, dxSkinVisualStudio2013Blue,
   dxSkinVisualStudio2013Dark, dxSkinVisualStudio2013Light, dxSkinVS2010,
   dxSkinWhiteprint, dxSkinXmas2008Blue, Vcl.StdCtrls, cxLabel, cxGridDBTableView,
-  xlcClasses, xlEngine, xlReport;
+  xlcClasses, xlEngine, xlReport, cxContainer, cxCheckBox;
 
 type
   TForm1 = class(TForm)
@@ -86,7 +86,37 @@ type
     kbmMemTR: TStringField;
     kbmMemTR2: TStringField;
     kbmMemTR3: TStringField;
+    Button2: TButton;
+    cxCheckBox1: TcxCheckBox;
+    CkbSooJung: TCheckBox;
+    FDMemTable1: TFDMemTable;
+    StringField1: TStringField;
+    IntegerField1: TIntegerField;
+    IntegerField2: TIntegerField;
+    IntegerField3: TIntegerField;
+    IntegerField4: TIntegerField;
+    IntegerField5: TIntegerField;
+    IntegerField6: TIntegerField;
+    IntegerField7: TIntegerField;
+    IntegerField8: TIntegerField;
+    kbmWorkJegoT: TFDMemTable;
+    StringField7: TStringField;
+    kbmWorkJegoT_1: TIntegerField;
+    kbmWorkJegoT_2: TIntegerField;
+    kbmWorkJegoT_12: TIntegerField;
+    kbmWorkJegoT_22: TIntegerField;
+    kbmWorkJegoT_13: TIntegerField;
+    kbmWorkJegoT_23: TIntegerField;
+    kbmWorkJegoT_14: TIntegerField;
+    kbmWorkJegoT_24: TIntegerField;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure cxGrid1DBBandedTableView1CustomDrawCell(
+      Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;
+      AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);
+    procedure cxGrid1DBBandedTableView1EditKeyPress(
+      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
+      AEdit: TcxCustomEdit; var Key: Char);
   private
     { Private declarations }
   public
@@ -109,4 +139,43 @@ end;
 procedure TfrmTbF_006I.qry_MasterUpdateRecord(DataSet: TDataSet;
   UpdateKind: TFDUpdateRequest; var UpdateAction: TFDErrorAction);
 }
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+//  ShowMessage(cxGrid1DBBandedTableView1.Controller.FocusedItemIndex.ToString);
+//  cxGrid1DBBandedTableView1.Controller.FocusedItemIndex := 0;
+
+//cxGrid1DBBandedTableView1.Controller.FocusedItem.DataBinding
+//  cxGrid1DBBandedTableView1.Controller.FocusedColumn.DataBinding.
+//  ShowMessage(TcxGridDBBandedColumn(cxGrid1DBBandedTableView1.Controller.FocusedItem).DataBinding.FieldName);
+//
+//  cxGrid1DBBandedTableView1.DataController.DataSource
+
+//  cxGrid1DBBandedTableView1.DataController.IsEditing
+
+
+//  cxGrid1DBBandedTableView1.Columns[0].Visible
+//  cxGrid1DBBandedTableView1.ColumnCount
+
+end;
+
+procedure TForm1.cxGrid1DBBandedTableView1CustomDrawCell(
+  Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;
+  AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);
+begin
+  if AViewInfo.Item.Index = 2 then
+  begin
+    ACanvas.Brush.Color := clRed;
+  end;
+end;
+
+procedure TForm1.cxGrid1DBBandedTableView1EditKeyPress(
+  Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
+  AEdit: TcxCustomEdit; var Key: Char);
+begin
+  if Key = #13 then
+  begin
+    ShowMessage('cxGrid1DBBandedTableView1EditKeyPress');
+  end;
+end;
+
 end.

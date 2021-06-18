@@ -16,8 +16,8 @@ object Form1: TForm1
   object cxGrid1: TcxGrid
     Left = 256
     Top = 24
-    Width = 425
-    Height = 369
+    Width = 665
+    Height = 465
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -30,7 +30,10 @@ object Form1: TForm1
     object cxGrid1DBBandedTableView1: TcxGridDBBandedTableView
       Navigator.Buttons.CustomButtons = <>
       ScrollbarAnnotations.CustomAnnotations = <>
+      OnCustomDrawCell = cxGrid1DBBandedTableView1CustomDrawCell
+      OnEditKeyPress = cxGrid1DBBandedTableView1EditKeyPress
       DataController.DataSource = dsMaster
+      DataController.Options = [dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoImmediatePost]
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
@@ -165,6 +168,46 @@ object Form1: TForm1
     Height = 21
     TabOrder = 3
     Text = 'ComboBox1'
+  end
+  object Button2: TButton
+    Left = 496
+    Top = 430
+    Width = 75
+    Height = 25
+    Caption = 'Button2'
+    TabOrder = 4
+    OnClick = Button2Click
+  end
+  object cxCheckBox1: TcxCheckBox
+    Left = 776
+    Top = 411
+    AutoSize = False
+    Caption = #49688#51221#44428#54620
+    ParentFont = False
+    Style.Font.Charset = DEFAULT_CHARSET
+    Style.Font.Color = clRed
+    Style.Font.Height = -13
+    Style.Font.Name = #44404#47548
+    Style.Font.Style = [fsBold]
+    Style.TransparentBorder = False
+    Style.IsFontAssigned = True
+    TabOrder = 5
+    Height = 17
+    Width = 85
+  end
+  object CkbSooJung: TCheckBox
+    Left = 776
+    Top = 437
+    Width = 85
+    Height = 19
+    Caption = #49688#51221#44428#54620
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -13
+    Font.Name = #44404#47548
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 6
   end
   object dsMaster: TDataSource
     DataSet = qry_Master
@@ -377,6 +420,7 @@ object Form1: TForm1
     Top = 280
   end
   object kbmMemT: TFDMemTable
+    Active = True
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -411,6 +455,119 @@ object Form1: TForm1
     object kbmMemTR3: TStringField
       FieldName = 'R'#50864#54200#48264#54840
       Size = 7
+    end
+  end
+  object FDMemTable1: TFDMemTable
+    Active = True
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'kbmWorkJegoTIndex2'
+        Fields = #46020#49436#53076#46300
+        Options = [soUnique, soPrimary]
+      end>
+    IndexName = 'kbmWorkJegoTIndex2'
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 592
+    Top = 429
+    object StringField1: TStringField
+      FieldName = #46020#49436#53076#46300
+      Size = 5
+    end
+    object IntegerField1: TIntegerField
+      FieldName = #54788#51116#44256'_1'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object IntegerField2: TIntegerField
+      FieldName = #54788#51116#44256'_2'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object IntegerField3: TIntegerField
+      FieldName = #52509#48120#48156#54665#48376#51452#47928'_1'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object IntegerField4: TIntegerField
+      FieldName = #52509#48120#48156#54665#48376#51452#47928'_2'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object IntegerField5: TIntegerField
+      FieldName = #52509#48120#48156#54665#52628#44032#52712#49548#51452#47928'_1'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object IntegerField6: TIntegerField
+      FieldName = #52509#48120#48156#54665#52628#44032#52712#49548#51452#47928'_2'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object IntegerField7: TIntegerField
+      FieldName = #52509#48120#48156#54665#52628#44032#52628#44032#51452#47928'_1'
+      DisplayFormat = '###,###,###,###'
+    end
+    object IntegerField8: TIntegerField
+      FieldName = #52509#48120#48156#54665#52628#44032#52628#44032#51452#47928'_2'
+      DisplayFormat = '###,###,###,###'
+    end
+  end
+  object kbmWorkJegoT: TFDMemTable
+    FieldDefs = <>
+    IndexDefs = <
+      item
+        Name = 'kbmWorkJegoTIndex2'
+        Fields = #46020#49436#53076#46300
+        Options = [ixPrimary, ixUnique]
+      end>
+    IndexName = 'kbmWorkJegoTIndex2'
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    StoreDefs = True
+    Left = 672
+    Top = 221
+    object StringField7: TStringField
+      FieldName = #46020#49436#53076#46300
+      Size = 4
+    end
+    object kbmWorkJegoT_1: TIntegerField
+      FieldName = #54788#51116#44256'_1'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object kbmWorkJegoT_2: TIntegerField
+      FieldName = #54788#51116#44256'_2'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object kbmWorkJegoT_12: TIntegerField
+      FieldName = #52509#48120#48156#54665#48376#51452#47928'_1'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object kbmWorkJegoT_22: TIntegerField
+      FieldName = #52509#48120#48156#54665#48376#51452#47928'_2'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object kbmWorkJegoT_13: TIntegerField
+      FieldName = #52509#48120#48156#54665#52628#44032#52712#49548#51452#47928'_1'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object kbmWorkJegoT_23: TIntegerField
+      FieldName = #52509#48120#48156#54665#52628#44032#52712#49548#51452#47928'_2'
+      DisplayFormat = '###,###,###,###,###'
+    end
+    object kbmWorkJegoT_14: TIntegerField
+      FieldName = #52509#48120#48156#54665#52628#44032#52628#44032#51452#47928'_1'
+      DisplayFormat = '###,###,###,###'
+    end
+    object kbmWorkJegoT_24: TIntegerField
+      FieldName = #52509#48120#48156#54665#52628#44032#52628#44032#51452#47928'_2'
+      DisplayFormat = '###,###,###,###'
     end
   end
 end
