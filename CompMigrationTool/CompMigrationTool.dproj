@@ -123,7 +123,6 @@
         <DCCReference Include="Converter\ReadDBGridToCXGridConverter.pas"/>
         <DCCReference Include="Converter\Types\cxDBGridTagDefine.pas"/>
         <DCCReference Include="Converter\RemoveSkinManager.pas"/>
-        <DCCReference Include="Converter\RemoveSkinProvider.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

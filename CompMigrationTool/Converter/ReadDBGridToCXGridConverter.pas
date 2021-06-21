@@ -442,7 +442,7 @@ end;
 
 function TConverterRealDBGridToCXGrid.GetRemoveUses: TArray<string>;
 begin
-  Result := ['URGrids', 'URDBGrid'];
+  Result := ['URGrids', 'URDBGrid', 'URMGrid'];
 end;
 
 function TConverterRealDBGridToCXGrid.IsWantWriteEvnetCodeToPas: Boolean;
