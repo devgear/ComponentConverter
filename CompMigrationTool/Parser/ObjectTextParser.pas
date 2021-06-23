@@ -19,8 +19,10 @@ type
     FPropertyName: string;
     FCollectionName: string;
     FListName: string;
+    FSetName, FSetValues: string;
     FIsList,
-    FIsCollection: Boolean;
+    FIsCollection,
+    FIsSet: Boolean;
     FCompName: string;
     FProperties: TStringList;
     procedure FindProperty(AName: string);
@@ -43,7 +45,12 @@ type
     procedure FindCollectionItemBegin;
     procedure FindCollectionItemEnd;
 
+    procedure FindSetStart;
+    procedure FindSetValue(AValue: string);
+    procedure FindSetEnd;
+
     procedure SetPropertyValue(AProp, AValue: string);
+    function GetSetProp(APropName: string): TArray<string>;
   protected
     procedure BeginList(AName: string); virtual;
     procedure EndList(AName: string); virtual;
@@ -52,6 +59,9 @@ type
     procedure EndCollection(AName: string); virtual;
     procedure BeginCollectionItem; virtual;
     procedure EndCollectionItem; virtual;
+
+    procedure BeginSet(AName: string); virtual;
+    procedure EndSet(AName: string); virtual;
 
     // 속성 기록
     procedure WriteProperty(AProp, AValue: string); virtual;
@@ -66,11 +76,13 @@ type
 
     property CompName: string read FCompName;
     property Properties: TStringList read FProperties;
+    property SetProp[APropName: string]: TArray<string> read GetSetProp;
   end;
 
 implementation
 
 uses
+  System.StrUtils,
   ConvertUtils;
 
 { TObjectTextParser }
@@ -105,11 +117,21 @@ procedure TObjectTextParser.BeginList(AName: string);
 begin
 end;
 
+procedure TObjectTextParser.BeginSet(AName: string);
+begin
+
+end;
+
 procedure TObjectTextParser.EndCollectionItem;
 begin
 end;
 
 procedure TObjectTextParser.EndList(AName: string);
+begin
+
+end;
+
+procedure TObjectTextParser.EndSet(AName: string);
 begin
 
 end;
@@ -120,6 +142,29 @@ begin
   FCollectionName := FPropertyName;
 
   BeginCollection(FCollectionName);
+end;
+
+procedure TObjectTextParser.FindSetStart;
+begin
+  FIsSet := True;
+  FSetName := FPropertyName;
+  FSetValues := '';
+
+  BeginSet(FSetName);
+end;
+
+procedure TObjectTextParser.FindSetValue(AValue: string);
+begin
+  FSetValues := FSetValues + IfThen(FSetValues = '', '', ',') + AValue;
+end;
+
+procedure TObjectTextParser.FindSetEnd;
+begin
+  FIsSet := False;
+
+  EndSet(FSetName);
+
+  WriteProperty(FSetName, FSetValues);
 end;
 
 procedure TObjectTextParser.FindListStart;
@@ -208,6 +253,16 @@ end;
 procedure TObjectTextParser.FindValueString(AValue: string);
 begin
   SetPropertyValue(FPropertyName, AValue);
+end;
+
+function TObjectTextParser.GetSetProp(APropName: string): TArray<string>;
+var
+  Prop: string;
+begin
+  Result := [];
+  Prop := FProperties.Values[APropName];
+  if Prop <> '' then
+    Result := Prop.Split([',']);
 end;
 
 procedure TObjectTextParser.Parse(AObjectText: string);
@@ -301,6 +356,7 @@ var
         '[':
           begin
             Parser.NextToken;
+            FindSetStart;
 //            Writer.WriteValue(vaSet);
             if Parser.Token <> ']' then
               while True do
@@ -313,10 +369,12 @@ var
                   Parser.CheckToken(toSymbol);
                 end;
 //                Writer.WriteUTF8Str(TokenStr);
+                FindSetValue(TokenStr);
                 if Parser.NextToken = ']' then Break;
                 Parser.CheckToken(',');
                 Parser.NextToken;
               end;
+            FindSetEnd;
 //            Writer.WriteUTF8Str('');
           end;
         '(':

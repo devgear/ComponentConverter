@@ -16,12 +16,9 @@ uses
   RemovePnlSkinSettingConv in 'Converter\RemovePnlSkinSettingConv.pas',
   ReadDBGridToCXGridConverter in 'Converter\ReadDBGridToCXGridConverter.pas',
   cxDBGridTagDefine in 'Converter\Types\cxDBGridTagDefine.pas',
-<<<<<<< HEAD
   RemoveSkinManager in 'Converter\RemoveSkinManager.pas',
-  RemoveSkinProvider in 'Converter\RemoveSkinProvider.pas';
-=======
-  RemoveSkinManager in 'Converter\RemoveSkinManager.pas';
->>>>>>> 65de63c795f1db88258b101e14dd27a4ec6fb5b8
+  RemoveSkinProvider in 'Converter\RemoveSkinProvider.pas',
+  RemoveCompsConverter in 'Converter\RemoveCompsConverter.pas';
 
 {$R *.res}
 

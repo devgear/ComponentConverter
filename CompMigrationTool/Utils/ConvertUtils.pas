@@ -62,6 +62,8 @@ function GetFormNameFromDfmText(ADfmFirstLineText: string): string;
 
 function IsEqualsCompCode(ACompName, ACompType, ACode: string): Boolean;
 
+function InArray(AArray: TArray<string>; AValue: string): Boolean;
+
 implementation
 
 procedure WriteIndent(var AList: TStringList; ACount: Integer);
@@ -658,6 +660,19 @@ begin
   Result := Copy(ADfmFirstLineText,
               ADfmFirstLineText.IndexOf(':') + 2,
               ADfmFirstLineText.Length).Trim;
+end;
+
+function InArray(AArray: TArray<string>; AValue: string): Boolean;
+var
+  Item: string;
+begin
+  Result := False;
+  for Item in AArray do
+  begin
+    if Item.ToLower = AValue.ToLower then
+      Exit(True);
+  end;
+
 end;
 
 end.

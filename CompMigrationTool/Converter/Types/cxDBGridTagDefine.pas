@@ -12,7 +12,7 @@ const
     '  Align = [[COMP_ALIGN]]'#13#10 +
     '  Font.Charset = DEFAULT_CHARSET'#13#10 +
     '  Font.Color = clWindowText'#13#10 +
-    '  Font.Height = -11'#13#10 +
+    '  Font.Height = -12'#13#10 +
     '  Font.Name = #44404#47548'#13#10 +
     '  Font.Style = []'#13#10 +
     '  ParentFont = False'#13#10 +
@@ -24,16 +24,43 @@ const
     '[[VIEW_EVENT]]'#13#10 +
     '    DataController.DataSource = [[DATASOURCE]]'#13#10 +
     '    DataController.Summary.DefaultGroupSummaryItems = <>'#13#10 +
-    '    DataController.Summary.FooterSummaryItems = <>'#13#10 +
+    '    DataController.Summary.FooterSummaryItems = <'#13#10 +
+    '[[FOOTER_ITEMS]]'#13#10 +
+    '    >'#13#10 +
     '    DataController.Summary.SummaryGroups = <>'#13#10 +
     '    OptionsView.NoDataToDisplayInfoText = ''<''#54364#49884#54624'' ''#45936#51060#53552#44032'' ''#50630#49845#45768#45796''.>'''#13#10 +
     '    OptionsView.GroupByBox = False'#13#10 +
     '    OptionsView.Indicator = True'#13#10 +
     '    OptionsView.BandHeaders = [[BAND_HEADERS]]'#13#10 +
+    '    OptionsView.Footer = [[FOOTER_VISIBLE]]'#13#10 +
+    '    OptionsView.FooterMultiSummaries = [[FOOTER_MULTI]]'#13#10 +
 
     '    OptionsView.BandHeaderHeight = [[BAND_HEADER_HEIGHT]]'#13#10 +
     '    OptionsView.HeaderHeight = [[HEADER_HEIGHT]]'#13#10 +
     '    OptionsView.DataRowHeight = [[DATAROW_HEIGHT]]'#13#10 +
+
+    // RealDBGrid.Options 처리
+    '    OptionsData.DeletingConfirmation = [[wgoConfirmDelete]]'#13#10 +
+    '    OptionsBehavior.GoToNextCellOnenter = [[wgoEnterToTab]]'#13#10 +
+    '    OptionsView.FocusRect = [[wgoFocusRect]]'#13#10 +
+    '    OptionsSelection.CellSelect = [[wgoRowSelect]]'#13#10 +
+    '    OptionsCustomize.ColumnHorzSizing = [[wgoColSizing]]'#13#10 +
+    '    OptionsCustomize.DataRowSizing = [[wgoRowSizing]]'#13#10 +
+    '    OptionsBehavior.ImmediateEditor = [[wgoAlwaysShowEditor]]'#13#10 +
+    '    OptionsData.Editing = [[wgoEditing]]'#13#10 +
+    '    OptionsData.Inserting = [[wgoInserting]]'#13#10 +
+    '    OptionsCustomize.ColumnMoving = [[wgoColMoving]]'#13#10 +
+    '    OptionsSelection.MultiSelect = [[wgoMultiSelect]]'#13#10 +
+    '    OptionsData.CancelOnExit = [[wgoCancelOnExit]]'#13#10 +
+    '    OptionsData.Deleting = [[wgoDeleting]]'#13#10 +
+
+    '    OptionsSelection.InvertSelect = False'#13#10 +       // 선택 반전(CellSelect 시 하나의 셀만 선택)
+    '    OptionsCustomize.ColumnFiltering = False'#13#10 +    // 컬럼 필터링 미사용
+    '    OptionsCustomize.ColumnSorting = False'#13#10 +      // 컬럼 소팅 미사용
+    '    OptionsBehavior.FocusCellOnCycle = True'#13#10 +     // 마지막 컬럼에서 다음 행 첫컬럼으로 이동
+
+    '    Styles.Selection = [[SEL_BG_COLOR]]'#13#10 +         // 선택 색상
+
     '[[DATA_EVENT]]'#13#10 +
     '    Bands = <'#13#10 +
     '    [[GROUP_LIST]]'#13#10 +

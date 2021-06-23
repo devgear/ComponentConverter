@@ -19,12 +19,15 @@ type
     function ConvertColCount(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertColumnsCount(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
+    function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
 implementation
 
 uses
-  System.Classes, System.SysUtils;
+  System.Classes, System.SysUtils, SrcConvertUtils;
 
 { TSelectedConverter }
 
@@ -62,6 +65,20 @@ begin
 
   if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
     Inc(Result);
+end;
+
+function TColumnConverter.ConvertEtc(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Datas: TChangeDatas;
+begin
+  Result := 0;
+  ADest := ASrc;
+
+  Datas.Add('].Footer.Values[', '].Footers[');
+  Datas.Add('Title.CellStyle', 'HeaderHint');
+
+  Inc(Result, ReplaceKeywords(ADest, Datas));
 end;
 
 function TColumnConverter.ConvertFixedCount(AProc, ASrc: string;

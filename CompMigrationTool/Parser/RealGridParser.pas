@@ -51,7 +51,7 @@ type
   private
     FCollection: string;
 
-    FUseFooter: Boolean;
+    FFooterCount: Integer;
     FColumn: TRealGridColumnInfo;
     FGroup: TRealGridGroupInfo;
 
@@ -59,6 +59,7 @@ type
     FGroupInfos: TList<TRealGridGroupInfo>;
     FEventInfos: TList<TRealGridEventInfo>;
     function GetGroupMaxLevels: Integer;
+    function GetUseFooter: Boolean;
   protected
     procedure BeginCollection(AName: string); override;
     procedure EndCollection(AName: string); override;
@@ -75,7 +76,8 @@ type
     property ColumnInfos: TList<TRealGridColumnInfo> read FColumnInfos; // 그리드 컬럼 정보
     property GroupInfos: TList<TRealGridGroupInfo> read FGroupInfos;    // 그리드 그룹(밴드) 정보
     property EventInfos: TList<TRealGridEventInfo> read FEventInfos;    // 그리드 이벤트 정보
-    property FooterVisible: Boolean read FUseFooter;
+    property FooterVisible: Boolean read GetUseFooter;
+    property FooterCount: Integer read FFooterCount;
     property GroupMaxLevels: Integer read GetGroupMaxLevels;
   end;
 
@@ -94,7 +96,7 @@ begin
   FColumnInfos := TList<TRealGridColumnInfo>.Create;
   FGroupInfos := TList<TRealGridGroupInfo>.Create;
   FEventInfos := TList<TRealGridEventInfo>.Create;
-  FUseFooter := False;
+  FFooterCount := 0;
 end;
 
 
@@ -166,7 +168,10 @@ begin
   if LowerCase(FCollection) = 'columns' then
     FColumnInfos.Add(FColumn)
   else if LowerCase(FCollection) = 'groups' then
-    FGroupInfos.Add(FGroup);
+    FGroupInfos.Add(FGroup)
+  else if LowerCase(FCollection) = 'footers' then
+    Inc(FFooterCount)
+  ;
 end;
 
 function TRealGridParser.GetGroupMaxLevels: Integer;
@@ -179,6 +184,11 @@ begin
     if Group.Levels > Result then
       Result := Group.Levels;
   end;
+end;
+
+function TRealGridParser.GetUseFooter: Boolean;
+begin
+  Result := FFooterCount > 0;
 end;
 
 procedure TRealGridParser.WriteProperty(AProp, AValue: string);
@@ -258,10 +268,7 @@ begin
       FGroup.TitleColor := AValue
     ;
   end
-  else if LowerCase(FCollection) = 'footers' then
-  begin
-    FUseFooter := True;
-  end;
+  ;
 end;
 
 procedure TRealGridParser.WriteListItem(AProp, AValue: string);
@@ -275,7 +282,9 @@ begin
       FColumn.Values := FColumn.Values + [AValue]
     else if AProp = 'Footer.Style' then
     begin
-      if AValue[1] = '2' then
+      if AValue[1] = '1' then
+        FColumn.FooterStyle := 'skNone'
+      else if AValue[1] = '2' then
         FColumn.FooterStyle := 'skCount'
       else if AValue[1] = '3' then
         FColumn.FooterStyle := 'skSum'
@@ -285,7 +294,7 @@ begin
         FColumn.FooterStyle := 'skMax'
       else if AValue[1] = '6' then
         FColumn.FooterStyle := 'skMin'
-      else
+      else // 0
         FColumn.FooterStyle := ''
       ;
     end;

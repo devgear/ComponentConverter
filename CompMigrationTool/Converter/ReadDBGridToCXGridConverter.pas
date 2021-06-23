@@ -3,7 +3,7 @@ unit ReadDBGridToCXGridConverter;
 interface
 
 uses
-  RealGridParser,
+  RealGridParser, System.Generics.Collections,
   CompConverter, System.SysUtils, System.Classes, Vcl.Forms;
 
 type
@@ -32,7 +32,7 @@ type
 
 implementation
 
-uses ObjectTextParser, cxDBGridTagDefine;
+uses ObjectTextParser, cxDBGridTagDefine, ConvertUtils;
 
 { TConverterRealDBGridToCXGrid }
 
@@ -156,6 +156,10 @@ var
   RowHeight, HeadHeight: Integer;
 
   GrpFixedCount, ColFixedCount: Integer;
+
+  Option: string;
+  Options: TArray<string>;
+  GridOptionText: string;
 begin
   if not Assigned(FParser) then
     FParser.Free;
@@ -185,6 +189,7 @@ begin
   GridText := GridText.Replace('[[POPUP_MENU]]',      FParser.Properties.ValuesDef['PopupMenu', 'nil']);
 
   GridText := GridText.Replace('[[FOOTER_VISIBLE]]',  BoolToStr(FParser.FooterVisible, True));
+  GridText := GridText.Replace('[[FOOTER_MULTI]]',    BoolToStr(FParser.FooterCount > 1, True));
 
   GroupMode := StrToBoolDef(FParser.Properties.ValuesDef['GroupMode', 'False'], False);
   GrpFixedCount := StrToIntDef(FParser.Properties.ValuesDef['GrpFixedCount', '0'], 0);
@@ -261,6 +266,22 @@ begin
     end;
   end;
   GridText := GridText.Replace('[[DATAROW_HEIGHT]]',     FParser.Properties.ValuesDef['RowHeight', '25']);
+  GridText := GridText.Replace('[[SEL_BG_COLOR]]',        GetColorToStyleName(FParser.Properties.ValuesDef['SelBgColor', '']));
+
+  Options := FParser.SetProp['Options'];
+  GridText := GridText.Replace('[[wgoConfirmDelete]]',    BoolToStr(InArray(Options, 'wgoConfirmDelete'), True));
+  GridText := GridText.Replace('[[wgoEnterToTab]]',       BoolToStr(InArray(Options, 'wgoEnterToTab'), True));
+  GridText := GridText.Replace('[[wgoFocusRect]]',        BoolToStr(InArray(Options, 'wgoFocusRect'), True));
+  GridText := GridText.Replace('[[wgoRowSelect]]',        BoolToStr(not InArray(Options, 'wgoRowSelect'), True));
+  GridText := GridText.Replace('[[wgoColSizing]]',        BoolToStr(InArray(Options, 'wgoColSizing'), True));
+  GridText := GridText.Replace('[[wgoRowSizing]]',        BoolToStr(InArray(Options, 'wgoRowSizing'), True));
+  GridText := GridText.Replace('[[wgoAlwaysShowEditor]]', BoolToStr(InArray(Options, 'wgoAlwaysShowEditor'), True));
+  GridText := GridText.Replace('[[wgoEditing]]',          BoolToStr(InArray(Options, 'wgoEditing'), True));
+  GridText := GridText.Replace('[[wgoInserting]]',        BoolToStr(InArray(Options, 'wgoInserting'), True));
+  GridText := GridText.Replace('[[wgoColMoving]]',        BoolToStr(InArray(Options, 'wgoColMoving'), True));
+  GridText := GridText.Replace('[[wgoMultiSelect]]',      BoolToStr(InArray(Options, 'wgoMultiSelect'), True));
+  GridText := GridText.Replace('[[wgoCancelOnExit]]',     BoolToStr(InArray(Options, 'wgoCancelOnExit'), True));
+  GridText := GridText.Replace('[[wgoDeleting]]',         BoolToStr(InArray(Options, 'wgoDeleting'), True));
 
   // 拿烦 汲沥
   ColList := '';
@@ -369,15 +390,15 @@ begin
 
     ColList := ColList + ColText;
 
-//    // Footer 贸府
-//    if ColumnInfo.FooterStyle <> '' then
-//    begin
-//      FooterItem := TAG_CXGRID_FOOTER_ITEM;
-//      FooterItem := FooterItem.Replace('[[FOOTER_KIND]]', ColumnInfo.FooterStyle);
-//      FooterItem := FooterItem.Replace('[[FOOTER_COLUMN]]', Format(ColName, [Idx]));
-//
-//      FooterItems := FooterItems + FooterItem;
-//    end;
+    // Footer 贸府
+    if ColumnInfo.FooterStyle <> '' then
+    begin
+      FooterItem := TAG_CXGRID_FOOTER_ITEM;
+      FooterItem := FooterItem.Replace('[[FOOTER_KIND]]', ColumnInfo.FooterStyle);
+      FooterItem := FooterItem.Replace('[[FOOTER_COLUMN]]', Format(ColName, [Idx]));
+
+      FooterItems := FooterItems + FooterItem;
+    end;
 
     Inc(Idx);
   end;

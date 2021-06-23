@@ -37,6 +37,7 @@ begin
   Datas.Add('(AColumn <> nil)',           '(AViewInfo.Item <> nil)');
   Datas.Add('BCol',                       'ACanvas.Brush.Color');
   Datas.Add('FCol',                       'ACanvas.Font.Color');
+  Datas.Add('FStyle',                     'ACanvas.Font.Style');
 
   Inc(Result, ReplaceKeywords(ADest, Datas));
 end;

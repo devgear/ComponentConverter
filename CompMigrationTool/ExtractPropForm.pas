@@ -92,7 +92,7 @@ begin
   TEnv.Instance.PropertyName := PropName;
 
   FDataList.Clear;
-  FDataList.Add(Format('%s,%s,%s', ['Filename', 'Component', 'Event name', 'Event']));
+  FDataList.Add(Format('%s,%s,%s,%s,%s', ['Path', 'Filename', 'Component', 'Event name', 'Event']));
   DfmFile := TStringList.Create;
   for Info in FFileInfos do
   begin
@@ -131,7 +131,7 @@ begin
           begin
             WriteLog(S);
 
-            FDataList.Add(Format('%s,%s, %s,%s', [Info.Filename, Comp, P, S]));
+            FDataList.Add(Format('%s,%s,%s, %s,%s', [Info.Path, Info.Filename, Comp, P, S]));
           end;
         end;
       end;
