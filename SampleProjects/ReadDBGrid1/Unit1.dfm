@@ -171,8 +171,8 @@ object Form1: TForm1
     Text = 'ComboBox1'
   end
   object Button2: TButton
-    Left = 496
-    Top = 430
+    Left = 480
+    Top = 495
     Width = 75
     Height = 25
     Caption = 'Button2'

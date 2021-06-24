@@ -43,7 +43,7 @@ const
     '    OptionsData.DeletingConfirmation = [[wgoConfirmDelete]]'#13#10 +
     '    OptionsBehavior.GoToNextCellOnenter = [[wgoEnterToTab]]'#13#10 +
     '    OptionsView.FocusRect = [[wgoFocusRect]]'#13#10 +
-    '    OptionsSelection.CellSelect = [[wgoRowSelect]]'#13#10 +
+    '    OptionsSelection.InvertSelect = [[wgoRowSelect]]'#13#10 +
     '    OptionsCustomize.ColumnHorzSizing = [[wgoColSizing]]'#13#10 +
     '    OptionsCustomize.DataRowSizing = [[wgoRowSizing]]'#13#10 +
     '    OptionsBehavior.ImmediateEditor = [[wgoAlwaysShowEditor]]'#13#10 +
@@ -83,6 +83,7 @@ const
     '      Caption = ''[[COLUMN_CAPTION]]'''#13#10 +
     '      PropertiesClassName = ''TcxTextEditProperties'''#13#10 +
 
+    '      Options.Editing = [[EDITING]]'#13#10 +
     '      Properties.ReadOnly = [[READONLY]]'#13#10 +
     '      Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10 +
     '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
@@ -113,7 +114,7 @@ const
     '      Properties.ValueChecked = ''[[VALUE_CHK]]'''#13#10 +
     '      Properties.ValueUnchecked = ''[[VALUE_UNCHK]]'''#13#10 +
 
-
+    '      Options.Editing = [[EDITING]]'#13#10 +
     '      Properties.ReadOnly = [[READONLY]]'#13#10 +
     '      Properties.Alignment = [[HORZ_ALIGN]]'#13#10 +
     '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
@@ -149,6 +150,7 @@ const
     '[[ITEMS]]'+
     '      >'#13#10 +
 
+    '      Options.Editing = [[EDITING]]'#13#10 +
     '      Properties.ReadOnly = [[READONLY]]'#13#10 +
     '      Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10 +
     '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
@@ -234,6 +236,9 @@ const
     '  var Key: Char);';
   TAG_PROC_VIEW_KEYPRESS = TAG_PROC_VIEW_COMMON + '(Sender: TObject;'#13#10 +
     '  var Key: Char);';
+  TAG_PROC_VIEW_EDITKEYDOWN = TAG_PROC_VIEW_COMMON + '('#13#10 +
+    '      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;'#13#10 +
+    '      AEdit: TcxCustomEdit; var Key: Word; Shift: TShiftState);';
   TAG_PROC_VIEW_COL_HDR = TAG_PROC_VIEW_COMMON + '('#13#10 +
     '      Sender: TcxGridTableView; AColumn: TcxGridColumn);';
   TAG_PROC_VIEW_CUST_DRAW = TAG_PROC_VIEW_COMMON + '('#13#10 +
@@ -242,12 +247,15 @@ const
   TAG_PROC_VIEW_CELL_CLICK = TAG_PROC_VIEW_COMMON + '('#13#10 +
     '      Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;'#13#10 +
     '      AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);';
+  TAG_PROC_VIEW_EDIT_DBLCLICK = TAG_PROC_VIEW_COMMON + '('#13#10 +
+    '      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;'#13#10 +
+    '      AEdit: TcxCustomEdit);';
 
 const
   EventTagInfos: array[0..4] of TEventTagInfo =
     (
-      (EventName: 'DblClick';           RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_SENDER),
-      (EventName: 'KeyPress';           RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_KEYPRESS),
+      (EventName: 'EditDblClick';       RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDIT_DBLCLICK),
+      (EventName: 'EditKeyDown';        RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
       (EventName: 'ColumnHeaderClick';  RGEvent: 'OnColumnTitleClick';  EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_COL_HDR),
       (EventName: 'CustomDrawCell';     RGEvent: 'OnDrawCell';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CUST_DRAW),
       (EventName: 'CellClick';          RGEvent: 'OnClick';             EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CELL_CLICK)

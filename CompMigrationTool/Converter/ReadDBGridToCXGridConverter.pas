@@ -272,7 +272,7 @@ begin
   GridText := GridText.Replace('[[wgoConfirmDelete]]',    BoolToStr(InArray(Options, 'wgoConfirmDelete'), True));
   GridText := GridText.Replace('[[wgoEnterToTab]]',       BoolToStr(InArray(Options, 'wgoEnterToTab'), True));
   GridText := GridText.Replace('[[wgoFocusRect]]',        BoolToStr(InArray(Options, 'wgoFocusRect'), True));
-  GridText := GridText.Replace('[[wgoRowSelect]]',        BoolToStr(not InArray(Options, 'wgoRowSelect'), True));
+  GridText := GridText.Replace('[[wgoRowSelect]]',        BoolToStr(InArray(Options, 'wgoRowSelect'), True));
   GridText := GridText.Replace('[[wgoColSizing]]',        BoolToStr(InArray(Options, 'wgoColSizing'), True));
   GridText := GridText.Replace('[[wgoRowSizing]]',        BoolToStr(InArray(Options, 'wgoRowSizing'), True));
   GridText := GridText.Replace('[[wgoAlwaysShowEditor]]', BoolToStr(InArray(Options, 'wgoAlwaysShowEditor'), True));
@@ -333,6 +333,7 @@ begin
     else
       ColText := ColText.Replace('[[VISIBLE]]',       BoolToStr(ColumnInfo.Visible, True));
     ColText := ColText.Replace('[[READONLY]]',        BoolToStr(ColumnInfo.ReadOnly, True));
+    ColText := ColText.Replace('[[EDITING]]',         BoolToStr(not ColumnInfo.ReadOnly, True));
 
     // 리얼그리드에서 Group과 LevelIndex를 설정하지 않은 경우(TbF_0006I)
       // BandIndex = 0, ColIndex는 순번(0..)으로 설정해야 함

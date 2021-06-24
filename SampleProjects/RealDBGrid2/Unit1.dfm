@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 549
+  ClientHeight = 603
   ClientWidth = 1003
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,11 +13,11 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object cxGrid1: TcxGrid
-    Left = 256
-    Top = 24
-    Width = 665
-    Height = 465
+  object RealDBGrid1: TcxGrid
+    Left = 48
+    Top = 659
+    Width = 1098
+    Height = 421
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -27,47 +27,395 @@ object Form1: TForm1
     TabOrder = 0
     LookAndFeel.Kind = lfFlat
     LookAndFeel.NativeStyle = False
-    object cxGrid1DBBandedTableView1: TcxGridDBBandedTableView
+    object RealDBGrid1DBBandedTableView1: TcxGridDBBandedTableView
       Navigator.Buttons.CustomButtons = <>
       ScrollbarAnnotations.CustomAnnotations = <>
-      OnCustomDrawCell = cxGrid1DBBandedTableView1CustomDrawCell
-      OnEditKeyPress = cxGrid1DBBandedTableView1EditKeyPress
       DataController.DataSource = dsMaster
-      DataController.Options = [dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoImmediatePost]
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
-      OptionsBehavior.EditAutoHeight = eahRow
-      OptionsData.DeletingConfirmation = False
+      OptionsBehavior.FocusCellOnTab = True
+      OptionsBehavior.GoToNextCellOnEnter = True
+      OptionsBehavior.FocusCellOnCycle = True
+      OptionsCustomize.ColumnFiltering = False
+      OptionsCustomize.ColumnSorting = False
       OptionsSelection.InvertSelect = False
       OptionsView.NoDataToDisplayInfoText = '<'#54364#49884#54624' '#45936#51060#53552#44032' '#50630#49845#45768#45796'.>'
-      OptionsView.DataRowHeight = 100
+      OptionsView.DataRowHeight = 52
       OptionsView.GroupByBox = False
-      OptionsView.HeaderHeight = 50
+      OptionsView.HeaderHeight = 41
       OptionsView.Indicator = True
       OptionsView.BandHeaders = False
-      Preview.AutoHeight = False
       Styles.Selection = cxStyle1
       Bands = <
         item
-          Caption = 'Group 1'
-          FixedKind = fkLeft
+          Caption = 'Group0'
+          Width = 32
         end
         item
-          Caption = 'Group 2'
-          FixedKind = fkLeft
-          Width = 170
+          Caption = 'Group1'
+          Width = 160
         end
         item
-          Caption = 'Group 3'
+          Caption = 'Group2'
           Width = 359
+        end
+        item
+          Caption = 'Group3'
+          Width = 113
+        end
+        item
+          Caption = 'Group4'
+          Width = 103
+        end
+        item
+          Caption = 'Group6'
+          Width = 140
+        end
+        item
+          Caption = #44228#50557#44288#47144#50672#46020
+          Width = 76
+        end
+        item
+          Caption = 'Group5'
+          Width = 33
         end>
-      object cxGrid1DBBandedTableView1Column1: TcxGridDBBandedColumn
+      object RealDBGrid1DBBandedTableView1Column1: TcxGridDBBandedColumn
         Caption = #53076#46300
         DataBinding.FieldName = 'Company_Cod'
         PropertiesClassName = 'TcxTextEditProperties'
         Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
         HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 32
+        Position.BandIndex = 0
+        Position.ColIndex = 0
+        Position.LineCount = 2
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column2: TcxGridDBBandedColumn
+        Caption = #50557#52845
+        DataBinding.FieldName = 'Company_Name'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 160
+        Position.BandIndex = 1
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column3: TcxGridDBBandedColumn
+        Caption = #54924#49324#47749
+        DataBinding.FieldName = 'Company_Des'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 160
+        Position.BandIndex = 1
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+      object RealDBGrid1DBBandedTableView1Column4: TcxGridDBBandedColumn
+        Caption = #49324#50629#51088#46321#47197#48264#54840
+        DataBinding.FieldName = 'SaNo'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Options.Editing = False
+        Width = 126
+        Position.BandIndex = 2
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column5: TcxGridDBBandedColumn
+        Caption = #45824#54364#51088
+        DataBinding.FieldName = 'PName'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Options.Editing = False
+        Width = 149
+        Position.BandIndex = 2
+        Position.ColIndex = 1
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column6: TcxGridDBBandedColumn
+        Caption = #50864#54200#48264#54840
+        DataBinding.FieldName = 'Post'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Options.Editing = False
+        Width = 84
+        Position.BandIndex = 2
+        Position.ColIndex = 2
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column7: TcxGridDBBandedColumn
+        Caption = #51452'      '#49548
+        DataBinding.FieldName = 'Addr'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Options.Editing = False
+        Width = 359
+        Position.BandIndex = 2
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+      object RealDBGrid1DBBandedTableView1Column8: TcxGridDBBandedColumn
+        Caption = #50629#53468
+        DataBinding.FieldName = 'UpTae'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 113
+        Position.BandIndex = 3
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column9: TcxGridDBBandedColumn
+        Caption = #51333#47785
+        DataBinding.FieldName = 'Kind'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 113
+        Position.BandIndex = 3
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+      object RealDBGrid1DBBandedTableView1Column10: TcxGridDBBandedColumn
+        Caption = #51204#54868#48264#54840
+        DataBinding.FieldName = 'Tel'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 103
+        Position.BandIndex = 4
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column11: TcxGridDBBandedColumn
+        Caption = #54057#49828#48264#54840
+        DataBinding.FieldName = 'Fax'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 103
+        Position.BandIndex = 4
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+      object RealDBGrid1DBBandedTableView1Column12: TcxGridDBBandedColumn
+        Caption = #52636#47141
+        DataBinding.FieldName = 'Prn_Chk'
+        PropertiesClassName = 'TcxCheckBoxProperties'
+        Properties.Alignment = taCenter
+        Properties.DisplayChecked = '1'
+        Properties.DisplayUnchecked = '0'
+        Properties.NullStyle = nssUnchecked
+        Properties.ValueChecked = 1
+        Properties.ValueUnchecked = 0
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 33
+        Position.BandIndex = 7
+        Position.ColIndex = 0
+        Position.LineCount = 2
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column13: TcxGridDBBandedColumn
+        DataBinding.FieldName = #51008#54665#47749
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 61
+        Position.BandIndex = 5
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column14: TcxGridDBBandedColumn
+        DataBinding.FieldName = #50696#44552#51452#47749
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 79
+        Position.BandIndex = 5
+        Position.ColIndex = 1
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column15: TcxGridDBBandedColumn
+        DataBinding.FieldName = #44228#51340#48264#54840
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 140
+        Position.BandIndex = 5
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+      object RealDBGrid1DBBandedTableView1Column16: TcxGridDBBandedColumn
+        DataBinding.FieldName = #44228#50557#49884#51089#45380#46020
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 76
+        Position.BandIndex = 6
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
+      object RealDBGrid1DBBandedTableView1Column17: TcxGridDBBandedColumn
+        DataBinding.FieldName = #44228#50557#54644#51648#45380#46020
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 76
+        Position.BandIndex = 6
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+    end
+    object RealDBGrid1Level1: TcxGridLevel
+      GridView = RealDBGrid1DBBandedTableView1
+    end
+  end
+  object Button1: TButton
+    Left = 42
+    Top = 446
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 1
+    OnClick = Button1Click
+  end
+  object cxGrid1: TcxGrid
+    Left = 8
+    Top = 25
+    Width = 737
+    Height = 401
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = #44404#47548
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+    LookAndFeel.Kind = lfFlat
+    LookAndFeel.NativeStyle = False
+    object cxGridDBBandedTableView1: TcxGridDBBandedTableView
+      OnDblClick = cxGridDBBandedTableView1DblClick
+      Navigator.Buttons.CustomButtons = <>
+      ScrollbarAnnotations.CustomAnnotations = <>
+      OnCellClick = cxGridDBBandedTableView1CellClick
+      OnEditDblClick = cxGridDBBandedTableView1EditDblClick
+      OnEditKeyPress = cxGridDBBandedTableView1EditKeyPress
+      DataController.DataSource = dsMaster
+      DataController.Summary.DefaultGroupSummaryItems = <>
+      DataController.Summary.FooterSummaryItems = <>
+      DataController.Summary.SummaryGroups = <>
+      OptionsBehavior.GoToNextCellOnEnter = True
+      OptionsBehavior.FocusCellOnCycle = True
+      OptionsCustomize.ColumnFiltering = False
+      OptionsCustomize.ColumnMoving = False
+      OptionsCustomize.ColumnSorting = False
+      OptionsCustomize.DataRowSizing = True
+      OptionsData.CancelOnExit = False
+      OptionsData.Deleting = False
+      OptionsSelection.InvertSelect = False
+      OptionsView.NoDataToDisplayInfoText = '<'#54364#49884#54624' '#45936#51060#53552#44032' '#50630#49845#45768#45796'.>'
+      OptionsView.DataRowHeight = 25
+      OptionsView.GroupByBox = False
+      OptionsView.HeaderHeight = 41
+      OptionsView.Indicator = True
+      OptionsView.BandHeaders = False
+      Styles.Selection = cxStyle1
+      Bands = <
+        item
+          Caption = 'Group0'
+          Width = 32
+        end
+        item
+          Caption = 'Group1'
+          Width = 170
+        end
+        item
+          Caption = 'Group2'
+          Width = 359
+        end
+        item
+          Caption = 'Group3'
+          Width = 113
+        end
+        item
+          Caption = 'Group4'
+          Width = 103
+        end
+        item
+          Caption = 'Group5'
+          Width = 195
+        end
+        item
+          Caption = #44228#50557#44288#47144#50672#46020
+          Width = 80
+        end>
+      object cxGridDBBandedColumn1: TcxGridDBBandedColumn
+        Caption = #53076#46300
+        DataBinding.FieldName = 'Company_Cod'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
         Styles.Content = cxStyle1
         Styles.Header = cxStyle1
         Width = 32
@@ -76,197 +424,289 @@ object Form1: TForm1
         Position.LineCount = 2
         Position.RowIndex = 0
       end
-      object cxGrid1DBBandedTableView1Column2: TcxGridDBBandedColumn
+      object cxGridDBBandedColumn2: TcxGridDBBandedColumn
         Caption = #50557#52845
         DataBinding.FieldName = 'Company_Name'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
         HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
         Width = 170
         Position.BandIndex = 1
         Position.ColIndex = 0
         Position.RowIndex = 0
       end
-      object cxGrid1DBBandedTableView1Column3: TcxGridDBBandedColumn
+      object cxGridDBBandedColumn3: TcxGridDBBandedColumn
         Caption = #54924#49324#47749
         DataBinding.FieldName = 'Company_Des'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
         HeaderAlignmentHorz = taCenter
-        Width = 100
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 170
         Position.BandIndex = 1
         Position.ColIndex = 0
         Position.RowIndex = 1
       end
-      object cxGrid1DBBandedTableView1Column4: TcxGridDBBandedColumn
+      object cxGridDBBandedColumn4: TcxGridDBBandedColumn
         Caption = #49324#50629#51088#46321#47197#48264#54840
         DataBinding.FieldName = 'SaNo'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
         HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
         Width = 98
         Position.BandIndex = 2
         Position.ColIndex = 0
         Position.RowIndex = 0
       end
-      object cxGrid1DBBandedTableView1Column5: TcxGridDBBandedColumn
+      object cxGridDBBandedColumn5: TcxGridDBBandedColumn
         Caption = #45824#54364#51088
         DataBinding.FieldName = 'PName'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
         HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
         Width = 121
         Position.BandIndex = 2
         Position.ColIndex = 1
         Position.RowIndex = 0
       end
-      object cxGrid1DBBandedTableView1Column6: TcxGridDBBandedColumn
-        Caption = #46041#44160#49353
-        DataBinding.FieldName = 'Dong'
-        PropertiesClassName = 'TcxLabelProperties'
-        HeaderAlignmentHorz = taCenter
-        Width = 55
-        Position.BandIndex = 2
-        Position.ColIndex = 2
-        Position.RowIndex = 0
-      end
-      object cxGrid1DBBandedTableView1Column7: TcxGridDBBandedColumn
+      object cxGridDBBandedColumn6: TcxGridDBBandedColumn
         Caption = #50864#54200#48264#54840
         DataBinding.FieldName = 'Post'
+        PropertiesClassName = 'TcxTextEditProperties'
+        FooterAlignmentHorz = taCenter
         HeaderAlignmentHorz = taCenter
-        Width = 85
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 55
         Position.BandIndex = 2
         Position.ColIndex = 3
         Position.RowIndex = 0
       end
-      object cxGrid1DBBandedTableView1Column8: TcxGridDBBandedColumn
-        Caption = #51452#49548
-        DataBinding.FieldName = 'Addr'
+      object cxGridDBBandedColumn7: TcxGridDBBandedColumn
+        Caption = #46041#44160#49353
+        DataBinding.FieldName = 'Dong'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = True
+        FooterAlignmentHorz = taCenter
         HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 85
+        Position.BandIndex = 2
+        Position.ColIndex = 2
+        Position.RowIndex = 0
+      end
+      object cxGridDBBandedColumn8: TcxGridDBBandedColumn
+        Caption = #51452'      '#49548
+        DataBinding.FieldName = 'Addr'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 359
         Position.BandIndex = 2
         Position.ColIndex = 0
         Position.RowIndex = 1
       end
+      object cxGridDBBandedColumn9: TcxGridDBBandedColumn
+        Caption = #50629#53468
+        DataBinding.FieldName = 'UpTae'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 113
+        Position.BandIndex = 3
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
+      object cxGridDBBandedColumn10: TcxGridDBBandedColumn
+        Caption = #51333#47785
+        DataBinding.FieldName = 'Kind'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 113
+        Position.BandIndex = 3
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+      object cxGridDBBandedColumn11: TcxGridDBBandedColumn
+        Caption = #51204#54868#48264#54840
+        DataBinding.FieldName = 'Tel'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 103
+        Position.BandIndex = 4
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
+      object cxGridDBBandedColumn12: TcxGridDBBandedColumn
+        Caption = #54057#49828#48264#54840
+        DataBinding.FieldName = 'Fax'
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 103
+        Position.BandIndex = 4
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+      object cxGridDBBandedColumn13: TcxGridDBBandedColumn
+        DataBinding.FieldName = #51008#54665#47749
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 97
+        Position.BandIndex = 5
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
+      object cxGridDBBandedColumn14: TcxGridDBBandedColumn
+        DataBinding.FieldName = #50696#44552#51452#47749
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 98
+        Position.BandIndex = 5
+        Position.ColIndex = 1
+        Position.RowIndex = 0
+      end
+      object cxGridDBBandedColumn15: TcxGridDBBandedColumn
+        DataBinding.FieldName = #44228#51340#48264#54840
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taLeftJustify
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 195
+        Position.BandIndex = 5
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+      object cxGridDBBandedColumn16: TcxGridDBBandedColumn
+        Caption = #44228#50557#54644#51648#50672#46020
+        DataBinding.FieldName = #44228#50557#54644#51648#45380#46020
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 80
+        Position.BandIndex = 6
+        Position.ColIndex = 0
+        Position.RowIndex = 1
+      end
+      object cxGridDBBandedColumn17: TcxGridDBBandedColumn
+        Caption = #44228#50557#49884#51089#50672#46020
+        DataBinding.FieldName = #44228#50557#49884#51089#45380#46020
+        PropertiesClassName = 'TcxTextEditProperties'
+        Properties.Alignment.Horz = taCenter
+        Properties.ReadOnly = False
+        FooterAlignmentHorz = taCenter
+        HeaderAlignmentHorz = taCenter
+        HeaderGlyphAlignmentHorz = taCenter
+        Width = 80
+        Position.BandIndex = 6
+        Position.ColIndex = 0
+        Position.RowIndex = 0
+      end
     end
-    object cxGrid1Level1: TcxGridLevel
-      GridView = cxGrid1DBBandedTableView1
+    object cxGridLevel1: TcxGridLevel
+      GridView = cxGridDBBandedTableView1
     end
   end
-  object Memo1: TMemo
-    Left = 32
-    Top = 64
-    Width = 185
-    Height = 361
-    Lines.Strings = (
-      'Memo1')
-    TabOrder = 1
-  end
-  object Button1: TButton
-    Left = 32
-    Top = 24
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 2
-    OnClick = Button1Click
-  end
-  object ComboBox1: TComboBox
-    Left = 256
-    Top = 432
-    Width = 145
+  object Edit1: TEdit
+    Left = 136
+    Top = 448
+    Width = 121
     Height = 21
     TabOrder = 3
-    Text = 'ComboBox1'
+    Text = 'Edit1'
   end
-  object Button2: TButton
-    Left = 496
-    Top = 430
-    Width = 75
-    Height = 25
-    Caption = 'Button2'
+  object Memo1: TMemo
+    Left = 751
+    Top = 25
+    Width = 234
+    Height = 560
+    Lines.Strings = (
+      'Memo1')
     TabOrder = 4
-    OnClick = Button2Click
   end
-  object cxCheckBox1: TcxCheckBox
-    Left = 56
-    Top = 147
-    AutoSize = False
-    Caption = #49688#51221#44428#54620
-    ParentFont = False
-    Style.Font.Charset = DEFAULT_CHARSET
-    Style.Font.Color = clRed
-    Style.Font.Height = -13
-    Style.Font.Name = #44404#47548
-    Style.Font.Style = [fsBold]
-    Style.TransparentBorder = False
-    Style.IsFontAssigned = True
-    TabOrder = 5
-    Height = 17
-    Width = 85
-  end
-  object CkbSooJung: TCheckBox
-    Left = 56
-    Top = 173
-    Width = 85
-    Height = 19
-    Caption = #49688#51221#44428#54620
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clRed
-    Font.Height = -13
-    Font.Name = #44404#47548
-    Font.Style = [fsBold]
-    ParentFont = False
-    TabOrder = 6
+  object DBKatasCommon2: TFDConnection
+    ConnectionName = 'DBKatasCommon2'
+    Params.Strings = (
+      'Server=112.161.65.6,4452'
+      'Database=Common2'
+      'User_Name=ktbookuser'
+      'Password=USER1!qoaRhfl'
+      'DriverID=MSSQL')
+    FormatOptions.AssignedValues = [fvMapRules]
+    FormatOptions.OwnMapRules = True
+    FormatOptions.MapRules = <
+      item
+        SourceDataType = dtBCD
+        TargetDataType = dtDouble
+      end
+      item
+        SourceDataType = dtFmtBCD
+        TargetDataType = dtDouble
+      end
+      item
+        SourceDataType = dtDateTimeStamp
+        TargetDataType = dtDateTime
+      end>
+    Connected = True
+    LoginPrompt = False
+    Left = 328
+    Top = 521
   end
   object dsMaster: TDataSource
     DataSet = qry_Master
-    Left = 176
-    Top = 336
-  end
-  object UpdateSQL_Record: TFDUpdateSQL
-    InsertSQL.Strings = (
-      'insert into C_Company'
-      
-        '  (Company_Ty_COD, Company_COD, Company_Des, Company_Name, '#54924#44228#52636#54032#49324 +
-        #47749','
-      '  SaNo, PName, Post, Addr, UpTae, Kind, Tel, Fax,'
-      '  '#51008#54665#47749', '#50696#44552#51452#47749', '#44228#51340#48264#54840', '#44228#50557#54644#51648#45380#46020', '#44228#50557#49884#51089#45380#46020')'
-      'values'
-      '  ('#39'1'#39', :Company_COD, :Company_Des, :Company_Name, :Company_Des,'
-      '   :SaNo, :PName, :Post, :Addr, :UpTae, :Kind, :Tel, :Fax,'
-      '   :'#51008#54665#47749', :'#50696#44552#51452#47749', :'#44228#51340#48264#54840', :'#44228#50557#54644#51648#45380#46020', :'#44228#50557#49884#51089#45380#46020')'
-      '')
-    ModifySQL.Strings = (
-      'update C_Company'
-      'set'
-      '  Company_Des = :Company_Des,'
-      '  Company_Name = :Company_Name,'
-      '  '#54924#44228#52636#54032#49324#47749' = :Company_Des,'
-      '  SaNo = :SaNo,'
-      '  PName = :PName,'
-      '  Post = :Post,'
-      '  Addr = :Addr,'
-      '  UpTae = :UpTae,'
-      '  Kind = :Kind,'
-      '  Tel = :Tel,'
-      '  Fax = :Fax,'
-      '  '#51008#54665#47749' = :'#51008#54665#47749','
-      '  '#50696#44552#51452#47749' = :'#50696#44552#51452#47749','
-      '  '#44228#51340#48264#54840' = :'#44228#51340#48264#54840','
-      '  '#44228#50557#54644#51648#45380#46020' = :'#44228#50557#54644#51648#45380#46020','
-      '  '#44228#50557#49884#51089#45380#46020' = :'#44228#50557#49884#51089#45380#46020
-      'where'
-      '  Company_Ty_Cod = :OLD_Company_Ty_Cod and'
-      '  Company_Cod = :OLD_Company_Cod')
-    DeleteSQL.Strings = (
-      'delete from C_Company'
-      'where'
-      '  Company_Ty_Cod = :OLD_Company_Ty_Cod and'
-      '  Company_Cod = :OLD_Company_Cod')
-    Left = 176
-    Top = 280
+    Left = 144
+    Top = 521
   end
   object qry_Master: TFDQuery
     Active = True
     CachedUpdates = True
     Connection = DBKatasCommon2
-    UpdateObject = UpdateSQL_Record
     SQL.Strings = (
-      'SELECT *, '#39'                    '#39' Dong'
+      'SELECT *, 1 Prn_Chk'
       'FROM C_Company'
       'WHERE Company_Ty_COD = '#39'1'#39
+      'and '#44228#50557#54644#51648#45380#46020' >= :pYear'
       'ORDER BY Company_Ty_COD, Company_COD'
       ''
       ''
@@ -280,7 +720,14 @@ object Form1: TForm1
       ' '
       ' ')
     Left = 176
-    Top = 232
+    Top = 521
+    ParamData = <
+      item
+        Name = 'pYear'
+        DataType = ftString
+        ParamType = ptInput
+        Value = '2021'
+      end>
     object qry_MasterCompany_Ty_Cod: TStringField
       FieldName = 'Company_Ty_Cod'
       FixedChar = True
@@ -297,6 +744,7 @@ object Form1: TForm1
     end
     object qry_MasterCompany_Name: TStringField
       FieldName = 'Company_Name'
+      Size = 8
     end
     object qry_MasterSaNo: TStringField
       FieldName = 'SaNo'
@@ -344,8 +792,8 @@ object Form1: TForm1
       FieldName = 'Film_Fax'
       Size = 14
     end
-    object qry_MasterDong: TStringField
-      FieldName = 'Dong'
+    object qry_MasterPrn_Chk: TIntegerField
+      FieldName = 'Prn_Chk'
     end
     object qry_MasterStringField: TStringField
       FieldName = #44228#51340#48264#54840
@@ -357,218 +805,62 @@ object Form1: TForm1
       FieldName = #50696#44552#51452#47749
     end
     object qry_MasterStringField4: TStringField
-      FieldName = #44228#50557#54644#51648#45380#46020
-      Size = 4
-    end
-    object qry_MasterStringField5: TStringField
       FieldName = #44228#50557#49884#51089#45380#46020
       Size = 4
     end
-  end
-  object DBKatasCommon2: TFDConnection
-    ConnectionName = 'DBKatasCommon2'
-    Params.Strings = (
-      'Server=112.161.65.6,4452'
-      'Database=Common2'
-      'User_Name=ktbookuser'
-      'Password=USER1!qoaRhfl'
-      'DriverID=MSSQL')
-    FormatOptions.AssignedValues = [fvMapRules]
-    FormatOptions.OwnMapRules = True
-    FormatOptions.MapRules = <
-      item
-        SourceDataType = dtBCD
-        TargetDataType = dtDouble
-      end
-      item
-        SourceDataType = dtFmtBCD
-        TargetDataType = dtDouble
-      end>
-    Connected = True
-    LoginPrompt = False
-    Left = 176
-    Top = 168
-  end
-  object cxStyleRepository1: TcxStyleRepository
-    Left = 104
-    Top = 472
-    PixelsPerInch = 96
-    object cxStyle1: TcxStyle
-      AssignedValues = [svColor]
-      Color = 8454143
-    end
-  end
-  object FDQuery1: TFDQuery
-    Connection = DBKatasCommon2
-    Left = 464
-    Top = 280
-  end
-  object xlReport1: TxlReport
-    DataExportMode = xdmDDE
-    Options = [xroDisplayAlerts, xroAutoOpen]
-    DataSources = <
-      item
-        DataSet = kbmMemT
-        Alias = 'kbmMemT'
-        Options = [xrgoAutoOpen, xrgoPreserveRowHeight]
-        Tag = 0
-      end>
-    Preview = False
-    Params = <
-      item
-      end>
-    Left = 768
-    Top = 280
-  end
-  object kbmMemT: TFDMemTable
-    Active = True
-    FetchOptions.AssignedValues = [evMode]
-    FetchOptions.Mode = fmAll
-    ResourceOptions.AssignedValues = [rvSilentMode]
-    ResourceOptions.SilentMode = True
-    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
-    UpdateOptions.CheckRequired = False
-    UpdateOptions.AutoCommitUpdates = True
-    Left = 880
-    Top = 280
-    object kbmMemTL: TStringField
-      FieldName = 'L'#51452#49548
-      Size = 80
-    end
-    object kbmMemTL2: TStringField
-      DisplayWidth = 50
-      FieldName = 'L'#51060#47492
-      Size = 50
-    end
-    object kbmMemTL3: TStringField
-      FieldName = 'L'#50864#54200#48264#54840
-      Size = 7
-    end
-    object kbmMemTR: TStringField
-      DisplayWidth = 80
-      FieldName = 'R'#51452#49548
-      Size = 80
-    end
-    object kbmMemTR2: TStringField
-      FieldName = 'R'#51060#47492
-      Size = 50
-    end
-    object kbmMemTR3: TStringField
-      FieldName = 'R'#50864#54200#48264#54840
-      Size = 7
-    end
-  end
-  object FDMemTable1: TFDMemTable
-    Active = True
-    Indexes = <
-      item
-        Active = True
-        Selected = True
-        Name = 'kbmWorkJegoTIndex2'
-        Fields = #46020#49436#53076#46300
-        Options = [soUnique, soPrimary]
-      end>
-    IndexName = 'kbmWorkJegoTIndex2'
-    FetchOptions.AssignedValues = [evMode]
-    FetchOptions.Mode = fmAll
-    ResourceOptions.AssignedValues = [rvSilentMode]
-    ResourceOptions.SilentMode = True
-    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
-    UpdateOptions.CheckRequired = False
-    UpdateOptions.AutoCommitUpdates = True
-    Left = 592
-    Top = 429
-    object StringField1: TStringField
-      FieldName = #46020#49436#53076#46300
-      Size = 5
-    end
-    object IntegerField1: TIntegerField
-      FieldName = #54788#51116#44256'_1'
-      DisplayFormat = '###,###,###,###,###'
-    end
-    object IntegerField2: TIntegerField
-      FieldName = #54788#51116#44256'_2'
-      DisplayFormat = '###,###,###,###,###'
-    end
-    object IntegerField3: TIntegerField
-      FieldName = #52509#48120#48156#54665#48376#51452#47928'_1'
-      DisplayFormat = '###,###,###,###,###'
-    end
-    object IntegerField4: TIntegerField
-      FieldName = #52509#48120#48156#54665#48376#51452#47928'_2'
-      DisplayFormat = '###,###,###,###,###'
-    end
-    object IntegerField5: TIntegerField
-      FieldName = #52509#48120#48156#54665#52628#44032#52712#49548#51452#47928'_1'
-      DisplayFormat = '###,###,###,###,###'
-    end
-    object IntegerField6: TIntegerField
-      FieldName = #52509#48120#48156#54665#52628#44032#52712#49548#51452#47928'_2'
-      DisplayFormat = '###,###,###,###,###'
-    end
-    object IntegerField7: TIntegerField
-      FieldName = #52509#48120#48156#54665#52628#44032#52628#44032#51452#47928'_1'
-      DisplayFormat = '###,###,###,###'
-    end
-    object IntegerField8: TIntegerField
-      FieldName = #52509#48120#48156#54665#52628#44032#52628#44032#51452#47928'_2'
-      DisplayFormat = '###,###,###,###'
-    end
-  end
-  object kbmWorkJegoT: TFDMemTable
-    FieldDefs = <>
-    IndexDefs = <
-      item
-        Name = 'kbmWorkJegoTIndex2'
-        Fields = #46020#49436#53076#46300
-        Options = [ixPrimary, ixUnique]
-      end>
-    IndexName = 'kbmWorkJegoTIndex2'
-    FetchOptions.AssignedValues = [evMode]
-    FetchOptions.Mode = fmAll
-    ResourceOptions.AssignedValues = [rvSilentMode]
-    ResourceOptions.SilentMode = True
-    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
-    UpdateOptions.CheckRequired = False
-    UpdateOptions.AutoCommitUpdates = True
-    StoreDefs = True
-    Left = 672
-    Top = 221
-    object StringField7: TStringField
-      FieldName = #46020#49436#53076#46300
+    object qry_MasterStringField5: TStringField
+      FieldName = #44228#50557#54644#51648#45380#46020
       Size = 4
     end
-    object kbmWorkJegoT_1: TIntegerField
-      FieldName = #54788#51116#44256'_1'
-      DisplayFormat = '###,###,###,###,###'
+  end
+  object cxStyleRepository: TcxStyleRepository
+    Left = 80
+    Top = 512
+    PixelsPerInch = 96
+    object cxStyle1: TcxStyle
+      AssignedValues = [svColor, svTextColor]
+      Color = 8454143
+      TextColor = clBlack
     end
-    object kbmWorkJegoT_2: TIntegerField
-      FieldName = #54788#51116#44256'_2'
-      DisplayFormat = '###,###,###,###,###'
+    object cxStyle2: TcxStyle
+      AssignedValues = [svColor]
+      Color = 8454016
     end
-    object kbmWorkJegoT_12: TIntegerField
-      FieldName = #52509#48120#48156#54665#48376#51452#47928'_1'
-      DisplayFormat = '###,###,###,###,###'
+    object cxStyle3: TcxStyle
+      AssignedValues = [svColor]
+      Color = 12615935
     end
-    object kbmWorkJegoT_22: TIntegerField
-      FieldName = #52509#48120#48156#54665#48376#51452#47928'_2'
-      DisplayFormat = '###,###,###,###,###'
+    object cxStyle4: TcxStyle
+      AssignedValues = [svColor]
+      Color = 16751515
     end
-    object kbmWorkJegoT_13: TIntegerField
-      FieldName = #52509#48120#48156#54665#52628#44032#52712#49548#51452#47928'_1'
-      DisplayFormat = '###,###,###,###,###'
+    object cxStyle5: TcxStyle
+      AssignedValues = [svColor]
+      Color = clAqua
     end
-    object kbmWorkJegoT_23: TIntegerField
-      FieldName = #52509#48120#48156#54665#52628#44032#52712#49548#51452#47928'_2'
-      DisplayFormat = '###,###,###,###,###'
+    object cxStyle6: TcxStyle
+      AssignedValues = [svColor]
+      Color = clInactiveCaptionText
     end
-    object kbmWorkJegoT_14: TIntegerField
-      FieldName = #52509#48120#48156#54665#52628#44032#52628#44032#51452#47928'_1'
-      DisplayFormat = '###,###,###,###'
+    object cxStyle7: TcxStyle
+      AssignedValues = [svColor]
+      Color = clLime
     end
-    object kbmWorkJegoT_24: TIntegerField
-      FieldName = #52509#48120#48156#54665#52628#44032#52628#44032#51452#47928'_2'
-      DisplayFormat = '###,###,###,###'
+    object cxStyle8: TcxStyle
+      AssignedValues = [svColor]
+      Color = clMoneyGreen
+    end
+    object cxStyle9: TcxStyle
+      AssignedValues = [svColor]
+      Color = clSilver
+    end
+    object cxStyle10: TcxStyle
+      AssignedValues = [svColor]
+      Color = clSkyBlue
+    end
+    object cxStyle11: TcxStyle
+      AssignedValues = [svColor]
+      Color = clYellow
     end
   end
 end

@@ -31,12 +31,32 @@ uses
   dxSkinsDefaultPainters, dxSkinValentine, dxSkinVisualStudio2013Blue,
   dxSkinVisualStudio2013Dark, dxSkinVisualStudio2013Light, dxSkinVS2010,
   dxSkinWhiteprint, dxSkinXmas2008Blue, Vcl.StdCtrls, cxLabel, cxGridDBTableView,
-  xlcClasses, xlEngine, xlReport, cxContainer, cxCheckBox;
+  xlcClasses, xlEngine, xlReport, cxContainer, cxCheckBox, cxDropDownEdit;
 
 type
   TForm1 = class(TForm)
+    RealDBGrid1: TcxGrid;
+    RealDBGrid1DBBandedTableView1: TcxGridDBBandedTableView;
+    RealDBGrid1DBBandedTableView1Column1: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column2: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column3: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column4: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column5: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column6: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column7: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column8: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column9: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column10: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column11: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column12: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column13: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column14: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column15: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column16: TcxGridDBBandedColumn;
+    RealDBGrid1DBBandedTableView1Column17: TcxGridDBBandedColumn;
+    RealDBGrid1Level1: TcxGridLevel;
+    DBKatasCommon2: TFDConnection;
     dsMaster: TDataSource;
-    UpdateSQL_Record: TFDUpdateSQL;
     qry_Master: TFDQuery;
     qry_MasterCompany_Ty_Cod: TStringField;
     qry_MasterCompany_Cod: TStringField;
@@ -54,61 +74,47 @@ type
     qry_MasterList_YN: TStringField;
     qry_MasterFilm_Tel: TStringField;
     qry_MasterFilm_Fax: TStringField;
-    qry_MasterDong: TStringField;
+    qry_MasterPrn_Chk: TIntegerField;
     qry_MasterStringField: TStringField;
     qry_MasterStringField2: TStringField;
     qry_MasterStringField3: TStringField;
     qry_MasterStringField4: TStringField;
     qry_MasterStringField5: TStringField;
-    DBKatasCommon2: TFDConnection;
-    cxGrid1Level1: TcxGridLevel;
-    cxGrid1: TcxGrid;
-    cxGrid1DBBandedTableView1: TcxGridDBBandedTableView;
-    cxGrid1DBBandedTableView1Column1: TcxGridDBBandedColumn;
-    cxGrid1DBBandedTableView1Column2: TcxGridDBBandedColumn;
-    cxGrid1DBBandedTableView1Column3: TcxGridDBBandedColumn;
-    cxGrid1DBBandedTableView1Column4: TcxGridDBBandedColumn;
-    cxGrid1DBBandedTableView1Column5: TcxGridDBBandedColumn;
-    cxGrid1DBBandedTableView1Column6: TcxGridDBBandedColumn;
-    cxGrid1DBBandedTableView1Column7: TcxGridDBBandedColumn;
-    cxGrid1DBBandedTableView1Column8: TcxGridDBBandedColumn;
-    Memo1: TMemo;
-    cxStyleRepository1: TcxStyleRepository;
+    cxStyleRepository: TcxStyleRepository;
     cxStyle1: TcxStyle;
+    cxStyle2: TcxStyle;
+    cxStyle3: TcxStyle;
+    cxStyle4: TcxStyle;
+    cxStyle5: TcxStyle;
+    cxStyle6: TcxStyle;
+    cxStyle7: TcxStyle;
+    cxStyle8: TcxStyle;
+    cxStyle9: TcxStyle;
+    cxStyle10: TcxStyle;
+    cxStyle11: TcxStyle;
     Button1: TButton;
-    ComboBox1: TComboBox;
-    FDQuery1: TFDQuery;
-    xlReport1: TxlReport;
-    kbmMemT: TFDMemTable;
-    kbmMemTL: TStringField;
-    kbmMemTL2: TStringField;
-    kbmMemTL3: TStringField;
-    kbmMemTR: TStringField;
-    kbmMemTR2: TStringField;
-    kbmMemTR3: TStringField;
-    Button2: TButton;
-    cxCheckBox1: TcxCheckBox;
-    CkbSooJung: TCheckBox;
-    FDMemTable1: TFDMemTable;
-    StringField1: TStringField;
-    IntegerField1: TIntegerField;
-    IntegerField2: TIntegerField;
-    IntegerField3: TIntegerField;
-    IntegerField4: TIntegerField;
-    IntegerField5: TIntegerField;
-    IntegerField6: TIntegerField;
-    IntegerField7: TIntegerField;
-    IntegerField8: TIntegerField;
-    kbmWorkJegoT: TFDMemTable;
-    StringField7: TStringField;
-    kbmWorkJegoT_1: TIntegerField;
-    kbmWorkJegoT_2: TIntegerField;
-    kbmWorkJegoT_12: TIntegerField;
-    kbmWorkJegoT_22: TIntegerField;
-    kbmWorkJegoT_13: TIntegerField;
-    kbmWorkJegoT_23: TIntegerField;
-    kbmWorkJegoT_14: TIntegerField;
-    kbmWorkJegoT_24: TIntegerField;
+    cxGrid1: TcxGrid;
+    cxGridDBBandedTableView1: TcxGridDBBandedTableView;
+    cxGridDBBandedColumn1: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn2: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn3: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn4: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn5: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn6: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn7: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn8: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn9: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn10: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn11: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn12: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn13: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn14: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn15: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn16: TcxGridDBBandedColumn;
+    cxGridDBBandedColumn17: TcxGridDBBandedColumn;
+    cxGridLevel1: TcxGridLevel;
+    Edit1: TEdit;
+    Memo1: TMemo;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure cxGrid1DBBandedTableView1CustomDrawCell(
@@ -117,8 +123,19 @@ type
     procedure cxGrid1DBBandedTableView1EditKeyPress(
       Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
       AEdit: TcxCustomEdit; var Key: Char);
+    procedure cxGridDBBandedTableView1CellClick(Sender: TcxCustomGridTableView;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+      AShift: TShiftState; var AHandled: Boolean);
+    procedure cxGridDBBandedTableView1EditKeyPress(
+      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
+      AEdit: TcxCustomEdit; var Key: Char);
+    procedure cxGridDBBandedTableView1DblClick(Sender: TObject);
+    procedure cxGridDBBandedTableView1EditDblClick(
+      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
+      AEdit: TcxCustomEdit);
   private
     { Private declarations }
+    procedure Log(const AValue: string);
   public
     { Public declarations }
   end;
@@ -132,7 +149,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  cxGrid1DBBandedTableView1.OptionsView.DataRowHeight := 101;
+//  cxGrid1DBBandedTableView1.OptionsView.DataRowHeight := 101;
 end;
 
 {
@@ -176,6 +193,50 @@ begin
   begin
     ShowMessage('cxGrid1DBBandedTableView1EditKeyPress');
   end;
+end;
+
+procedure TForm1.cxGridDBBandedTableView1CellClick(
+  Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;
+  AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);
+begin
+  // CellSelect = False 시 선택한 컬럼에 연결된 필드정보를 찾을 수없음
+    // FocusedItem = nil
+  // CellSelect = False  시 CheckBox 컬럼 이벤트가 발생하지 않음
+  if cxGridDBBandedTableView1.Controller.FocusedItem = nil then
+  begin
+    Log('FocusedItem = nil');
+  end;
+
+  Edit1.Text := TcxGridDBBandedColumn(ACellViewInfo.Item).DataBinding.FieldName;
+  Log('FocusedItem = Edit1.Text');
+//  Edit1.Text := TcxGridDBBandedColumn(cxGridDBBandedTableView1.Controller.FocusedColumn).DataBinding.FieldName
+
+//  Edit1.Text := TcxGridDBBandedColumn(Sender.Controller.FocusedItem).DataBinding.FieldName
+end;
+
+procedure TForm1.cxGridDBBandedTableView1DblClick(Sender: TObject);
+begin
+  //
+end;
+
+procedure TForm1.cxGridDBBandedTableView1EditDblClick(
+  Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
+  AEdit: TcxCustomEdit);
+begin
+  // CellSelect = True 시 DblClick 이벤트가 발생하지 않음
+  Log('cxGridDBBandedTableView1EditDblClick');
+end;
+
+procedure TForm1.cxGridDBBandedTableView1EditKeyPress(
+  Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
+  AEdit: TcxCustomEdit; var Key: Char);
+begin
+  Log('cxGridDBBandedTableView1EditKeyPress');
+end;
+
+procedure TForm1.Log(const AValue: string);
+begin
+  Memo1.Lines.Add(AValue);
 end;
 
 end.
