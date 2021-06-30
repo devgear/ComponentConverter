@@ -249,6 +249,7 @@ begin
   begin
     GridText := GridText.Replace('[[BAND_HEADER_HEIGHT]]', '0');
     GridText := GridText.Replace('[[HEADER_HEIGHT]]',      FParser.Properties.ValuesDef['Headers.ColHeight', '0']);
+    GridText := GridText.Replace('[[DATAROW_HEIGHT]]',      FParser.Properties.ValuesDef['ColRowHeight', '25']);
   end
   else
   begin
@@ -264,8 +265,8 @@ begin
       GridText := GridText.Replace('[[BAND_HEADER_HEIGHT]]', '0');
       GridText := GridText.Replace('[[HEADER_HEIGHT]]',      FParser.Properties.ValuesDef['Headers.GrpHeight', '0']);
     end;
+    GridText := GridText.Replace('[[DATAROW_HEIGHT]]',      FParser.Properties.ValuesDef['GrpRowHeight', '25']);
   end;
-  GridText := GridText.Replace('[[DATAROW_HEIGHT]]',     FParser.Properties.ValuesDef['RowHeight', '25']);
   GridText := GridText.Replace('[[SEL_BG_COLOR]]',        GetColorToStyleName(FParser.Properties.ValuesDef['SelBgColor', '']));
 
   Options := FParser.SetProp['Options'];
@@ -273,7 +274,8 @@ begin
   GridText := GridText.Replace('[[wgoEnterToTab]]',       BoolToStr(InArray(Options, 'wgoEnterToTab'), True));
   GridText := GridText.Replace('[[wgoFocusRect]]',        BoolToStr(InArray(Options, 'wgoFocusRect'), True));
   GridText := GridText.Replace('[[wgoRowSelect]]',        BoolToStr(InArray(Options, 'wgoRowSelect'), True));
-  GridText := GridText.Replace('[[wgoColSizing]]',        BoolToStr(InArray(Options, 'wgoColSizing'), True));
+//  GridText := GridText.Replace('[[wgoColSizing]]',        BoolToStr(InArray(Options, 'wgoColSizing'), True));
+  GridText := GridText.Replace('[[wgoColSizing]]',        'True'); // 2021-6-30: 모든 컬럼 True로 설정키로 결정
   GridText := GridText.Replace('[[wgoRowSizing]]',        BoolToStr(InArray(Options, 'wgoRowSizing'), True));
   GridText := GridText.Replace('[[wgoAlwaysShowEditor]]', BoolToStr(InArray(Options, 'wgoAlwaysShowEditor'), True));
   GridText := GridText.Replace('[[wgoEditing]]',          BoolToStr(InArray(Options, 'wgoEditing'), True));

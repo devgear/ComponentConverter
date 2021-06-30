@@ -18,7 +18,13 @@ uses
   cxDBGridTagDefine in 'Converter\Types\cxDBGridTagDefine.pas',
   RemoveSkinManager in 'Converter\RemoveSkinManager.pas',
   RemoveSkinProvider in 'Converter\RemoveSkinProvider.pas',
-  RemoveCompsConverter in 'Converter\RemoveCompsConverter.pas';
+  RemoveCompsConverter in 'Converter\RemoveCompsConverter.pas',
+  UpdateSQLConnectionConv in 'Converter\UpdateSQLConnectionConv.pas',
+  kbmMemTableConv in 'Converter\kbmMemTableConv.pas',
+  wNumEditConv in 'Converter\wControl\wNumEditConv.pas',
+  wControlDefine in 'Converter\Types\wControlDefine.pas',
+  wLabel in 'Converter\wControl\wLabel.pas',
+  wNumLabel in 'Converter\wControl\wNumLabel.pas';
 
 {$R *.res}
 

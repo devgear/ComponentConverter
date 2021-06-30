@@ -47,7 +47,8 @@ type
     function IsWantWriteEvnetCodeToPas: Boolean; virtual;
 
     // 변환된 컴포넌트 문자열 반환
-    function GetConvertedCompText(ACompText: TStrings): string; virtual; abstract;
+    function GetConvertedCompText(ACompText: TStrings): string; virtual;
+    function GetConvertedCompStrs(ACompText: TStrings): TStrings; virtual;
 
     // 컴포넌트 이벤트코드 정보/변환정보 반환
     function GetCompEventInfos(AFormClass: string): TArray<TCompEventInfo>; virtual;
@@ -233,6 +234,16 @@ end;
 function TConverter.GetConvertCompList(AMainCompName: string): string;
 begin
   Result := '';
+end;
+
+function TConverter.GetConvertedCompStrs(ACompText: TStrings): TStrings;
+begin
+  Result := ACompText;
+end;
+
+function TConverter.GetConvertedCompText(ACompText: TStrings): string;
+begin
+  Result := GetConvertedCompStrs(ACompText).Text;
 end;
 
 function TConverter.GetDescription: string;

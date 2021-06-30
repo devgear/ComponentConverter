@@ -33,6 +33,9 @@ uses
   dxSkinWhiteprint, dxSkinXmas2008Blue, Vcl.StdCtrls, cxLabel, cxGridDBTableView,
   xlcClasses, xlEngine, xlReport, cxContainer, cxCheckBox, cxDropDownEdit;
 
+const
+  UM_Message = WM_USER +1;
+
 type
   TForm1 = class(TForm)
     RealDBGrid1: TcxGrid;
@@ -115,6 +118,7 @@ type
     cxGridLevel1: TcxGridLevel;
     Edit1: TEdit;
     Memo1: TMemo;
+    cxTextEdit1: TcxTextEdit;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure cxGrid1DBBandedTableView1CustomDrawCell(
@@ -133,6 +137,15 @@ type
     procedure cxGridDBBandedTableView1EditDblClick(
       Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
       AEdit: TcxCustomEdit);
+    procedure cxGridDBBandedColumn3HeaderClick(Sender: TObject);
+    procedure cxGridDBBandedTableView1ColumnHeaderClick(
+      Sender: TcxGridTableView; AColumn: TcxGridColumn);
+    procedure cxTextEdit1KeyPress(Sender: TObject; var Key: Char);
+    procedure umMessage(var Message: TMessage); message UM_MESSAGE;
+    procedure cxGridDBBandedTableView1InitEdit(Sender: TcxCustomGridTableView;
+      AItem: TcxCustomGridTableItem; AEdit: TcxCustomEdit);
+    procedure cxGridDBBandedTableView1UpdateEdit(Sender: TcxCustomGridTableView;
+      AItem: TcxCustomGridTableItem; AEdit: TcxCustomEdit);
   private
     { Private declarations }
     procedure Log(const AValue: string);
@@ -150,6 +163,7 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 begin
 //  cxGrid1DBBandedTableView1.OptionsView.DataRowHeight := 101;
+  cxGridDBBandedTableView1.Columns[3].PropertiesClassName := 'TcxLabelProperties';
 end;
 
 {
@@ -195,6 +209,13 @@ begin
   end;
 end;
 
+procedure TForm1.cxGridDBBandedColumn3HeaderClick(Sender: TObject);
+begin
+//  var AColumn := TcxGridColumn(cxGridDBBandedTableView1.Controller.FocusedItem);
+  var AColumn := TcxGridColumn(Sender);
+  Log(AColumn.Index.ToString);
+end;
+
 procedure TForm1.cxGridDBBandedTableView1CellClick(
   Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo;
   AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);
@@ -205,13 +226,24 @@ begin
   if cxGridDBBandedTableView1.Controller.FocusedItem = nil then
   begin
     Log('FocusedItem = nil');
+  end
+  else
+  begin
+    Log(TcxGridDBBandedColumn(Sender.Controller.FocusedItem).DataBinding.FieldName);
   end;
 
-  Edit1.Text := TcxGridDBBandedColumn(ACellViewInfo.Item).DataBinding.FieldName;
-  Log('FocusedItem = Edit1.Text');
+//  Edit1.Text := TcxGridDBBandedColumn(ACellViewInfo.Item).DataBinding.FieldName;
+//  Log(Edit1.Text);
 //  Edit1.Text := TcxGridDBBandedColumn(cxGridDBBandedTableView1.Controller.FocusedColumn).DataBinding.FieldName
 
 //  Edit1.Text := TcxGridDBBandedColumn(Sender.Controller.FocusedItem).DataBinding.FieldName
+end;
+
+procedure TForm1.cxGridDBBandedTableView1ColumnHeaderClick(
+  Sender: TcxGridTableView; AColumn: TcxGridColumn);
+begin
+  //
+//  AColumn.Index
 end;
 
 procedure TForm1.cxGridDBBandedTableView1DblClick(Sender: TObject);
@@ -232,6 +264,46 @@ procedure TForm1.cxGridDBBandedTableView1EditKeyPress(
   AEdit: TcxCustomEdit; var Key: Char);
 begin
   Log('cxGridDBBandedTableView1EditKeyPress');
+  if not Qry_Master.Active then Exit;
+
+  if not (RealDBGrid1DBBandedTableView1.DataController.DataSource.DataSet.State in [dsInsert]) then
+     Qry_Master.Edit;
+
+  if not (RealDBGrid1DBBandedTableView1.DataController.DataSource.DataSet.State in [dsEdit, dsInsert]) then Exit;
+
+  if (RealDBGrid1DBBandedTableView1.DataController.IsEditing = True) and (Key = #13) then begin
+    Log('RETURN');
+  end;
+end;
+
+procedure TForm1.cxGridDBBandedTableView1InitEdit(
+  Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
+  AEdit: TcxCustomEdit);
+begin
+//  if AEdit is TcxTextEdit then
+//    PostMessage(Handle, UM_MESSAGE, Integer(AEdit), 0);
+end;
+
+procedure TForm1.cxGridDBBandedTableView1UpdateEdit(
+  Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;
+  AEdit: TcxCustomEdit);
+begin
+  Log('cxGridDBBandedTableView1UpdateEdit');
+end;
+
+procedure TForm1.cxTextEdit1KeyPress(Sender: TObject; var Key: Char);
+begin
+  Log('cxGridDBBandedTableView1EditKeyPress');
+  if not Qry_Master.Active then Exit;
+
+  if not (RealDBGrid1DBBandedTableView1.DataController.DataSource.DataSet.State in [dsInsert]) then
+     Qry_Master.Edit;
+
+  if not (RealDBGrid1DBBandedTableView1.DataController.DataSource.DataSet.State in [dsEdit, dsInsert]) then Exit;
+
+  if (RealDBGrid1DBBandedTableView1.DataController.IsEditing = True) and (Key = #13) then begin
+    Log('RETURN');
+  end;
 end;
 
 procedure TForm1.Log(const AValue: string);
@@ -239,4 +311,10 @@ begin
   Memo1.Lines.Add(AValue);
 end;
 
+procedure TForm1.umMessage(var Message: TMessage);
+begin
+  TcxTextEdit(Message.WParam).OnKeyPress := cxTextEdit1KeyPress;
+end;
+
 end.
+

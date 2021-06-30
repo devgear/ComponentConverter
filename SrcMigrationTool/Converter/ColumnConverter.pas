@@ -19,6 +19,8 @@ type
     function ConvertColCount(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertColumnsCount(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertColumnsReadOnly(AProc, ASrc: string; var ADest: string): Integer;
 
     [Impl]
     function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
@@ -65,6 +67,24 @@ begin
 
   if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
     Inc(Result);
+end;
+
+function TColumnConverter.ConvertColumnsReadOnly(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns\[\d\]\.[Rr]ead[Oo]nly[\s:]';
+var
+  Datas: TChangeDatas;
+begin
+  Result := 0;
+  ADest := ASrc;
+
+  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  begin
+    Datas.Add('].ReadOnly', '].ReadOnlyEx');
+
+    Inc(Result, ReplaceKeywords(ADest, Datas));
+  end;
 end;
 
 function TColumnConverter.ConvertEtc(AProc, ASrc: string;

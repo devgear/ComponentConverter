@@ -227,7 +227,7 @@ begin
       begin
         if LAttr is ImplAttribute then
         begin
-          Args := TArray<TValue>.Create(AProc, ASrc, ADest);
+          Args := TArray<TValue>.Create(AProc, ADest, ADest);
 
           Cnt := LMethod.Invoke(Self, Args).AsInteger;
           if Cnt > 0 then

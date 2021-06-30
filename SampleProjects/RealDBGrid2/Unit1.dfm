@@ -358,11 +358,12 @@ object Form1: TForm1
       OnCellClick = cxGridDBBandedTableView1CellClick
       OnEditDblClick = cxGridDBBandedTableView1EditDblClick
       OnEditKeyPress = cxGridDBBandedTableView1EditKeyPress
+      OnInitEdit = cxGridDBBandedTableView1InitEdit
+      OnUpdateEdit = cxGridDBBandedTableView1UpdateEdit
       DataController.DataSource = dsMaster
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
-      OptionsBehavior.GoToNextCellOnEnter = True
       OptionsBehavior.FocusCellOnCycle = True
       OptionsCustomize.ColumnFiltering = False
       OptionsCustomize.ColumnMoving = False
@@ -370,7 +371,6 @@ object Form1: TForm1
       OptionsCustomize.DataRowSizing = True
       OptionsData.CancelOnExit = False
       OptionsData.Deleting = False
-      OptionsSelection.InvertSelect = False
       OptionsView.NoDataToDisplayInfoText = '<'#54364#49884#54624' '#45936#51060#53552#44032' '#50630#49845#45768#45796'.>'
       OptionsView.DataRowHeight = 25
       OptionsView.GroupByBox = False
@@ -378,6 +378,7 @@ object Form1: TForm1
       OptionsView.Indicator = True
       OptionsView.BandHeaders = False
       Styles.Selection = cxStyle1
+      OnColumnHeaderClick = cxGridDBBandedTableView1ColumnHeaderClick
       Bands = <
         item
           Caption = 'Group0'
@@ -448,6 +449,7 @@ object Form1: TForm1
         HeaderAlignmentHorz = taCenter
         HeaderGlyphAlignmentHorz = taCenter
         Width = 170
+        OnHeaderClick = cxGridDBBandedColumn3HeaderClick
         Position.BandIndex = 1
         Position.ColIndex = 0
         Position.RowIndex = 1
@@ -456,11 +458,10 @@ object Form1: TForm1
         Caption = #49324#50629#51088#46321#47197#48264#54840
         DataBinding.FieldName = 'SaNo'
         PropertiesClassName = 'TcxTextEditProperties'
-        Properties.Alignment.Horz = taLeftJustify
-        Properties.ReadOnly = False
         FooterAlignmentHorz = taCenter
         HeaderAlignmentHorz = taCenter
         HeaderGlyphAlignmentHorz = taCenter
+        Options.Editing = False
         Width = 98
         Position.BandIndex = 2
         Position.ColIndex = 0
@@ -664,6 +665,14 @@ object Form1: TForm1
     Lines.Strings = (
       'Memo1')
     TabOrder = 4
+  end
+  object cxTextEdit1: TcxTextEdit
+    Left = 480
+    Top = 520
+    TabOrder = 5
+    Text = 'cxTextEdit1'
+    OnKeyPress = cxTextEdit1KeyPress
+    Width = 121
   end
   object DBKatasCommon2: TFDConnection
     ConnectionName = 'DBKatasCommon2'

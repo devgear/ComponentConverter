@@ -54,7 +54,6 @@ const
     '    OptionsData.CancelOnExit = [[wgoCancelOnExit]]'#13#10 +
     '    OptionsData.Deleting = [[wgoDeleting]]'#13#10 +
 
-    '    OptionsSelection.InvertSelect = False'#13#10 +       // 선택 반전(CellSelect 시 하나의 셀만 선택)
     '    OptionsCustomize.ColumnFiltering = False'#13#10 +    // 컬럼 필터링 미사용
     '    OptionsCustomize.ColumnSorting = False'#13#10 +      // 컬럼 소팅 미사용
     '    OptionsBehavior.FocusCellOnCycle = True'#13#10 +     // 마지막 컬럼에서 다음 행 첫컬럼으로 이동
