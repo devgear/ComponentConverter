@@ -33,6 +33,7 @@ const
   ')';
 
   VIEWNAME_REGEX = '(SetRGrid|aRGrid|R1)';
+  INDEX_REGEX = '\[\d+\]';
 
 type
   TAssignType = (
@@ -60,6 +61,7 @@ type
     function ConvertIntfSource(ASrc: string; var ADest: string): Integer; virtual;
 
     function IsContainsRegEx(ASrc: string; ASearchPattern: string): Boolean;
+    function IsContainsRegExCompName(ASrc: string; ASearchPattern: string; var CompName: string): Boolean;
     function TryRegExGridConvert(ASrc: string; ASearchPattern, AReplacePattern: string; var ADest: string): Boolean;
   public
     function Convert(AData: TConvertData): Integer;
@@ -285,13 +287,26 @@ begin
   Result := Matchs.Count > 0;
 end;
 
+function TConverter.IsContainsRegExCompName(ASrc, ASearchPattern: string;
+  var CompName: string): Boolean;
+var
+  Matchs: TMatchCollection;
+begin
+  Result := False;
+  Matchs := TRegEx.Matches(ASrc, ASearchPattern, [roIgnoreCase]);
+  Result := Matchs.Count > 0;
+
+  if Result then
+    CompName  := TRegEx.Match(ASrc, GRIDNAME_REGEX).Value.Replace('.', '').Trim;
+end;
+
 function TConverter.TryRegExGridConvert(ASrc, ASearchPattern,
   AReplacePattern: string; var ADest: string): Boolean;
 var
   I: Integer;
   Matchs: TMatchCollection;
   Match: TMatch;
-  Comp: string;
+  Comp, Idx: string;
   Src, Dest: string;
 begin
   Result := False;
@@ -305,7 +320,10 @@ begin
     Match := Matchs[I];
     Src := Match.Value;
 
-    Comp  := TRegEx.Match(Src, GRIDNAME_REGEX).Value.Replace('.', '').Trim;
+    if AReplacePattern.Contains('[[COMP_NAME]]') then
+      Comp  := TRegEx.Match(Src, GRIDNAME_REGEX).Value.Replace('.', '').Trim;
+    if AReplacePattern.Contains('[[INDEX]]') then
+      Idx := TRegEx.Match(Src, INDEX_REGEX).Value.Replace('[', '').Replace(']', '').Trim;
 
     // 이미 변환된 TableView를 그리드로 인식하는 경우 제외
     if Comp.Contains('TableView') then
@@ -313,6 +331,7 @@ begin
 
     Dest := AReplacePattern;
     Dest := Dest.Replace('[[COMP_NAME]]', Comp);
+    Dest := Dest.Replace('[[INDEX]]',     Idx);
 
     ADest := ADest.Replace(Src, Dest);
 

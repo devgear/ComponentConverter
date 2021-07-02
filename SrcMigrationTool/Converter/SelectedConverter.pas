@@ -14,7 +14,7 @@ type
     [Impl]
     function ConvertSelectedIndex(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
-    function ConvertSelectedField(AProc, ASrc: string; var ADest: string): Integer;
+    function ConvertSelectedFieldFieldName(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
 implementation
@@ -40,7 +40,7 @@ begin
     Inc(Result);
 end;
 
-function TSelectedConverter.ConvertSelectedField(AProc, ASrc: string;
+function TSelectedConverter.ConvertSelectedFieldFieldName(AProc, ASrc: string;
   var ADest: string): Integer;
 const
   SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Ss]elected[Ff]ield\.[Ff]ield[Nn]ame';

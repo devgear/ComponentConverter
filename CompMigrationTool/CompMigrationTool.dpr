@@ -21,10 +21,8 @@ uses
   RemoveCompsConverter in 'Converter\RemoveCompsConverter.pas',
   UpdateSQLConnectionConv in 'Converter\UpdateSQLConnectionConv.pas',
   kbmMemTableConv in 'Converter\kbmMemTableConv.pas',
-  wNumEditConv in 'Converter\wControl\wNumEditConv.pas',
-  wControlDefine in 'Converter\Types\wControlDefine.pas',
-  wLabel in 'Converter\wControl\wLabel.pas',
-  wNumLabel in 'Converter\wControl\wNumLabel.pas';
+  wControlConv in 'Converter\wControlConv.pas',
+  wControlDefine in 'Converter\Types\wControlDefine.pas';
 
 {$R *.res}
 

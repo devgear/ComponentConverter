@@ -1,4 +1,4 @@
-unit EtcEventConverter;
+unit EtcConverter;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   SrcConverter;
 
 type
-  TEtcEventConverter = class(TConverter)
+  TEtcConverter = class(TConverter)
   protected
     function GetCvtCompClassName: string; override;
     function GetDescription: string; override;
@@ -34,7 +34,7 @@ uses
 { TEtcConverter }
 
 
-function TEtcEventConverter.ConvertEtc(AProc, ASrc: string;
+function TEtcConverter.ConvertEtc(AProc, ASrc: string;
   var ADest: string): Integer;
 var
   Datas: TChangeDatas;
@@ -42,12 +42,14 @@ begin
   Result := 0;
   ADest := ASrc;
 
+  Datas.Add('RealDBGrid1Click(Self);', 'var B: Boolean;'#13#10'   RealDBGrid1DBBandedTableView1CellClick(RealDBGrid1DBBandedTableView1, nil, mbLeft, [], B);');
+
   // 제거
   Inc(Result, RemoveKeyword(ADest, 'sSkinManager1.Active'));
   Inc(Result, ReplaceKeywords(ADest, Datas));
 end;
 
-function TEtcEventConverter.ConvertEventParamChange(AProc, ASrc: string;
+function TEtcConverter.ConvertEventParamChange(AProc, ASrc: string;
   var ADest: string): Integer;
 var
   Keywords: TArray<string>;
@@ -91,7 +93,7 @@ begin
   Inc(Result, ReplaceKeywords(ADest, Datas));
 end;
 
-function TEtcEventConverter.ConvertExportFromRealDB(AProc, ASrc: string;
+function TEtcConverter.ConvertExportFromRealDB(AProc, ASrc: string;
   var ADest: string): Integer;
 const
   SEARCH_PATTERN  = 'up_ExcelExportFromRealDB\(' + GRIDNAME_REGEX + '\,';
@@ -104,7 +106,7 @@ begin
       Inc(Result);
 end;
 
-function TEtcEventConverter.ConvertFDUpdateRecord(AProc, ASrc: string;
+function TEtcConverter.ConvertFDUpdateRecord(AProc, ASrc: string;
   var ADest: string): Integer;
 var
   Datas: TChangeDatas;
@@ -119,16 +121,16 @@ begin
   Inc(Result, ReplaceKeywords(ADest, Datas));
 end;
 
-function TEtcEventConverter.GetCvtCompClassName: string;
+function TEtcConverter.GetCvtCompClassName: string;
 begin
   Result := '';
 end;
 
-function TEtcEventConverter.GetDescription: string;
+function TEtcConverter.GetDescription: string;
 begin
   Result := '기타 수정건';
 end;
 
 initialization
-  TConvertManager.Instance.Regist(TEtcEventConverter);
+  TConvertManager.Instance.Regist(TEtcConverter);
 end.

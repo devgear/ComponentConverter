@@ -1,4 +1,4 @@
-unit GridEventConverter;
+unit GridConverter;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   SrcConverter;
 
 type
-  TGridEventConverter = class(TConverter)
+  TGridConverter = class(TConverter)
   protected
     function GetCvtCompClassName: string; override;
     function GetDescription: string; override;
@@ -16,18 +16,21 @@ type
     [Impl]
     function ConvertAfterScroll(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
+    function ConvertGridOptions(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
     function ConvertKeyPressToKeyDown(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
 implementation
 
 uses
+  System.StrUtils,
   SrcConvertUtils,
   System.Classes, System.SysUtils;
 
 { TSelectedConverter }
 
-function TGridEventConverter.ConvertAfterScroll(AProc, ASrc: string;
+function TGridConverter.ConvertAfterScroll(AProc, ASrc: string;
   var ADest: string): Integer;
 var
   Datas: TChangeDatas;
@@ -46,7 +49,7 @@ begin
   Inc(Result, ReplaceKeywords(ADest, Datas));
 end;
 
-function TGridEventConverter.ConvertCustomDrawCell(AProc, ASrc: string;
+function TGridConverter.ConvertCustomDrawCell(AProc, ASrc: string;
   var ADest: string): Integer;
 var
   Datas: TChangeDatas;
@@ -65,7 +68,50 @@ begin
   Inc(Result, ReplaceKeywords(ADest, Datas));
 end;
 
-function TGridEventConverter.ConvertKeyPressToKeyDown(AProc, ASrc: string;
+function TGridConverter.ConvertGridOptions(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Oo]ptions\s[\+\-]\s\[wgo';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1';
+var
+  AddOpt: Boolean;
+  CompName: string;
+begin
+  Result := 0;
+  ADest := ASrc;
+
+  if IsContainsRegExCompName(ASrc, SEARCH_PATTERN, CompName) then
+  begin
+    ADest := '';
+    CompName := GetIndent(ASrc) + REPLACE_FORMAT.Replace('[[COMP_NAME]]', CompName);
+    if ASrc.Contains('+') then
+    begin
+      if ASrc.Contains('wgoEditing') then
+        ADest := IfThen(ADest = '', '', ADest + #13#10) + CompName + '.OptionsData.Editing := True;';
+      if ASrc.Contains('wgoInserting') then
+        ADest := IfThen(ADest = '', '', ADest + #13#10) + CompName + '.OptionsData.Inserting := True;';
+    end
+    else if ASrc.Contains('-') then
+    begin
+      if ASrc.Contains('wgoEditing') then
+        ADest := IfThen(ADest = '', '', ADest + #13#10) + CompName + '.OptionsData.Editing := False;';
+      if ASrc.Contains('wgoInserting') then
+        ADest := IfThen(ADest = '', '', ADest + #13#10) + CompName + '.OptionsData.Inserting := False;';
+    end
+    else
+    // Assign
+    begin
+
+    end;
+
+    if ADest = '' then
+      ADest := ASrc
+    else
+      Result := 1;
+  end;
+end;
+
+function TGridConverter.ConvertKeyPressToKeyDown(AProc, ASrc: string;
   var ADest: string): Integer;
 var
   Datas: TChangeDatas;
@@ -85,16 +131,16 @@ begin
   Inc(Result, ReplaceKeywords(ADest, Datas));
 end;
 
-function TGridEventConverter.GetCvtCompClassName: string;
+function TGridConverter.GetCvtCompClassName: string;
 begin
   Result := 'TcxGrid';
 end;
 
-function TGridEventConverter.GetDescription: string;
+function TGridConverter.GetDescription: string;
 begin
-  Result := 'Event - TRealDBGrid to TcxGrid ';
+  Result := '그리드 관련';
 end;
 
 initialization
-  TConvertManager.Instance.Regist(TGridEventConverter);
+  TConvertManager.Instance.Regist(TGridConverter);
 end.

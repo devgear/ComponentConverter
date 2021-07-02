@@ -12,9 +12,9 @@ uses
   Converter in '..\Common\Converter.pas',
   ConverterTypes in '..\Common\ConverterTypes.pas',
   SelectedConverter in 'Converter\SelectedConverter.pas',
-  EtcEventConverter in 'Converter\EtcEventConverter.pas',
+  EtcConverter in 'Converter\EtcConverter.pas',
   DataControllerConverter in 'Converter\DataControllerConverter.pas',
-  GridEventConverter in 'Converter\GridEventConverter.pas',
+  GridConverter in 'Converter\GridConverter.pas',
   ColumnConverter in 'Converter\ColumnConverter.pas';
 
 {$R *.res}

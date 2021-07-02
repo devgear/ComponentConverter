@@ -23,6 +23,11 @@ type
     function ConvertColumnsReadOnly(AProc, ASrc: string; var ADest: string): Integer;
 
     [Impl]
+    function ConvertDBColumnsFieldName(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertDBColumnsCaption(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
     function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
@@ -72,7 +77,7 @@ end;
 function TColumnConverter.ConvertColumnsReadOnly(AProc, ASrc: string;
   var ADest: string): Integer;
 const
-  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns\[\d\]\.[Rr]ead[Oo]nly[\s:]';
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns\[\d+\]\.[Rr]ead[Oo]nly[\s:]';
 var
   Datas: TChangeDatas;
 begin
@@ -87,6 +92,32 @@ begin
   end;
 end;
 
+function TColumnConverter.ConvertDBColumnsCaption(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Dd]B[Cc]olumns\[\d+\]\.[Ca]aption';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.Columns[[[INDEX]]].Caption';
+begin
+  Result := 0;
+
+  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
+end;
+
+function TColumnConverter.ConvertDBColumnsFieldName(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Dd]B[Cc]olumns\[\d+\]\.[Ff]ield[Nn]ame';
+  REPLACE_FORMAT  = 'TcxGridDBBandedColumn([[COMP_NAME]]DBBandedTableView1.Columns[[[INDEX]]]).DataBinding.FieldName';
+begin
+  Result := 0;
+
+  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
+end;
+
 function TColumnConverter.ConvertEtc(AProc, ASrc: string;
   var ADest: string): Integer;
 var
@@ -97,6 +128,7 @@ begin
 
   Datas.Add('].Footer.Values[', '].Footers[');
   Datas.Add('Title.CellStyle', 'HeaderHint');
+  Datas.Add('Title.Caption', 'Caption');
 
   Inc(Result, ReplaceKeywords(ADest, Datas));
 end;

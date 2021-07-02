@@ -111,9 +111,9 @@
         <DCCReference Include="..\Common\Converter.pas"/>
         <DCCReference Include="..\Common\ConverterTypes.pas"/>
         <DCCReference Include="Converter\SelectedConverter.pas"/>
-        <DCCReference Include="Converter\EtcEventConverter.pas"/>
+        <DCCReference Include="Converter\EtcConverter.pas"/>
         <DCCReference Include="Converter\DataControllerConverter.pas"/>
-        <DCCReference Include="Converter\GridEventConverter.pas"/>
+        <DCCReference Include="Converter\GridConverter.pas"/>
         <DCCReference Include="Converter\ColumnConverter.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

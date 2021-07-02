@@ -238,6 +238,8 @@ const
   TAG_PROC_VIEW_EDITKEYDOWN = TAG_PROC_VIEW_COMMON + '('#13#10 +
     '      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;'#13#10 +
     '      AEdit: TcxCustomEdit; var Key: Word; Shift: TShiftState);';
+  TAG_PROC_VIEW_MOUSEDOWN = TAG_PROC_VIEW_COMMON + '(Sender: TObject;'#13#10 +
+    '      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);';
   TAG_PROC_VIEW_COL_HDR = TAG_PROC_VIEW_COMMON + '('#13#10 +
     '      Sender: TcxGridTableView; AColumn: TcxGridColumn);';
   TAG_PROC_VIEW_CUST_DRAW = TAG_PROC_VIEW_COMMON + '('#13#10 +
@@ -249,15 +251,23 @@ const
   TAG_PROC_VIEW_EDIT_DBLCLICK = TAG_PROC_VIEW_COMMON + '('#13#10 +
     '      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;'#13#10 +
     '      AEdit: TcxCustomEdit);';
+  TAG_PROC_VIEW_RECCHG = TAG_PROC_VIEW_COMMON + '('#13#10 +
+    '      Sender: TcxCustomGridTableView; APrevFocusedRecord,'#13#10 +
+    '      AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);';
 
 const
-  EventTagInfos: array[0..4] of TEventTagInfo =
+  EventTagInfos: array[0..8] of TEventTagInfo =
     (
       (EventName: 'EditDblClick';       RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDIT_DBLCLICK),
       (EventName: 'EditKeyDown';        RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
       (EventName: 'ColumnHeaderClick';  RGEvent: 'OnColumnTitleClick';  EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_COL_HDR),
       (EventName: 'CustomDrawCell';     RGEvent: 'OnDrawCell';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CUST_DRAW),
-      (EventName: 'CellClick';          RGEvent: 'OnClick';             EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CELL_CLICK)
+      (EventName: 'CellClick';          RGEvent: 'OnClick';             EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CELL_CLICK),
+
+      (EventName: 'Enter';              RGEvent: 'OnEnter';	            EventOwner: eoGrid;         ProcTag: TAG_PROC_GRID_SENDER),
+      (EventName: 'Exit';               RGEvent: 'OnExit';              EventOwner: eoGrid;         ProcTag: TAG_PROC_GRID_SENDER),
+      (EventName: 'MouseDown';          RGEvent: 'OnMouseDown';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_MOUSEDOWN),
+      (EventName: 'FocusedRecordChanged'; RGEvent: 'OnRowChange';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_RECCHG)
     );
 
 function GetEventTagInfo(ARGEventProp: string; var OutInfo: TEventTagInfo): Boolean;

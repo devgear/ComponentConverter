@@ -48,7 +48,7 @@ begin
       S := AData.SrcDfm[I];
 
       // TFDMemTable FieldDefs Á¦°Å
-      if (not FHasFieldDefs) and S.Contains('FieldDefs = <') then
+      if (not FHasFieldDefs) and S.Contains('FieldDefs = <') and (not S.Contains('FieldDefs = <>')) then
         FHasFieldDefs := True;
 
       // StoreDefs = True
@@ -91,7 +91,7 @@ begin
     begin
       S := ACompText[I];
 
-      if (SIdx = -1) and S.Contains('FieldDefs = <') then
+      if (SIdx = -1) and S.Contains('FieldDefs = <') and (not S.Contains('FieldDefs = <>')) then
         SIdx := I
       else if (SIdx > -1) and S.Contains('>') then
       begin
