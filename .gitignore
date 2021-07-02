@@ -66,3 +66,4 @@ __recovery/
 *.stat
 /CompMigrationTool/Win32/Debug/log/*.log
 /SrcMigrationTool/Win32/Debug/log/*.log
+SampleProjects/
