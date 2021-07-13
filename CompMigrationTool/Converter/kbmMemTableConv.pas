@@ -13,7 +13,10 @@ type
   TConverterkbmMemTable = class(TConverter)
   private
     FHasFieldDefs,
-    FHasStoreDefs: Boolean;
+    FHasStoreDefs,
+    FHasIndexDefs,
+    FHasIndexName,
+    FHasIndexFldNm: Boolean;
   protected
     function GetDescription: string; override;
 
@@ -43,6 +46,10 @@ begin
   begin
     FHasFieldDefs := False;
     FHasStoreDefs := False;
+    FHasIndexDefs := False;
+    FHasIndexName := False;
+    FHasIndexFldNm := False;
+
     for I := AData.CompStartIndex to AData.CompEndIndex - 1 do
     begin
       S := AData.SrcDfm[I];
@@ -51,11 +58,21 @@ begin
       if (not FHasFieldDefs) and S.Contains('FieldDefs = <') and (not S.Contains('FieldDefs = <>')) then
         FHasFieldDefs := True;
 
+      if (not FHasIndexDefs) and S.Contains('IndexDefs = <') and (not S.Contains('IndexDefs = <>')) then
+        FHasIndexDefs := True;
+
+      if (not FHasIndexName) and S.Contains('IndexName = ') then
+        FHasIndexName := True;
+
+      if (not FHasIndexFldNm) and S.Contains('IndexFieldNames = ') then
+        FHasIndexFldNm := True;
+
+
       // StoreDefs = True
       if (not FHasStoreDefs)and S.Contains('StoreDefs = True') then
         FHasStoreDefs := True;
     end;
-    if FHasFieldDefs or (not FHasStoreDefs) then
+    if FHasFieldDefs or (not FHasStoreDefs) or (not FHasIndexDefs and FHasIndexName) then
       Exit(True);
 
     Exit(False);
@@ -107,6 +124,18 @@ begin
   // StoreDefs = True
   if not FHasStoreDefs then
     ACompText.Insert(1, 'StoreDefs = True');
+
+  if (not FHasIndexDefs and FHasIndexName) then
+  begin
+    for I := 0 to ACompText.Count - 1 do
+    begin
+      S := ACompText[I];
+
+      if S.Contains('IndexName = ') then
+        ACompText[I] := '';
+    end;
+  end;
+
 
   Result := ACompText.Text;
 end;

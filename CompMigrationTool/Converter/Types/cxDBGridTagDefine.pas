@@ -48,6 +48,7 @@ const
     '    OptionsCustomize.DataRowSizing = [[wgoRowSizing]]'#13#10 +
     '    OptionsBehavior.ImmediateEditor = [[wgoAlwaysShowEditor]]'#13#10 +
     '    OptionsData.Editing = [[wgoEditing]]'#13#10 +
+    '    OptionsBehavior.AlwaysShowEditor = True'#13#10 +
     '    OptionsData.Inserting = [[wgoInserting]]'#13#10 +
     '    OptionsCustomize.ColumnMoving = [[wgoColMoving]]'#13#10 +
     '    OptionsSelection.MultiSelect = [[wgoMultiSelect]]'#13#10 +
@@ -83,6 +84,7 @@ const
     '      PropertiesClassName = ''TcxTextEditProperties'''#13#10 +
 
     '      Options.Editing = [[EDITING]]'#13#10 +
+    '      Options.Focusing = [[EDITING]]'#13#10 +
     '      Properties.ReadOnly = [[READONLY]]'#13#10 +
     '      Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10 +
     '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
@@ -114,6 +116,7 @@ const
     '      Properties.ValueUnchecked = ''[[VALUE_UNCHK]]'''#13#10 +
 
     '      Options.Editing = [[EDITING]]'#13#10 +
+    '      Options.Focusing = [[EDITING]]'#13#10 +
     '      Properties.ReadOnly = [[READONLY]]'#13#10 +
     '      Properties.Alignment = [[HORZ_ALIGN]]'#13#10 +
     '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
@@ -150,6 +153,7 @@ const
     '      >'#13#10 +
 
     '      Options.Editing = [[EDITING]]'#13#10 +
+    '      Options.Focusing = [[EDITING]]'#13#10 +
     '      Properties.ReadOnly = [[READONLY]]'#13#10 +
     '      Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10 +
     '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +

@@ -33,7 +33,7 @@ const
   ')';
 
   VIEWNAME_REGEX = '(SetRGrid|aRGrid|R1)';
-  INDEX_REGEX = '\[\d+\]';
+  INDEX_REGEX = '\[[\w\d\.\s+-]+\]';
 
 type
   TAssignType = (
