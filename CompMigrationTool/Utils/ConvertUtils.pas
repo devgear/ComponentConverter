@@ -25,6 +25,11 @@ type
     ImplimentationUsesEndIndex: Integer;
   end;
 
+  TTargetComp = record
+    FN,
+    CN: string;
+  end;
+
 /// <summary>들여쓰기 추가(맨 앞줄에 공백을 ACount 만큼 추가)</summary>
 procedure WriteIndent(var AList: TStringList; ACount: Integer);
 /// <summary>오브젝트 텍스트(DFM 문자열)인 AParent에 AChild 추가(마지막 end 이전 줄에)</summary>

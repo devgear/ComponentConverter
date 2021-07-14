@@ -166,7 +166,7 @@ var
   Item: TListItem;
   Converter: TConverter;
 begin
-  TLogger.Instance.LogLevel := llError;
+  TLogger.Instance.LogLevel := llInfo;
 
   edtRootPath.Text :=       TEnv.Instance.RootPath;
   chkRecursively.Checked := TEnv.Instance.Recursively;

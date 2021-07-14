@@ -22,7 +22,8 @@ uses
   UpdateSQLConnectionConv in 'Converter\UpdateSQLConnectionConv.pas',
   kbmMemTableConv in 'Converter\kbmMemTableConv.pas',
   wControlConv in 'Converter\wControlConv.pas',
-  wControlDefine in 'Converter\Types\wControlDefine.pas';
+  wControlDefine in 'Converter\Types\wControlDefine.pas',
+  ReplaceMemoFieldToStringFieldConv in 'Converter\ReplaceMemoFieldToStringFieldConv.pas';
 
 {$R *.res}
 
