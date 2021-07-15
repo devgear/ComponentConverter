@@ -52,7 +52,9 @@ type
   // protected의 virtual 메소드를 전환대상에 맞춰 재구현해야 한다.
   TConverter = class
   private
+    function GetFilename: string;
   protected
+    FConvData: TConvertData;
     // 컨버터 설명
     function GetCvtCompClassName: string; virtual; abstract; // 변환 대상 컴포넌트 클래스명
     function GetDescription: string; virtual;
@@ -63,6 +65,9 @@ type
     function IsContainsRegEx(ASrc: string; ASearchPattern: string): Boolean;
     function IsContainsRegExCompName(ASrc: string; ASearchPattern: string; var CompName: string): Boolean;
     function TryRegExGridConvert(ASrc: string; ASearchPattern, AReplacePattern: string; var ADest: string): Boolean;
+
+    property ConvData: TConvertData read FConvData;
+    property SrcFilename: string read GetFilename;
   public
     function Convert(AData: TConvertData): Integer;
     property Description: string read GetDescription;
@@ -278,6 +283,11 @@ function TConverter.GetDescription: string;
 begin
 end;
 
+function TConverter.GetFilename: string;
+begin
+  Result := FConvData.FileInfo.Filename;
+end;
+
 function TConverter.IsContainsRegEx(ASrc, ASearchPattern: string): Boolean;
 var
   Matchs: TMatchCollection;
@@ -347,6 +357,9 @@ var
   FProcName: string;
 begin
   Result := 0;
+
+  FConvData := AData;
+
   // 작업 대상 확인
   CompClassName := GetCvtCompClassName;
   if CompClassName <> '' then

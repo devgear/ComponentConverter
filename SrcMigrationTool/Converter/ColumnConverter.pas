@@ -94,7 +94,7 @@ begin
   begin
     Datas.Add('].ReadOnly', '].ReadOnlyEx');
 
-    Inc(Result, ReplaceKeywords(ADest, Datas));
+    Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
   end;
 end;
 
@@ -158,7 +158,7 @@ begin
     '.Title.Font.Color'
   ];
 
-  Inc(Result, ReplaceKeywords(ADest, Datas));
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
   Inc(Result, AddComments(ADest, Keywords));
 end;
 

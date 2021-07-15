@@ -7,6 +7,7 @@ uses
 
 type
   TChangeData = record
+    Filename,
     Source, Dest: string;
   end;
 
@@ -14,10 +15,17 @@ type
   TChangeDatasHelper = record helper for TChangeDatas
   public
     procedure Add(ASource, ADest: string);
+    procedure AddInFile(AFilename, ASource, ADest: string);
+  end;
+
+  TTargetSrc = record
+    FN,
+    SRC,
+    DST: string;
   end;
 
 function ReplaceKeyword(var AValue: string; ASource, ADest: string): Integer;
-function ReplaceKeywords(var AValue: string; ADatas: TChangeDatas): Integer;
+function ReplaceKeywords(const AFilename: string; var AValue: string; ADatas: TChangeDatas): Integer;
 
 function RemoveKeyword(var AValue: string; AKeyword: string): Integer;
 
@@ -36,6 +44,16 @@ procedure TChangeDatasHelper.Add(ASource, ADest: string);
 var
   Data: TChangeData;
 begin
+  Data.Source := ASource;
+  Data.Dest := ADest;
+  Self := Self + [Data];
+end;
+
+procedure TChangeDatasHelper.AddInFile(AFilename, ASource, ADest: string);
+var
+  Data: TChangeData;
+begin
+  Data.Filename := AFilename;
   Data.Source := ASource;
   Data.Dest := ADest;
   Self := Self + [Data];
@@ -61,13 +79,14 @@ begin
   end;
 end;
 
-function ReplaceKeywords(var AValue: string; ADatas: TChangeDatas): Integer;
+function ReplaceKeywords(const AFilename: string; var AValue: string; ADatas: TChangeDatas): Integer;
 var
   Data: TChangeData;
 begin
   Result := 0;
   for Data in ADatas do
-    Inc(Result, ReplaceKeyword(AValue, Data.Source, Data.Dest));
+    if (Data.Filename = '') or (AFilename.Contains(Data.Filename)) then
+      Inc(Result, ReplaceKeyword(AValue, Data.Source, Data.Dest));
 end;
 
 function AddComment(var AValue: string; AKeyword: string; ATodo: string): Integer;

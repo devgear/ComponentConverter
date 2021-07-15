@@ -30,6 +30,10 @@ type
     GrpWidth: Integer;
 
     EditStyle: string;
+    EditFormat: string;
+
+    function EditFormatIsCurrency: Boolean;
+    function EditFormatIsDate: Boolean;
   end;
 
   // 리얼그리드 그룹 정보
@@ -149,6 +153,7 @@ begin
     FColumn.GrpWidth := 64;
 
     FColumn.EditStyle := '';
+    FColumn.EditFormat := '';
   end
   else
   begin
@@ -243,6 +248,8 @@ begin
 
     else if AProp = 'EditStyle' then
       FColumn.EditStyle := AValue
+    else if AProp = 'EditFormat' then
+      FColumn.EditFormat := AValue
 
     ;
 
@@ -299,6 +306,24 @@ begin
       ;
     end;
   end;
+end;
+
+{ TRealGridColumnInfo }
+
+function TRealGridColumnInfo.EditFormatIsCurrency: Boolean;
+begin
+  if EditFormat = '' then
+    Exit(False);
+
+  Result := EditFormat.Contains('#') and EditFormat.Contains(',');
+end;
+
+function TRealGridColumnInfo.EditFormatIsDate: Boolean;
+begin
+  if EditFormat = '' then
+    Exit(False);
+
+  Result := EditFormat.Contains('-') and EditFormat.Contains(';');
 end;
 
 end.

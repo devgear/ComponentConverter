@@ -39,6 +39,9 @@ const
     '    OptionsView.HeaderHeight = [[HEADER_HEIGHT]]'#13#10 +
     '    OptionsView.DataRowHeight = [[DATAROW_HEIGHT]]'#13#10 +
 
+    '    OptionsView.HeaderEndEllipsis = True'#13#10 +
+    '    OptionsView.BandHeaderEndEllipsis = True'#13#10 +
+
     // RealDBGrid.Options 처리
     '    OptionsData.DeletingConfirmation = [[wgoConfirmDelete]]'#13#10 +
     '    OptionsBehavior.GoToNextCellOnenter = [[wgoEnterToTab]]'#13#10 +
@@ -48,7 +51,7 @@ const
     '    OptionsCustomize.DataRowSizing = [[wgoRowSizing]]'#13#10 +
     '    OptionsBehavior.ImmediateEditor = [[wgoAlwaysShowEditor]]'#13#10 +
     '    OptionsData.Editing = [[wgoEditing]]'#13#10 +
-    '    OptionsBehavior.AlwaysShowEditor = True'#13#10 +
+    '    OptionsBehavior.AlwaysShowEditor = [[wgoAlwaysShowEditor]]'#13#10 +
     '    OptionsData.Inserting = [[wgoInserting]]'#13#10 +
     '    OptionsCustomize.ColumnMoving = [[wgoColMoving]]'#13#10 +
     '    OptionsSelection.MultiSelect = [[wgoMultiSelect]]'#13#10 +
@@ -82,6 +85,40 @@ const
     '    object [[COLUMN_NAME]]: TcxGridDBBandedColumn'#13#10 +
     '      Caption = ''[[COLUMN_CAPTION]]'''#13#10 +
     '      PropertiesClassName = ''TcxTextEditProperties'''#13#10 +
+
+    '      Options.Editing = [[EDITING]]'#13#10 +
+    '      Options.Focusing = [[EDITING]]'#13#10 +
+    '      Properties.ReadOnly = [[READONLY]]'#13#10 +
+    '      Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10 +
+    '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
+
+    '      Visible = [[VISIBLE]]'#13#10 +
+    '      FooterAlignmentHorz = taCenter'#13#10 +
+    '      HeaderAlignmentHorz = taCenter'#13#10 +
+    '      HeaderAlignmentVert = vaCenter'#13#10 +
+    '      HeaderGlyphAlignmentHorz = taCenter'#13#10 +
+
+    '      Position.BandIndex = [[BAND_INDEX]]'#13#10 +
+    '      Position.ColIndex = [[COL_INDEX]]'#13#10 +
+    '      Position.RowIndex = [[ROW_INDEX]]'#13#10 +
+    '      Position.LineCount = [[LINE_COUNT]]'#13#10 +
+    '      [[STYLE_CONTENT]]'#13#10 +
+    '      [[STYLE_HEADER]]'#13#10 +
+    '      Width = [[WIDTH]]'#13#10 +
+    '    end'#13#10
+  ;
+
+  // EditStyle = wesNumber or (EditStyle is null and EditFormat = 금액('#,.' 포함))
+  TAG_CXGRID_COLUMN_NUMBER = '' +
+    '    object [[COLUMN_NAME]]: TcxGridDBBandedColumn'#13#10 +
+    '      Caption = ''[[COLUMN_CAPTION]]'''#13#10 +
+    '      PropertiesClassName = ''TcxCurrencyEditProperties'''#13#10 +
+
+    '      Properties.AssignedValues.DisplayFormat = True'#13#10 +
+    '      Properties.AssignedValues.EditFormat = True'#13#10 +
+    '      Properties.DecimalPlaces = [[DECIMAL_PLACE]]'#13#10 +
+    '      Properties.DisplayFormat = ''[[EDIT_FORMAT]]'''#13#10 +
+    '      Properties.EditFormat = ''[[EDIT_FORMAT]]'''#13#10 +
 
     '      Options.Editing = [[EDITING]]'#13#10 +
     '      Options.Focusing = [[EDITING]]'#13#10 +
@@ -180,7 +217,7 @@ const
     '        Caption = ''[[CAPTION]]'''#13#10 +
     '        FixedKind = [[FIXED_KIND]]'#13#10 +
     '        Visible = [[VISIBLE]]'#13#10 +
-    '        Width = [[WIDTH]]'#13#10 +
+//    '        Width = [[WIDTH]]'#13#10 +
     '        [[STYLE_HEADER]]'#13#10 +
     '      end'#13#10
   ;

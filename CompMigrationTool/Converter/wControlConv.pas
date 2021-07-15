@@ -9,6 +9,7 @@ type
   TConverterwControl = class(TConverter)
   protected
     function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
+    function GetRemoveUses: TArray<string>; override;
   end;
 
 {
@@ -30,7 +31,6 @@ end
   protected
     function GetComponentClassName: string; override;
     function GetConvertCompClassName: string; override;
-    function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
 
     function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
@@ -54,7 +54,6 @@ end
   protected
     function GetComponentClassName: string; override;
     function GetConvertCompClassName: string; override;
-    function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
 
     function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
@@ -90,7 +89,22 @@ end
   protected
     function GetComponentClassName: string; override;
     function GetConvertCompClassName: string; override;
-    function GetRemoveUses: TArray<string>; override;
+    function GetAddedUses: TArray<string>; override;
+
+    function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
+  end;
+
+  TConverterwEdit = class(TConverterwControl)
+  protected
+    function GetComponentClassName: string; override;
+    function GetConvertCompClassName: string; override;
+    function GetAddedUses: TArray<string>; override;
+  end;
+
+  TConverterwMaskEdit = class(TConverterwControl)
+  protected
+    function GetComponentClassName: string; override;
+    function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
     function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
@@ -144,16 +158,16 @@ begin
   Result := ACompText;
 end;
 
+function TConverterwControl.GetRemoveUses: TArray<string>;
+begin
+  Result := ['URNEdit', 'URCtrls', 'UREdits', 'URLabels'];
+end;
+
 { TConverterwNumEdit }
 
 function TConverterwNumEdit.GetAddedUses: TArray<string>;
 begin
   Result := ['cxCurrencyEdit'];
-end;
-
-function TConverterwNumEdit.GetRemoveUses: TArray<string>;
-begin
-  Result := ['URNEdit', 'URCtrls'];
 end;
 
 function TConverterwNumEdit.GetComponentClassName: string;
@@ -189,11 +203,6 @@ begin
   Result := ['cxLabel'];
 end;
 
-function TConverterwLabel.GetRemoveUses: TArray<string>;
-begin
-  Result := ['URLabels'];
-end;
-
 function TConverterwLabel.GetComponentClassName: string;
 begin
   Result := 'TwLabel';
@@ -223,11 +232,6 @@ end;
 function TConverterwNumLabel.GetAddedUses: TArray<string>;
 begin
   Result := ['cxCurrencyEdit'];
-end;
-
-function TConverterwNumLabel.GetRemoveUses: TArray<string>;
-begin
-  Result := ['URLabels'];
 end;
 
 function TConverterwNumLabel.GetComponentClassName: string;
@@ -263,10 +267,59 @@ begin
   Result.Insert(1, Props);
 end;
 
+{ TConverterwEdit }
+
+function TConverterwEdit.GetAddedUses: TArray<string>;
+begin
+  Result := ['cxTextEdit'];
+end;
+
+function TConverterwEdit.GetComponentClassName: string;
+begin
+  Result := 'TwEdit';
+end;
+
+function TConverterwEdit.GetConvertCompClassName: string;
+begin
+  Result := 'TcxTextEdit';
+end;
+
+{ TConverterwMaskEdit }
+
+function TConverterwMaskEdit.GetAddedUses: TArray<string>;
+begin
+  Result := ['cxTextEdit', 'cxMaskEdit'];
+end;
+
+function TConverterwMaskEdit.GetComponentClassName: string;
+begin
+  Result := 'TwMaskEdit';
+end;
+
+function TConverterwMaskEdit.GetConvertCompClassName: string;
+begin
+  Result := 'TcxMaskEdit';
+end;
+
+function TConverterwMaskEdit.GetConvertedCompStrs(
+  ACompText: TStrings): TStrings;
+var
+  Props: string;
+begin
+  Result := inherited;
+
+  Props := '' +
+    '  Properties.AlwaysshowBlanksAndLiterals = True'
+  ;
+  Result.Insert(1, Props);
+end;
+
 initialization
   TConvertManager.Instance.Regist(TConverterwNumEdit);
   TConvertManager.Instance.Regist(TConverterwLabel);
   TConvertManager.Instance.Regist(TConverterwNumLabel);
+  TConvertManager.Instance.Regist(TConverterwEdit);
+  TConvertManager.Instance.Regist(TConverterwMaskEdit);
 
 finalization
 

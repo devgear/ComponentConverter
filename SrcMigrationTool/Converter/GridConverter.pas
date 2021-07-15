@@ -46,7 +46,7 @@ begin
     '    Exit;'
   );
 
-  Inc(Result, ReplaceKeywords(ADest, Datas));
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
 function TGridConverter.ConvertCustomDrawCell(AProc, ASrc: string;
@@ -65,7 +65,7 @@ begin
   Datas.Add('FCol',                       'ACanvas.Font.Color');
   Datas.Add('FStyle',                     'ACanvas.Font.Style');
 
-  Inc(Result, ReplaceKeywords(ADest, Datas));
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
 function TGridConverter.ConvertGridOptions(AProc, ASrc: string;
@@ -128,7 +128,7 @@ begin
   Datas.Add('Key in [',                   'Chr(Key) in [');
   Datas.Add('Key := UpperCase(Key)[1];',  'Key := Ord(UpperCase(Chr(Key))[1]);');
 
-  Inc(Result, ReplaceKeywords(ADest, Datas));
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
 function TGridConverter.GetCvtCompClassName: string;

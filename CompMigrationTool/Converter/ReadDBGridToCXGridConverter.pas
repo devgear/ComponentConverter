@@ -160,6 +160,7 @@ var
   Option: string;
   Options: TArray<string>;
   GridOptionText: string;
+  DecimalPlace: Integer;
 begin
   if not Assigned(FParser) then
     FParser.Free;
@@ -299,6 +300,19 @@ begin
       ColText := ColText.Replace('[[VALUE_UNCHK]]', ColumnInfo.Values[0]);
       ColText := ColText.Replace('[[VALUE_CHK]]', ColumnInfo.Values[1]);
     end
+    else if ((ColumnInfo.EditStyle = 'wesNumber') or (ColumnInfo.EditFormatIsCurrency)) then
+    begin
+      ColText := TAG_CXGRID_COLUMN_CURRENCY;
+
+      if not ColumnInfo.EditFormat.Contains('.') then
+        DecimalPlace := 0
+      else
+        DecimalPlace := (ColumnInfo.EditFormat.Length - (ColumnInfo.EditFormat.IndexOf('.') + 1));
+
+      ColText := ColText.Replace('[[EDIT_FORMAT]]', ColumnInfo.EditFormat);
+      ColText := ColText.Replace('[[DECIMAL_PLACE]]', DecimalPlace.ToString); // 입력 시 소숫점자리수
+
+    end
     else if Length(ColumnInfo.Items) > 0 then
     begin
       ColText := TAG_CXGRID_COLUMN_ITEMS;
@@ -324,6 +338,8 @@ begin
     begin
       ColText := TAG_CXGRID_COLUMN_DEF;
     end;
+
+
 
     FColumnCompList := FColumnCompList + #13#10'    ' + Format(ColName, [Idx]) + ': TcxGridDBBandedColumn;';
 
@@ -388,8 +404,6 @@ begin
       ColText := ColText.Replace('[[STYLE_HEADER]]', '')
     else
       ColText := ColText.Replace('[[STYLE_HEADER]]', 'Styles.Header = ' + GetColorToStyleName(ColumnInfo.TitleColor));
-
-
 
     ColList := ColList + ColText;
 

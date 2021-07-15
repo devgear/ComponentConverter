@@ -25,6 +25,15 @@ type
     function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
+  TFDStoredProcConvert = class(TConverter)
+  protected
+    function GetCvtCompClassName: string; override;
+    function GetDescription: string; override;
+  published
+    [Impl]
+    function ConvertParamValue(AProc, ASrc: string; var ADest: string): Integer;
+  end;
+
 implementation
 
 uses
@@ -46,7 +55,7 @@ begin
 
   // 제거
   Inc(Result, RemoveKeyword(ADest, 'sSkinManager1.Active'));
-  Inc(Result, ReplaceKeywords(ADest, Datas));
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
 function TEtcConverter.ConvertEventParamChange(AProc, ASrc: string;
@@ -90,7 +99,7 @@ begin
 
 
   Inc(Result, AddComments(ADest, Keywords));
-  Inc(Result, ReplaceKeywords(ADest, Datas));
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
 function TEtcConverter.ConvertExportFromRealDB(AProc, ASrc: string;
@@ -118,7 +127,7 @@ begin
 
   Datas.Add('.Apply(UpdateKind)',         '.Apply(UpdateKind, UpdateAction, AOptions)');
 
-  Inc(Result, ReplaceKeywords(ADest, Datas));
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
 function TEtcConverter.GetCvtCompClassName: string;
@@ -131,6 +140,38 @@ begin
   Result := '기타 수정건';
 end;
 
+{ TSPParamValueConvert }
+
+function TFDStoredProcConvert.ConvertParamValue(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Datas: TChangeDatas;
+begin
+  Result := 0;
+
+  Datas.AddInFile('TbF_129I',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+
+  Datas.AddInFile('TbF_003I',
+    'spGetJumunNum.ParamByName(''@Gubun_COD'').AsString',
+    'spGetJumunNum.ParamByName(''@Gubun_COD'').Value');
+
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
+end;
+
+function TFDStoredProcConvert.GetCvtCompClassName: string;
+begin
+  Result := 'TFDStoredProc';
+end;
+
+function TFDStoredProcConvert.GetDescription: string;
+begin
+  Result := 'FDStoredProc 변환';
+end;
+
 initialization
   TConvertManager.Instance.Regist(TEtcConverter);
+  TConvertManager.Instance.Regist(TFDStoredProcConvert);
+
 end.
