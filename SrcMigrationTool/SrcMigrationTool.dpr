@@ -15,7 +15,8 @@ uses
   EtcConverter in 'Converter\EtcConverter.pas',
   DataControllerConverter in 'Converter\DataControllerConverter.pas',
   GridConverter in 'Converter\GridConverter.pas',
-  ColumnConverter in 'Converter\ColumnConverter.pas';
+  ColumnConverter in 'Converter\ColumnConverter.pas',
+  GroupConverter in 'Converter\GroupConverter.pas';
 
 {$R *.res}
 

@@ -23,7 +23,8 @@ uses
   kbmMemTableConv in 'Converter\kbmMemTableConv.pas',
   wControlConv in 'Converter\wControlConv.pas',
   wControlDefine in 'Converter\Types\wControlDefine.pas',
-  ReplaceMemoFieldToStringFieldConv in 'Converter\ReplaceMemoFieldToStringFieldConv.pas';
+  ReplaceMemoFieldToStringFieldConv in 'Converter\ReplaceMemoFieldToStringFieldConv.pas',
+  FDQryDirectExecuteConv in 'Converter\FDQryDirectExecuteConv.pas';
 
 {$R *.res}
 

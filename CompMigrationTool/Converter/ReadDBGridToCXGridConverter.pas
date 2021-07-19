@@ -68,6 +68,7 @@ var
   RGEvent: TRealGridEventInfo;
   TagInfo: TEventTagInfo;
   CodeInfo: TCompEventInfo;
+  ProcTag: string;
 begin
   GridName  := FParser.CompName;
   ViewName  := GridName + 'DBBandedTableView1';
@@ -107,6 +108,35 @@ begin
       Result := Result + [CodeInfo];
     end;
   end;
+
+  if FParser.GroupInfos.Count > 0 then
+  begin
+    CodeInfo := Default(TCompEventInfo);
+
+    CodeInfo.BeforeEventName := ''; // 추가
+    CodeInfo.EventName := 'SummaryItemsGetText';
+    ProcTag := '' +
+      '    procedure SummaryItemsGetText('#13#10 +
+      '      Sender: TcxDataSummaryItem; const AValue: Variant; AIsFooter: Boolean;'#13#10 +
+      '      var AText: string);'#13#10
+    ;
+    CodeInfo.IntfCode := ProcTag;
+    ProcTag := '' +
+      'procedure ' + AFormClass + '.SummaryItemsGetText('#13#10 +
+      '  Sender: TcxDataSummaryItem; const AValue: Variant; AIsFooter: Boolean;'#13#10 +
+      '  var AText: string);'#13#10 +
+      'begin'#13#10 +
+      '  inherited;'#13#10 +
+      ''#13#10 +
+      '  if TcxGridDBTableSummaryItem(Sender).DisplayText <> '''' then'#13#10 +
+      '    AText := TcxGridDBTableSummaryItem(Sender).DisplayText;'#13#10 +
+      'end;'#13#10
+    ;
+    CodeInfo.ImplCode := ProcTag;
+
+    Result := Result + [CodeInfo];
+  end;
+
 end;
 
 function TConverterRealDBGridToCXGrid.GetComponentClassName: string;
@@ -137,7 +167,7 @@ function TConverterRealDBGridToCXGrid.GetConvertedCompText(
 var
   Idx: Integer;
   GridName, ViewName, LevelName, ColName: string;
-  GridText, ColText, ColList, GroupText, GroupList: string;
+  GridText, ColText, ColAlignText, ColList, GroupText, GroupList: string;
 
   GridEvent, ViewEvent, DataEvent: string;
 
@@ -286,6 +316,7 @@ begin
   GridText := GridText.Replace('[[wgoCancelOnExit]]',     BoolToStr(InArray(Options, 'wgoCancelOnExit'), True));
   GridText := GridText.Replace('[[wgoDeleting]]',         BoolToStr(InArray(Options, 'wgoDeleting'), True));
 
+  //////////////////////////////////////////////////////////////////////////////
   // 컬럼 설정
   ColList := '';
   FooterItems := '';
@@ -299,6 +330,8 @@ begin
       ColText := TAG_CXGRID_COLUMN_BOOL;
       ColText := ColText.Replace('[[VALUE_UNCHK]]', ColumnInfo.Values[0]);
       ColText := ColText.Replace('[[VALUE_CHK]]', ColumnInfo.Values[1]);
+
+      ColAlignText := TAG_CXGRID_COLUMN_ALIGN;
     end
     else if ((ColumnInfo.EditStyle = 'wesNumber') or (ColumnInfo.EditFormatIsCurrency)) then
     begin
@@ -312,6 +345,14 @@ begin
       ColText := ColText.Replace('[[EDIT_FORMAT]]', ColumnInfo.EditFormat);
       ColText := ColText.Replace('[[DECIMAL_PLACE]]', DecimalPlace.ToString); // 입력 시 소숫점자리수
 
+      ColAlignText := TAG_CXGRID_COLUMN_ALIGN_HORZ;
+    end
+    else if (ColumnInfo.EditFormatIsDate) then
+    begin
+      ColText := TAG_CXGRID_COLUMN_MASK;
+      ColText := ColText.Replace('[[EDIT_FORMAT]]', ColumnInfo.EditFormat);
+
+      ColAlignText := TAG_CXGRID_COLUMN_ALIGN_HORZ;
     end
     else if Length(ColumnInfo.Items) > 0 then
     begin
@@ -333,10 +374,12 @@ begin
       end;
 
       ColText := ColText.Replace('[[ITEMS]]', ItemsText);
+      ColAlignText := TAG_CXGRID_COLUMN_ALIGN_HORZ;
     end
     else
     begin
       ColText := TAG_CXGRID_COLUMN_DEF;
+      ColAlignText := TAG_CXGRID_COLUMN_ALIGN_HORZ;
     end;
 
 
@@ -377,7 +420,11 @@ begin
       ColText := ColText.Replace('[[WIDTH]]',           IntToStr(ColumnInfo.GrpWidth));
     end;
 
-    ColText := ColText.Replace('[[HORZ_ALIGN]]',      ColumnInfo.Alignment);
+    if ColumnInfo.Alignment = '' then
+      ColText := ColText.Replace('[[COL_ALIGN]]',      '')
+    else
+      ColText := ColText.Replace('[[COL_ALIGN]]',      ColAlignText.Replace('[[HORZ_ALIGN]]', ColumnInfo.Alignment));
+
     ColText := ColText.Replace('[[FIELD_NAME]]',      ColumnInfo.FieldName);
     ColText := ColText.Replace('[[ROW_INDEX]]',       IntToStr(ColumnInfo.Level));
 
@@ -466,7 +513,7 @@ begin
       'cxGridCustomView', 'cxGrid', 'cxGraphics', 'cxControls', 'cxLookAndFeels',
       'cxLookAndFeelPainters', 'cxStyles', 'cxCustomData', 'cxFilter',
       'cxData', 'cxDataStorage', 'cxEdit', 'cxNavigator', 'dxDateRanges',
-      'dxScrollbarAnnotations', 'cxDBData', 'cxTextEdit'
+      'dxScrollbarAnnotations', 'cxDBData', 'cxTextEdit', 'cxGridDBTableView'
     ];
 {
   cxGridLevel, cxGridCustomTableView,

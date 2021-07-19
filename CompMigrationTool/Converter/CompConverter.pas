@@ -375,9 +375,13 @@ var
     for I := AData.SrcPas.Count - 1 downto 0 do
     begin
       Text := AData.SrcPas[I].Trim;
-      if Text = 'end.' then
+      if (Text = 'end.') or (Text = 'initialization') then
       begin
         Result := I;
+      end;
+
+      if (Text = 'end;') then
+      begin
         Break;
       end;
     end;
@@ -385,7 +389,7 @@ var
 
 var
   RemoveUseList: TArray<string>;
-  I, J: Integer;
+  I, J, Idx: Integer;
   Text, CompName, CompClassName, ConvClassName: string;
 //  IntfCompCode, ImplCompCode: string;
   Use: string;
@@ -462,6 +466,8 @@ begin
   Count := 0;
   for Use in AddUses do
   begin
+    if Use.Trim = '' then
+      Continue;
     if not IncludeUnitNameInUses(Use) then
     begin
       Text := AData.SrcPas[UsesIdx.InterfaceUsesEndIndex];
@@ -510,56 +516,30 @@ begin
     // 컴포넌트 이벤트 변경
     for CompCodeInfo in CompCodeInfos do
     begin
-      if CompCodeInfo.BeforeEventName = CompCodeInfo.EventName then
+      if CompCodeInfo.BeforeEventName = '' then
+      // 새로운 이벤트 추가
       begin
-        // 동일한 이벤트 무시
-        Continue;
-      end;
-      // [선언부] 이벤트 시작/끝 추출
-      CompEventStart := 0;
-      CompEventEnd := 0;
-      for I := CompDefStart+1 to CompDefEnd do
-      begin
-        Text := AData.SrcPas[I].ToLower;
-        if Text.Contains(' ' + CompCodeInfo.BeforeEventName.ToLower + '(') then
-          CompEventStart := I;
-        if (CompEventStart > 0) and Text.Contains(');') then
-        begin
-          CompEventEnd := I;
-          Break;
-        end;
-      end;
-      if (CompEventStart = 0) or (CompEventEnd = 0) then
-      begin
-        TLogger.Error('[%s] Not found event(Intf) ''%s''', [AData.FileInfo.Filename, CompCodeInfo.BeforeEventName]);
-        Continue;
-      end;
+        Code := CompCodeInfo.IntfCode;
+        InsertCompCodeToPas(CompDefEnd, AData.SrcPas, Code);
 
-      if CompCodeInfo.EventName = '' then
-      begin
-        Code := Format('    { TODO : %s 이벤트를 검토 후 제거하세요. }', [CompCodeInfo.BeforeEventName]);
-        InsertCompCodeToPas(CompEventStart, AData.SrcPas, Code);
-
+        Idx := GetUnitEndIdx;
+        Code := CompCodeInfo.ImplCode + #13#10;
+        InsertCompCodeToPas(Idx, AData.SrcPas, Code);
       end
       else
       begin
-        // [선언부] 기존 이벤트 주석 처리
-        for I := CompEventStart to CompEventEnd do
-          AData.SrcPas[I] := '//' + AData.SrcPas[I];
-
-        // [선언부] 교체할 이벤트 추가
-        Code := Format('    // %s > %s'#13#10, [CompCodeInfo.BeforeEventName, CompCodeInfo.EventName]);
-        Code := Code + CompCodeInfo.IntfCode;
-        InsertCompCodeToPas(CompEventEnd+1, AData.SrcPas, Code);
-        Inc(CompDefEnd);
-
-        // [구현부] 이벤트 시작/끝 추출
+        if CompCodeInfo.BeforeEventName = CompCodeInfo.EventName then
+        begin
+          // 동일한 이벤트 무시
+          Continue;
+        end;
+        // [선언부] 이벤트 시작/끝 추출
         CompEventStart := 0;
         CompEventEnd := 0;
-        for I := UsesIdx.ImplimentationIndex+1 to AData.SrcPas.Count - 1 do
+        for I := CompDefStart+1 to CompDefEnd do
         begin
           Text := AData.SrcPas[I].ToLower;
-          if Text.Contains(AData.FormName.ToLower + '.' + CompCodeInfo.BeforeEventName.ToLower + '(') then
+          if Text.Contains(' ' + CompCodeInfo.BeforeEventName.ToLower + '(') then
             CompEventStart := I;
           if (CompEventStart > 0) and Text.Contains(');') then
           begin
@@ -569,21 +549,61 @@ begin
         end;
         if (CompEventStart = 0) or (CompEventEnd = 0) then
         begin
-          TLogger.Error('[%s] Not found event(Impl) ''%s''', [AData.FileInfo.Filename, CompCodeInfo.BeforeEventName]);
+          TLogger.Error('[%s] Not found event(Intf) ''%s''', [AData.FileInfo.Filename, CompCodeInfo.BeforeEventName]);
           Continue;
         end;
 
-        // [구현부] 기존 이벤트 주석 처리
-        for I := CompEventStart to CompEventEnd do
-          AData.SrcPas[I] := '//' + AData.SrcPas[I];
-//        Code := 'begin'#13#10;
-//        Code := Code + Format('  { TODO : %s 이벤트를 호출하는 코드를 %s로 변경 후 해당 이벤트를 제거하세요. }'#13#10, [CompCodeInfo.BeforeEventName, CompCodeInfo.EventName]);
-//        Code := Code + 'end;'#13#10#13#10;
+        if CompCodeInfo.EventName = '' then
+        begin
+          Code := Format('    { TODO : %s 이벤트를 검토 후 제거하세요. }', [CompCodeInfo.BeforeEventName]);
+          InsertCompCodeToPas(CompEventStart, AData.SrcPas, Code);
 
-        // [구현부] 교체할 이벤트 추가
-  //      Code := Format('// %s 대체'#13#10, [CompCodeInfo.BeforeEventName]);
-        Code := CompCodeInfo.ImplCode;
-        InsertCompCodeToPas(CompEventEnd+1, AData.SrcPas, Code);
+        end
+        else
+        begin
+          // [선언부] 기존 이벤트 주석 처리
+          for I := CompEventStart to CompEventEnd do
+            AData.SrcPas[I] := '//' + AData.SrcPas[I];
+
+          // [선언부] 교체할 이벤트 추가
+          Code := Format('    // %s > %s'#13#10, [CompCodeInfo.BeforeEventName, CompCodeInfo.EventName]);
+          Code := Code + CompCodeInfo.IntfCode;
+          InsertCompCodeToPas(CompEventEnd+1, AData.SrcPas, Code);
+          Inc(CompDefEnd);
+
+          // [구현부] 이벤트 시작/끝 추출
+          CompEventStart := 0;
+          CompEventEnd := 0;
+          for I := UsesIdx.ImplimentationIndex+1 to AData.SrcPas.Count - 1 do
+          begin
+            Text := AData.SrcPas[I].ToLower;
+            if Text.Contains(AData.FormName.ToLower + '.' + CompCodeInfo.BeforeEventName.ToLower + '(') then
+              CompEventStart := I;
+            if (CompEventStart > 0) and Text.Contains(');') then
+            begin
+              CompEventEnd := I;
+              Break;
+            end;
+          end;
+          if (CompEventStart = 0) or (CompEventEnd = 0) then
+          begin
+            TLogger.Error('[%s] Not found event(Impl) ''%s''', [AData.FileInfo.Filename, CompCodeInfo.BeforeEventName]);
+            Continue;
+          end;
+
+          // [구현부] 기존 이벤트 주석 처리
+          for I := CompEventStart to CompEventEnd do
+            AData.SrcPas[I] := '//' + AData.SrcPas[I];
+  //        Code := 'begin'#13#10;
+  //        Code := Code + Format('  { TODO : %s 이벤트를 호출하는 코드를 %s로 변경 후 해당 이벤트를 제거하세요. }'#13#10, [CompCodeInfo.BeforeEventName, CompCodeInfo.EventName]);
+  //        Code := Code + 'end;'#13#10#13#10;
+
+          // [구현부] 교체할 이벤트 추가
+    //      Code := Format('// %s 대체'#13#10, [CompCodeInfo.BeforeEventName]);
+          Code := CompCodeInfo.ImplCode;
+          InsertCompCodeToPas(CompEventEnd+1, AData.SrcPas, Code);
+          Inc(CompDefEnd);
+        end;
       end;
     end;
   end;

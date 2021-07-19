@@ -14,13 +14,17 @@ type
     [Impl]
     function ConvertFixedCount(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
-    function ConvertColumnsItems(AProc, ASrc: string; var ADest: string): Integer;
+    function ConvertColumns_Suffix(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertColCount(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertColumnsCount(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertColumnsReadOnly(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertColumnsGroup(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertColumnsAlignment(AProc, ASrc: string; var ADest: string): Integer;
 
     [Impl]
     function ConvertDBColumnsFieldName(AProc, ASrc: string; var ADest: string): Integer;
@@ -28,10 +32,8 @@ type
     function ConvertDBColumnsCaption(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertColumnTitleColor(AProc, ASrc: string; var ADest: string): Integer;
-
-    // Groups
     [Impl]
-    function ConvertGroupsCaption(AProc, ASrc: string; var ADest: string): Integer;
+    function ConvertColumnFontSize(AProc, ASrc: string; var ADest: string): Integer;
 
     [Impl]
     function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
@@ -56,6 +58,31 @@ begin
     Inc(Result);
 end;
 
+function TColumnConverter.ConvertColumnFontSize(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns' + INDEX_REGEX + '\.[Ff]ont\.[Ss]ize';
+begin
+  Result := 0;
+  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  begin
+    ADest := ASrc;
+    Inc(Result, AddComment(ADest, '].Font.Size'));
+  end;
+end;
+
+function TColumnConverter.ConvertColumnsAlignment(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns' + INDEX_REGEX + '\.[Aa]lignment';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.Columns[[[INDEX]]].Properties.Alignment.Horz';
+begin
+  Result := 0;
+
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
+end;
+
 function TColumnConverter.ConvertColumnsCount(AProc, ASrc: string;
   var ADest: string): Integer;
 const
@@ -68,13 +95,57 @@ begin
     Inc(Result);
 end;
 
-function TColumnConverter.ConvertColumnsItems(AProc, ASrc: string;
+function TColumnConverter.ConvertColumnsGroup(AProc, ASrc: string;
   var ADest: string): Integer;
 const
-  SEARCH_PATTERN  = '(' + GRIDNAME_REGEX + '\.[Cc]olumns\[|' + GRIDNAME_REGEX + '\.[Cc]olumns.Items\[)';
-  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.Columns[';
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns' + INDEX_REGEX + '\.[Gg]roup';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.Columns[[[INDEX]]].Position.BandIndex';
+var
+  Datas: TChangeDatas;
 begin
   Result := 0;
+
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
+end;
+
+function TColumnConverter.ConvertColumns_Suffix(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns' + INDEX_REGEX + '\.';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.Columns[[[INDEX]]].';
+var
+  HasKeyword: Boolean;
+  Suffix: string;
+  Suffixes: TArray<string>;
+begin
+  Result := 0;
+
+  Suffixes := [
+    'Caption',
+    'Footer',
+    'Visible',
+    'Title',
+    'Width',
+    'Destroy'
+  ];
+  if not IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  begin
+    Exit;
+  end;
+
+  HasKeyword := False;
+  for Suffix in Suffixes do
+  begin
+    if IsContainsRegEx(ASrc, SEARCH_PATTERN + Suffix) then
+    begin
+      HasKeyword := True;
+      Break;
+    end;
+  end;
+
+  if not HasKeyword then
+    Exit;
 
   if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
     Inc(Result);
@@ -83,25 +154,21 @@ end;
 function TColumnConverter.ConvertColumnsReadOnly(AProc, ASrc: string;
   var ADest: string): Integer;
 const
-  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns\[\d+\]\.[Rr]ead[Oo]nly[\s:]';
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns' + INDEX_REGEX + '\.[Rr]ead[Oo]nly[\s:]';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.Columns[[[INDEX]]].ReadOnlyEx';
 var
   Datas: TChangeDatas;
 begin
   Result := 0;
-  ADest := ASrc;
 
-  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
-  begin
-    Datas.Add('].ReadOnly', '].ReadOnlyEx');
-
-    Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
-  end;
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
 end;
 
 function TColumnConverter.ConvertColumnTitleColor(AProc, ASrc: string;
   var ADest: string): Integer;
 const
-  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns\[\d+\]\.[Tt]itle\.[Cc]olor';
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns' + INDEX_REGEX + '\.[Tt]itle\.[Cc]olor';
 begin
   Result := 0;
 
@@ -117,7 +184,7 @@ end;
 function TColumnConverter.ConvertDBColumnsCaption(AProc, ASrc: string;
   var ADest: string): Integer;
 const
-  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Dd]B[Cc]olumns'+INDEX_REGEX+'\.[Ca]aption';
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Dd]B[Cc]olumns'+INDEX_REGEX+'\.[Tt]itle\.[Ca]aption';
   REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.Columns[[[INDEX]]].Caption';
 begin
   Result := 0;
@@ -143,7 +210,7 @@ end;
 function TColumnConverter.ConvertEtc(AProc, ASrc: string;
   var ADest: string): Integer;
 var
-  Datas: TChangeDatas;
+  Datas, Datas2: TChangeDatas;
   Keywords: TArray<string>;
 begin
   Result := 0;
@@ -152,6 +219,7 @@ begin
   Datas.Add('].Footer.Values[', '].Footers[');
   Datas.Add('Title.CellStyle', 'HeaderHint');
   Datas.Add('Title.Caption', 'Caption');
+  Datas.Add('title.Caption', 'Caption');
 
   // 주석처리할 키워드
   Keywords := [
@@ -160,6 +228,12 @@ begin
 
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
   Inc(Result, AddComments(ADest, Keywords));
+
+  Datas2.AddInFile('TbF_206P',
+    'RDBGridMaster.Columns[lg최대차수',
+    'RDBGridMasterDBBandedTableView1.Columns[lg최대차수');
+
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas2));
 end;
 
 function TColumnConverter.ConvertFixedCount(AProc, ASrc: string;
@@ -172,23 +246,6 @@ const
 begin
   Result := 0;
 
-  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
-    Inc(Result);
-end;
-
-function TColumnConverter.ConvertGroupsCaption(AProc, ASrc: string;
-  var ADest: string): Integer;
-{
-  RealDBGrid1.Groups[k].Caption := '';
-  RealDBGrid1DBBandedTableView1.Bands[k].Caption := '';
-}
-const
-  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Gg]roups'+INDEX_REGEX+'\.[Cc]aption';
-  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.Bands[[[INDEX]]].Caption';
-begin
-  Result := 0;
-
-//  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
   if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
     Inc(Result);
 end;

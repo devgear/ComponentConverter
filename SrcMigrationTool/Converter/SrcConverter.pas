@@ -33,7 +33,7 @@ const
   ')';
 
   VIEWNAME_REGEX = '(SetRGrid|aRGrid|R1)';
-  INDEX_REGEX = '\[[\w\d\.\s+-]+\]';
+  INDEX_REGEX = '\[[\w\(\)\[\]\+\-\*\.\s]+\]';
 
 type
   TAssignType = (
@@ -333,7 +333,17 @@ begin
     if AReplacePattern.Contains('[[COMP_NAME]]') then
       Comp  := TRegEx.Match(Src, GRIDNAME_REGEX).Value.Replace('.', '').Trim;
     if AReplacePattern.Contains('[[INDEX]]') then
-      Idx := TRegEx.Match(Src, INDEX_REGEX).Value.Replace('[', '').Replace(']', '').Trim;
+    begin
+      Idx := TRegEx.Match(Src, INDEX_REGEX).Value.Trim;
+      // 첫번째 [ 제거
+      if Idx.StartsWith('[') then
+        Idx := Idx.Substring(1);
+      // 마지막 ] 제거(또는 ].)
+      if Idx.EndsWith('].') then
+        Idx := Idx.Substring(0, Idx.Length - 2);
+      if Idx.EndsWith(']') then
+        Idx := Idx.Substring(0, Idx.Length - 1);
+    end;
 
     // 이미 변환된 TableView를 그리드로 인식하는 경우 제외
     if Comp.Contains('TableView') then

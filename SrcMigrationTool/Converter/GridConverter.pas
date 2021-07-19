@@ -12,13 +12,22 @@ type
     function GetDescription: string; override;
   published
     [Impl]
+    function ConvertWithGrid(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
     function ConvertCustomDrawCell(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertAfterScroll(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertGridOptions(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
+    function ConvertGridRowHeight(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
     function ConvertKeyPressToKeyDown(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertDBFooterComment(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
+    function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
 implementation
@@ -68,6 +77,25 @@ begin
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
+function TGridConverter.ConvertDBFooterComment(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Keywords: TArray<string>;
+begin
+  Result := 0;
+  if not SrcFilename.Contains('TbF_206P') then
+    Exit;
+
+  if not AProc.Contains('Rtrv') then
+    Exit;
+
+  Keywords := [
+    'DBFooter'
+  ];
+
+  Inc(Result, AddComments(ADest, Keywords));
+end;
+
 function TGridConverter.ConvertGridOptions(AProc, ASrc: string;
   var ADest: string): Integer;
 const
@@ -111,6 +139,18 @@ begin
   end;
 end;
 
+function TGridConverter.ConvertGridRowHeight(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Rr]owHeight';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.OptionsView.DataRowHeight';
+begin
+  Result := 0;
+
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
+end;
+
 function TGridConverter.ConvertKeyPressToKeyDown(AProc, ASrc: string;
   var ADest: string): Integer;
 var
@@ -131,6 +171,21 @@ begin
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
+function TGridConverter.ConvertWithGrid(AProc, ASrc: string;
+  var ADest: string): Integer;
+// with RDBGridMaster1 do begin
+  // with RDBGridMaster1 do begin
+const
+  SEARCH_PATTERN  = '[Ww]ith\s' + GRIDNAME_REGEX + '\sdo';
+  REPLACE_FORMAT  = 'with [[COMP_NAME]]DBBandedTableView1 do';
+begin
+  Result := 0;
+
+  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
+end;
+
 function TGridConverter.GetCvtCompClassName: string;
 begin
   Result := 'TcxGrid';
@@ -139,6 +194,24 @@ end;
 function TGridConverter.GetDescription: string;
 begin
   Result := '그리드 관련';
+end;
+
+function TGridConverter.ConvertEtc(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Datas: TChangeDatas;
+  Keywords: TArray<string>;
+begin
+  Result := 0;
+  ADest := ASrc;
+
+  Keywords := [
+    '.GroupMode := '
+  ];
+
+  // 제거
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
+  Inc(Result, AddComments(ADest, Keywords));
 end;
 
 initialization

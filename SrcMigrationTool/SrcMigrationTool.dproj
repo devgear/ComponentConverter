@@ -115,6 +115,7 @@
         <DCCReference Include="Converter\DataControllerConverter.pas"/>
         <DCCReference Include="Converter\GridConverter.pas"/>
         <DCCReference Include="Converter\ColumnConverter.pas"/>
+        <DCCReference Include="Converter\GroupConverter.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

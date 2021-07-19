@@ -23,6 +23,8 @@ const
     '  object [[VIEW_NAME]]: TcxGridDBBandedTableView'#13#10 +
     '[[VIEW_EVENT]]'#13#10 +
     '    DataController.DataSource = [[DATASOURCE]]'#13#10 +
+    '    DataController.DataModeController.GridMode = True'#13#10 +
+    '    DataController.DataModeController.GridModeBufferCount = 50'#13#10 +
     '    DataController.Summary.DefaultGroupSummaryItems = <>'#13#10 +
     '    DataController.Summary.FooterSummaryItems = <'#13#10 +
     '[[FOOTER_ITEMS]]'#13#10 +
@@ -51,7 +53,8 @@ const
     '    OptionsCustomize.DataRowSizing = [[wgoRowSizing]]'#13#10 +
     '    OptionsBehavior.ImmediateEditor = [[wgoAlwaysShowEditor]]'#13#10 +
     '    OptionsData.Editing = [[wgoEditing]]'#13#10 +
-    '    OptionsBehavior.AlwaysShowEditor = [[wgoAlwaysShowEditor]]'#13#10 +
+    '    OptionsBehavior.AlwaysShowEditor = True'#13#10 +
+//    '    OptionsBehavior.AlwaysShowEditor = [[wgoAlwaysShowEditor]]'#13#10 +  // PickList(ComboBox) 선택 시 바로 항목 표시하기 위해 항상 True(기본)
     '    OptionsData.Inserting = [[wgoInserting]]'#13#10 +
     '    OptionsCustomize.ColumnMoving = [[wgoColMoving]]'#13#10 +
     '    OptionsSelection.MultiSelect = [[wgoMultiSelect]]'#13#10 +
@@ -79,17 +82,11 @@ const
 
 
 
-
-
-  TAG_CXGRID_COLUMN_DEF = '' +
-    '    object [[COLUMN_NAME]]: TcxGridDBBandedColumn'#13#10 +
-    '      Caption = ''[[COLUMN_CAPTION]]'''#13#10 +
-    '      PropertiesClassName = ''TcxTextEditProperties'''#13#10 +
-
+  TAG_CXGRID_COLUMN_COMMON_PROP = '' +
     '      Options.Editing = [[EDITING]]'#13#10 +
     '      Options.Focusing = [[EDITING]]'#13#10 +
     '      Properties.ReadOnly = [[READONLY]]'#13#10 +
-    '      Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10 +
+    '      [[COL_ALIGN]]'+
     '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
 
     '      Visible = [[VISIBLE]]'#13#10 +
@@ -104,12 +101,19 @@ const
     '      Position.LineCount = [[LINE_COUNT]]'#13#10 +
     '      [[STYLE_CONTENT]]'#13#10 +
     '      [[STYLE_HEADER]]'#13#10 +
-    '      Width = [[WIDTH]]'#13#10 +
+    '      Width = [[WIDTH]]'#13#10
+  ;
+
+  TAG_CXGRID_COLUMN_DEF = '' +
+    '    object [[COLUMN_NAME]]: TcxGridDBBandedColumn'#13#10 +
+    '      Caption = ''[[COLUMN_CAPTION]]'''#13#10 +
+    '      PropertiesClassName = ''TcxTextEditProperties'''#13#10 +
+    TAG_CXGRID_COLUMN_COMMON_PROP +
     '    end'#13#10
   ;
 
   // EditStyle = wesNumber or (EditStyle is null and EditFormat = 금액('#,.' 포함))
-  TAG_CXGRID_COLUMN_NUMBER = '' +
+  TAG_CXGRID_COLUMN_CURRENCY = '' +
     '    object [[COLUMN_NAME]]: TcxGridDBBandedColumn'#13#10 +
     '      Caption = ''[[COLUMN_CAPTION]]'''#13#10 +
     '      PropertiesClassName = ''TcxCurrencyEditProperties'''#13#10 +
@@ -120,25 +124,18 @@ const
     '      Properties.DisplayFormat = ''[[EDIT_FORMAT]]'''#13#10 +
     '      Properties.EditFormat = ''[[EDIT_FORMAT]]'''#13#10 +
 
-    '      Options.Editing = [[EDITING]]'#13#10 +
-    '      Options.Focusing = [[EDITING]]'#13#10 +
-    '      Properties.ReadOnly = [[READONLY]]'#13#10 +
-    '      Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10 +
-    '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
+    TAG_CXGRID_COLUMN_COMMON_PROP +
+    '    end'#13#10
+  ;
 
-    '      Visible = [[VISIBLE]]'#13#10 +
-    '      FooterAlignmentHorz = taCenter'#13#10 +
-    '      HeaderAlignmentHorz = taCenter'#13#10 +
-    '      HeaderAlignmentVert = vaCenter'#13#10 +
-    '      HeaderGlyphAlignmentHorz = taCenter'#13#10 +
+  TAG_CXGRID_COLUMN_MASK = '' +
+    '    object [[COLUMN_NAME]]: TcxGridDBBandedColumn'#13#10 +
+    '      Caption = ''[[COLUMN_CAPTION]]'''#13#10 +
+    '      PropertiesClassName = ''TcxMaskEditProperties'''#13#10 +
 
-    '      Position.BandIndex = [[BAND_INDEX]]'#13#10 +
-    '      Position.ColIndex = [[COL_INDEX]]'#13#10 +
-    '      Position.RowIndex = [[ROW_INDEX]]'#13#10 +
-    '      Position.LineCount = [[LINE_COUNT]]'#13#10 +
-    '      [[STYLE_CONTENT]]'#13#10 +
-    '      [[STYLE_HEADER]]'#13#10 +
-    '      Width = [[WIDTH]]'#13#10 +
+    '      Properties.EditMask = ''[[EDIT_FORMAT]]'''#13#10 +
+
+    TAG_CXGRID_COLUMN_COMMON_PROP +
     '    end'#13#10
   ;
 
@@ -152,28 +149,12 @@ const
     '      Properties.ValueChecked = ''[[VALUE_CHK]]'''#13#10 +
     '      Properties.ValueUnchecked = ''[[VALUE_UNCHK]]'''#13#10 +
 
-    '      Options.Editing = [[EDITING]]'#13#10 +
-    '      Options.Focusing = [[EDITING]]'#13#10 +
-    '      Properties.ReadOnly = [[READONLY]]'#13#10 +
-    '      Properties.Alignment = [[HORZ_ALIGN]]'#13#10 +
-    '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
-
-    '      Visible = [[VISIBLE]]'#13#10 +
-    '      FooterAlignmentHorz = taCenter'#13#10 +
-    '      HeaderAlignmentHorz = taCenter'#13#10 +
-    '      HeaderAlignmentVert = vaCenter'#13#10 +
-    '      HeaderGlyphAlignmentHorz = taCenter'#13#10 +
-
-    '      Position.BandIndex = [[BAND_INDEX]]'#13#10 +
-    '      Position.ColIndex = [[COL_INDEX]]'#13#10 +
-    '      Position.RowIndex = [[ROW_INDEX]]'#13#10 +
-    '      Position.LineCount = [[LINE_COUNT]]'#13#10 +
-    '      [[STYLE_CONTENT]]'#13#10 +
-    '      [[STYLE_HEADER]]'#13#10 +
-    '      Width = [[WIDTH]]'#13#10 +
+    TAG_CXGRID_COLUMN_COMMON_PROP +
     '    end'#13#10
   ;
 
+  TAG_CXGRID_COLUMN_ALIGN_HORZ  = 'Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10;
+  TAG_CXGRID_COLUMN_ALIGN       = 'Properties.Alignment = [[HORZ_ALIGN]]'#13#10;
 
   TAG_CXGRID_COLUMN_ITEM = '' +
     '        item'#13#10 +
@@ -189,25 +170,7 @@ const
     '[[ITEMS]]'+
     '      >'#13#10 +
 
-    '      Options.Editing = [[EDITING]]'#13#10 +
-    '      Options.Focusing = [[EDITING]]'#13#10 +
-    '      Properties.ReadOnly = [[READONLY]]'#13#10 +
-    '      Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10 +
-    '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
-
-    '      Visible = [[VISIBLE]]'#13#10 +
-    '      FooterAlignmentHorz = taCenter'#13#10 +
-    '      HeaderAlignmentHorz = taCenter'#13#10 +
-    '      HeaderAlignmentVert = vaCenter'#13#10 +
-    '      HeaderGlyphAlignmentHorz = taCenter'#13#10 +
-
-    '      Position.BandIndex = [[BAND_INDEX]]'#13#10 +
-    '      Position.ColIndex = [[COL_INDEX]]'#13#10 +
-    '      Position.RowIndex = [[ROW_INDEX]]'#13#10 +
-    '      Position.LineCount = [[LINE_COUNT]]'#13#10 +
-    '      [[STYLE_CONTENT]]'#13#10 +
-    '      [[STYLE_HEADER]]'#13#10 +
-    '      Width = [[WIDTH]]'#13#10 +
+    TAG_CXGRID_COLUMN_COMMON_PROP +
     '    end'#13#10
   ;
 
@@ -242,7 +205,8 @@ const
 
   TAG_CXGRID_FOOTER_ITEM = '' +
     '      item'#13#10 +
-    '        Format = ''#,##0'''#13#10 +
+//    '        Format = ''#,##0'''#13#10 +
+    '        OnGetText = SummaryItemsGetText'#13#10 +
     '        Kind = [[FOOTER_KIND]]'#13#10 +
     '        Column = [[FOOTER_COLUMN]]'#13#10 +
     '      end'#13#10
@@ -299,15 +263,15 @@ const
 const
   EventTagInfos: array[0..8] of TEventTagInfo =
     (
-      (EventName: 'EditDblClick';       RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDIT_DBLCLICK),
-      (EventName: 'EditKeyDown';        RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
-      (EventName: 'ColumnHeaderClick';  RGEvent: 'OnColumnTitleClick';  EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_COL_HDR),
-      (EventName: 'CustomDrawCell';     RGEvent: 'OnDrawCell';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CUST_DRAW),
-      (EventName: 'CellClick';          RGEvent: 'OnClick';             EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CELL_CLICK),
+      (EventName: 'EditDblClick';         RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDIT_DBLCLICK),
+      (EventName: 'EditKeyDown';          RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
+      (EventName: 'ColumnHeaderClick';    RGEvent: 'OnColumnTitleClick';  EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_COL_HDR),
+      (EventName: 'CustomDrawCell';       RGEvent: 'OnDrawCell';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CUST_DRAW),
+      (EventName: 'CellClick';            RGEvent: 'OnClick';             EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CELL_CLICK),
 
-      (EventName: 'Enter';              RGEvent: 'OnEnter';	            EventOwner: eoGrid;         ProcTag: TAG_PROC_GRID_SENDER),
-      (EventName: 'Exit';               RGEvent: 'OnExit';              EventOwner: eoGrid;         ProcTag: TAG_PROC_GRID_SENDER),
-      (EventName: 'MouseDown';          RGEvent: 'OnMouseDown';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_MOUSEDOWN),
+      (EventName: 'Enter';                RGEvent: 'OnEnter';	            EventOwner: eoGrid;         ProcTag: TAG_PROC_GRID_SENDER),
+      (EventName: 'Exit';                 RGEvent: 'OnExit';              EventOwner: eoGrid;         ProcTag: TAG_PROC_GRID_SENDER),
+      (EventName: 'MouseDown';            RGEvent: 'OnMouseDown';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_MOUSEDOWN),
       (EventName: 'FocusedRecordChanged'; RGEvent: 'OnRowChange';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_RECCHG)
     );
 

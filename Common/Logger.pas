@@ -86,6 +86,9 @@ procedure TLogger.SetFilename(const Value: string);
 begin
   FFilename := Value;
   FFilepath := ROOT_DIR;
+  if not TDirectory.Exists(FFilepath) then
+    TDirectory.CreateDirectory(FFilepath);
+
   if FCategory <> '' then
     FFilepath := FFilepath + FCategory + '_';
   FFilepath := FFilepath + Value;

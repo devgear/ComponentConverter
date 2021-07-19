@@ -145,7 +145,7 @@ begin
     FColumn.Values := [];
     FColumn.FooterStyle := '';
     FColumn.ColWidth := 64;
-    FColumn.Alignment := 'taLeftJustify';
+    FColumn.Alignment := '';
 
     FColumn.Color := '';
     FColumn.TitleColor := '';

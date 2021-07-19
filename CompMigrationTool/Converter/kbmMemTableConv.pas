@@ -81,7 +81,7 @@ end;
 
 function TConverterkbmMemTable.GetAddedUses: TArray<string>;
 begin
-  Result := [];
+  Result := ['kbmMemTableHelper'];
 end;
 
 function TConverterkbmMemTable.GetComponentClassName: string;
