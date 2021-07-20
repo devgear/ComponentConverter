@@ -109,7 +109,7 @@ begin
     end;
   end;
 
-  if FParser.GroupInfos.Count > 0 then
+  if FParser.FooterCount > 0 then
   begin
     CodeInfo := Default(TCompEventInfo);
 
@@ -118,7 +118,7 @@ begin
     ProcTag := '' +
       '    procedure SummaryItemsGetText('#13#10 +
       '      Sender: TcxDataSummaryItem; const AValue: Variant; AIsFooter: Boolean;'#13#10 +
-      '      var AText: string);'#13#10
+      '      var AText: string);'
     ;
     CodeInfo.IntfCode := ProcTag;
     ProcTag := '' +
@@ -410,14 +410,14 @@ begin
           ColText := ColText.Replace('[[BAND_INDEX]]', '1');
       end;
       ColText := ColText.Replace('[[COL_INDEX]]',       IntToStr(Seq));
-      ColText := ColText.Replace('[[WIDTH]]',           IntToStr(ColumnInfo.ColWidth));
+      ColText := ColText.Replace('[[WIDTH]]',           IntToStr(Trunc(ColumnInfo.ColWidth*1.1)));
       Inc(Seq);
     end
     else
     begin
       ColText := ColText.Replace('[[BAND_INDEX]]',      IntToStr(ColumnInfo.Group));
       ColText := ColText.Replace('[[COL_INDEX]]',       IntToStr(ColumnInfo.LevelIndex));
-      ColText := ColText.Replace('[[WIDTH]]',           IntToStr(ColumnInfo.GrpWidth));
+      ColText := ColText.Replace('[[WIDTH]]',           IntToStr(Trunc(ColumnInfo.GrpWidth*1.1)));
     end;
 
     if ColumnInfo.Alignment = '' then

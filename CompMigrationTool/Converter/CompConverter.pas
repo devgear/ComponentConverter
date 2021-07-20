@@ -520,6 +520,20 @@ begin
       // 새로운 이벤트 추가
       begin
         Code := CompCodeInfo.IntfCode;
+
+        // 이미 추가된 경우 스킵
+        for I := CompDefStart to CompDefEnd do
+        begin
+          Text := AData.SrcPas[I];
+          if Text = Code then
+          begin
+            Code := '';
+            Break;
+          end;
+        end;
+
+        if Code = '' then
+          Break;
         InsertCompCodeToPas(CompDefEnd, AData.SrcPas, Code);
 
         Idx := GetUnitEndIdx;
@@ -602,7 +616,6 @@ begin
     //      Code := Format('// %s 대체'#13#10, [CompCodeInfo.BeforeEventName]);
           Code := CompCodeInfo.ImplCode;
           InsertCompCodeToPas(CompEventEnd+1, AData.SrcPas, Code);
-          Inc(CompDefEnd);
         end;
       end;
     end;

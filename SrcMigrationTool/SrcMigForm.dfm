@@ -189,6 +189,9 @@ object frmSrcMainForm: TfrmSrcMainForm
     Height = 41
     Align = alBottom
     TabOrder = 2
+    DesignSize = (
+      826
+      41)
     object Bevel2: TBevel
       Left = 139
       Top = 6
@@ -229,7 +232,7 @@ object frmSrcMainForm: TfrmSrcMainForm
     object ProgressBar1: TProgressBar
       Left = 330
       Top = 13
-      Width = 414
+      Width = 383
       Height = 17
       TabOrder = 2
     end
@@ -243,6 +246,16 @@ object frmSrcMainForm: TfrmSrcMainForm
       Items.Strings = (
         'Info'
         'Error')
+    end
+    object Button1: TButton
+      Left = 744
+      Top = 6
+      Width = 75
+      Height = 25
+      Anchors = [akTop, akRight]
+      Caption = 'Extract'
+      TabOrder = 4
+      OnClick = Button1Click
     end
   end
   object FileOpenDialog1: TFileOpenDialog

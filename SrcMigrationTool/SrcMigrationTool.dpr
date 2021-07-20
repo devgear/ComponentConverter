@@ -16,7 +16,8 @@ uses
   DataControllerConverter in 'Converter\DataControllerConverter.pas',
   GridConverter in 'Converter\GridConverter.pas',
   ColumnConverter in 'Converter\ColumnConverter.pas',
-  GroupConverter in 'Converter\GroupConverter.pas';
+  GroupConverter in 'Converter\GroupConverter.pas',
+  ExtractForm in 'ExtractForm.pas' {Form1};
 
 {$R *.res}
 

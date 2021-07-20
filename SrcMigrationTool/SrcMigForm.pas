@@ -39,6 +39,7 @@ type
     mniUnselectAll: TMenuItem;
     N5: TMenuItem;
     cbxLogLevel: TComboBox;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
@@ -51,6 +52,7 @@ type
     procedure mniSelectAllClick(Sender: TObject);
     procedure mniUnselectAllClick(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     FRootPath: string;
@@ -68,7 +70,8 @@ implementation
 
 {$R *.dfm}
 
-uses System.IOUtils, System.StrUtils, Environments, SrcConverter, Logger;
+uses System.IOUtils, System.StrUtils, Environments, SrcConverter, Logger,
+  ExtractForm;
 
 procedure TfrmSrcMainForm.btnLoadFilesClick(Sender: TObject);
 begin
@@ -157,6 +160,14 @@ begin
     Exit;
 
   edtRootPath.Text := FileOpenDialog1.FileName;
+end;
+
+procedure TfrmSrcMainForm.Button1Click(Sender: TObject);
+begin
+  if not Assigned(frmExtract) then
+    frmExtract := TfrmExtract.Create(Self);
+  frmExtract.SetFileInfos(FFileInfos);
+  frmExtract.Show;
 end;
 
 procedure TfrmSrcMainForm.chkAllConverterClick(Sender: TObject);
