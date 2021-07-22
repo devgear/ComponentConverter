@@ -25,6 +25,7 @@ type
 implementation
 
 uses
+  SrcConverterTypes,
   Winapi.Windows,
   System.Classes, System.SysUtils,
   System.RegularExpressions, SrcConvertUtils;

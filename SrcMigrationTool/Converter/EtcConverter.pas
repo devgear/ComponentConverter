@@ -30,6 +30,15 @@ type
     function ConvertBus2021(AProc, ASrc: string; var ADest: string): Integer;
 
     [Impl]
+    function ConvertGotoBookmarkPointer(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
+    function ConvertcxTextEditColor(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
+    function ConvertTreeMake(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
     function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
@@ -55,6 +64,7 @@ type
 implementation
 
 uses
+  SrcConverterTypes,
   SrcConvertUtils,
   System.SysUtils;
 
@@ -68,15 +78,31 @@ var
 begin
   Result := 0;
 
-  Datas.AddInFile('TbF_4407_1P',
-    'Deal_EDT.ReadOnly := False;',
-    'Deal_EDT.Enabled := True;');
-
-  Datas.AddInFile('TbF_4407_1P',
-    'Deal_EDT.ReadOnly := True;',
-    'Deal_EDT.Enabled := False;');
+  Datas.Add('Deal_EDT.ReadOnly := False;',  'Deal_EDT.Enabled := True;');
+  Datas.Add('Deal_EDT.ReadOnly := True;',   'Deal_EDT.Enabled := False;');
 
 
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
+end;
+
+function TEtcConverter.ConvertcxTextEditColor(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Datas: TChangeDatas;
+begin
+  if FConvData.FileInfo.Filename.Contains('TaF_201I') then
+  begin
+    Datas.Add('Edt_ManageValue_I2.Color', 'Edt_ManageValue_I2.Style.Color');
+    Datas.Add('Edt_ManageValue_X2.Color', 'Edt_ManageValue_X2.Style.Color');
+    Datas.Add('Edt_ManageValue_Y2.Color', 'Edt_ManageValue_Y2.Style.Color');
+    Datas.Add('Edt_ManageValue_Z2.Color', 'Edt_ManageValue_Z2.Style.Color');
+    Datas.Add('Edt_ManageValue_H2.Color', 'Edt_ManageValue_H2.Style.Color');
+    Datas.Add('Edt_ManageValue_I3.Color', 'Edt_ManageValue_I3.Style.Color');
+    Datas.Add('Edt_ManageValue_H3.Color', 'Edt_ManageValue_H3.Style.Color');
+    Datas.Add('Edt_ManageValue_T3.Color', 'Edt_ManageValue_T3.Style.Color');
+    Datas.Add('Edt_ManageValue_X3.Color', 'Edt_ManageValue_X3.Style.Color');
+    Datas.Add('Edt_ManageValue_Y3.Color', 'Edt_ManageValue_Y3.Style.Color');
+  end;
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
@@ -90,7 +116,30 @@ begin
   ADest := ASrc;
 
   Datas.Add('RealDBGrid1Click(Self);', 'var B: Boolean;'#13#10'   RealDBGrid1DBBandedTableView1CellClick(RealDBGrid1DBBandedTableView1, nil, mbLeft, [], B);');
+
+  // bus
   Datas.Add('''Bus2010_config.ini''', 'ExtractFilePath(Application.ExeName) + ''Bus2021_config.ini''');
+
+  // cust
+  Datas.Add('''Cust2010_config.ini''', 'ExtractFilePath(Application.ExeName) + ''Cust2021_config.ini''');
+  Datas.Add('CheckedCode[CheckedNum];', 'CheckedCode[CheckedNum] := 0;');
+  Datas.Add('BtnBanpumBal;', 'BtnBanpumBal.Click;');
+
+  // supply
+  Datas.Add('''Supply2010_Config.ini''', 'ExtractFilePath(Application.ExeName) + ''Supply2021_config.ini''');
+
+  // Acct
+  Datas.Add('.DataBase;', '.Connection as TFDConnection;');
+  Datas.Add('.DataBase.Commit;', '.Connection.Commit;');
+
+
+  Datas.Add('Sender is TwEdit', 'Sender is TcxTextEdit');
+  Datas.Add('Sender As TwEdit', 'Sender As TcxTextEdit');
+  Datas.Add('(Sender As TcxTextEdit).ReadOnly', '(Sender As TcxTextEdit).Properties.ReadOnly');
+  Datas.Add('Edt_Rest.Color', 'Edt_Rest.Style.Color');
+
+  Datas.Add('Sender AS TwMaskEdit', 'Sender As TcxMaskEdit');
+
 
   Keywords := [
     '.BuildFromDataSet;'
@@ -185,6 +234,56 @@ begin
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
+function TEtcConverter.ConvertGotoBookmarkPointer(AProc, ASrc: string;
+  var ADest: string): Integer;
+{
+kbmMasterT.GotoBookmark(pointer(DBGrid1.SelectedRows.Items[0]))
+  kbmMasterT.GotoBookmark(DBGrid1.SelectedRows.Items[0])
+
+kbmMasterT.GotoBookmark(pointer(DBGrid1.SelectedRows.Items[DBGrid1.SelectedRows.Count-1]));
+  kbmMasterT.GotoBookmark(DBGrid1.SelectedRows.Items[DBGrid1.SelectedRows.Count-1]);
+}
+const
+  SEARCH_PATTERN  = '\.GotoBookmark\([Pp]ointer\(';
+begin
+  Result := 0;
+  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  begin
+    ADest := ASrc;
+    ADest := ADest.Replace('(pointer(', '(');
+    ADest := ADest.Replace('(Pointer(', '(');
+    ADest := ADest.Replace(']))', '])');
+
+    Inc(Result);
+  end;
+end;
+
+function TEtcConverter.ConvertTreeMake(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Datas: TChangeDatas;
+begin
+  Result := 0;
+
+  if AProc.Contains('TreeMake') then
+  begin
+    Datas.Add(' Data : PNodeData;',         ' NodeData : PNodeData;');
+    Datas.Add(' Data := ',         ' NodeData := ');
+    Datas.Add(' Data.',         ' NodeData.');
+  end;
+
+  if AProc.Contains('Detail_Make') then
+  begin
+    Datas.Add(' Data : PNodeData;',         ' NodeData : PNodeData;');
+    Datas.Add('[Data.',         '[NodeData.');
+    Datas.Add(' Data := ',         ' NodeData := ');
+    Datas.Add(' Data.',         ' NodeData.');
+  end;
+
+
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
+end;
+
 function TEtcConverter.ConvertBus2021(AProc, ASrc: string;
   var ADest: string): Integer;
 var
@@ -198,16 +297,6 @@ begin
     Keywords := [
       'var',
       'IWaitCursor'
-    ];
-
-    Inc(Result, AddComments(ADest, Keywords));
-  end;
-
-  if SrcFilename.Contains('TbF_4407_1P') and AProc.Contains('Tax_EDTChange') then
-  begin
-    Keywords := [
-      'RDBGridMaster.Options',
-      '[wgoAlwaysShowEditor, wgoEditing]'
     ];
 
     Inc(Result, AddComments(ADest, Keywords));

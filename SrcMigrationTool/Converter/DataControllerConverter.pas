@@ -15,9 +15,15 @@ type
     function ConvertDataSource(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertEditorMode(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertDrawCellDataSource(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
 implementation
+
+uses
+  SrcConvertUtils,
+  SrcConverterTypes;
 
 { TSelectedConverter }
 
@@ -35,11 +41,24 @@ begin
     Inc(Result);
 end;
 
+function TDataControllerConverter.ConvertDrawCellDataSource(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Datas: TChangeDatas;
+begin
+  Result := 0;
+
+  Datas.Add('if DataSource.DataSet.recno mod 2 = 0',  'if Datacontroller.DataSource.DataSet.recno mod 2 = 0');
+
+
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
+end;
+
 function TDataControllerConverter.ConvertEditorMode(AProc, ASrc: string;
   var ADest: string): Integer;
 const
   SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Ee]ditor[Mm]ode';
-  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.DataController.IsEditing';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.OptionsData.Editing';
 begin
   Result := 0;
 

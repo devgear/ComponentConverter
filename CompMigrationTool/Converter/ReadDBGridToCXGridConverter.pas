@@ -3,6 +3,7 @@ unit ReadDBGridToCXGridConverter;
 interface
 
 uses
+  CompConverterTypes,
   RealGridParser, System.Generics.Collections,
   CompConverter, System.SysUtils, System.Classes, Vcl.Forms;
 
@@ -32,7 +33,7 @@ type
 
 implementation
 
-uses ObjectTextParser, cxDBGridTagDefine, ConvertUtils;
+uses ObjectTextParser, cxDBGridTagDefine, ConvertUtils, System.StrUtils;
 
 { TConverterRealDBGridToCXGrid }
 
@@ -61,6 +62,16 @@ function TConverterRealDBGridToCXGrid.GetCompEventInfos(
     Result := Copy(ACode, SIdx, EIdx-SIdx);
   end;
 
+  function _InArray(AArray: TArray<TCompEventInfo>; AItem: string): Boolean;
+  var
+    Conv: TCompEventInfo;
+  begin
+    Result := False;
+    for Conv in AArray do
+      if Conv.BeforeEventName = AItem then
+        Exit(True);
+  end;
+
 const
   INDENT = '    ';
 var
@@ -69,12 +80,17 @@ var
   TagInfo: TEventTagInfo;
   CodeInfo: TCompEventInfo;
   ProcTag: string;
+  I: Integer;
 begin
   GridName  := FParser.CompName;
   ViewName  := GridName + 'DBBandedTableView1';
 
   for RGEvent in FParser.EventInfos do
   begin
+    // 이미 구현된 이벤트 재사용 필요
+    if _InArray(FConvData.TotalEventInfos, RGEvent.Value) then
+      Continue;
+
     if GetEventTagInfo(RGEvent.Prop, TagInfo) then
     begin
       CodeInfo := Default(TCompEventInfo);
@@ -106,6 +122,7 @@ begin
       CodeInfo.BeforeEventName := RGEvent.Value;
 
       Result := Result + [CodeInfo];
+      FConvData.TotalEventInfos := FConvData.TotalEventInfos + [CodeInfo];
     end;
   end;
 
@@ -164,12 +181,28 @@ end;
 
 function TConverterRealDBGridToCXGrid.GetConvertedCompText(
   ACompText: TStrings): string;
+
+  function _InArray(AArray: TArray<TCompEventInfo>; AItem: string; var MethodName: string): Boolean;
+  var
+    Conv: TCompEventInfo;
+  begin
+    MethodName := '';
+    Result := False;
+    for Conv in AArray do
+      if Conv.BeforeEventName = AItem then
+      begin
+        MethodName := Conv.EventName;
+        Exit(True);
+      end;
+  end;
+
 var
   Idx: Integer;
   GridName, ViewName, LevelName, ColName: string;
   GridText, ColText, ColAlignText, ColList, GroupText, GroupList: string;
 
   GridEvent, ViewEvent, DataEvent: string;
+  MethodName: string;
 
   ColumnInfo: TRealGridColumnInfo;
   GroupInfo: TRealGridGroupInfo;
@@ -477,6 +510,9 @@ begin
   begin
     if GetEventTagInfo(EventInfo.Prop, EventTagInfo) then
     begin
+      // 이미 구현된 이벤트라면 MethodName 재사용 아니라면 신규 메소드 설정
+      if not _InArray(FConvData.TotalEventInfos, EventInfo.Value, MethodName) then
+        MethodName := '';
 // eg   OnEnter = RealGrid1Enter
 //        On[이벤트명] = [그리드이름][이벤트명]
 // eg   DataController.OnAfterDelete = cxGrid1DBBandedTableView1DataControllerAfterDelete
@@ -484,16 +520,16 @@ begin
       case EventTagInfo.EventOwner of
         eoGrid:
           GridEvent := GridEvent + '  On' + EventTagInfo.EventName +
-              ' = ' + GridName + EventTagInfo.EventName +  #13#10;
+              ' = ' + IfThen(MethodName = '', GridName + EventTagInfo.EventName, MethodName) +  #13#10;
         eoView:
           ViewEvent := ViewEvent + '  On' + EventTagInfo.EventName +
-              ' = ' + ViewName + EventTagInfo.EventName +  #13#10;
+              ' = ' + IfThen(MethodName = '', ViewName + EventTagInfo.EventName, MethodName) +  #13#10;
         eoData:
           DataEvent := DataEvent + '  DataController.On' + EventTagInfo.EventName +
-              ' = ' + ViewName + 'DataController' + EventTagInfo.EventName +  #13#10;
+              ' = ' + IfThen(MethodName = '', ViewName + 'DataController' + EventTagInfo.EventName, MethodName) +  #13#10;
         eoDataSummury:
           DataEvent := DataEvent + '  DataController.Summary.On' + EventTagInfo.EventName +
-              ' = ' + ViewName + 'DataControllerSummary' + EventTagInfo.EventName +  #13#10;
+              ' = ' + IfThen(MethodName = '', ViewName + 'DataControllerSummary' + EventTagInfo.EventName, MethodName) +  #13#10;
       end;
     end;
   end;
@@ -508,7 +544,7 @@ function TConverterRealDBGridToCXGrid.GetAddedUses: TArray<string>;
 begin
   Result := [
       'Variants', 'TzzU_DataBase', 'RealGridHelper',
-      'cxGridLevel', 'cxGridCustomTableView',
+      'cxGridLevel', 'cxGridCustomTableView', 'cxImageComboBox',
       'cxGridTableView', 'cxGridBandedTableView', 'cxGridDBBandedTableView', 'cxClasses',
       'cxGridCustomView', 'cxGrid', 'cxGraphics', 'cxControls', 'cxLookAndFeels',
       'cxLookAndFeelPainters', 'cxStyles', 'cxCustomData', 'cxFilter',

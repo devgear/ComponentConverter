@@ -7,7 +7,7 @@ uses
   System.Classes, System.SysUtils, System.Generics.Collections,
   Vcl.Forms, Vcl.Controls;
 
-const
+//const
 //  GRIDNAME_REGEX = '('
 //              +'[Rr]eal[Gg]rid\d+|rgd\_SuSun|RealGrid\_First|RGrid\_Sale|RGrid\_Save\d|RGrid\_Search'
 //              + '|RGrid\_Style|RGrid\_Shop|RGrid\_ExpSty\d|RGrid\_Point|RGrid\_Template
@@ -26,14 +26,6 @@ const
 //  ')';
 
 // ktbook
-  GRIDNAME_REGEX = '(' +
-    'RDBGrid[a-zA-Z\d_]+' +
-    '|' +
-    'RealDBGrid[a-zA-Z\d_]+' +
-  ')';
-
-  VIEWNAME_REGEX = '(SetRGrid|aRGrid|R1)';
-  INDEX_REGEX = '\[[\w\(\)\[\]\+\-\*\.\s]+\]';
 
 type
   TAssignType = (
@@ -55,6 +47,7 @@ type
     function GetFilename: string;
   protected
     FConvData: TConvertData;
+    FCurrIndex: Integer;
     // 컨버터 설명
     function GetCvtCompClassName: string; virtual; abstract; // 변환 대상 컴포넌트 클래스명
     function GetDescription: string; virtual;
@@ -64,6 +57,8 @@ type
 
     function IsContainsRegEx(ASrc: string; ASearchPattern: string): Boolean;
     function IsContainsRegExCompName(ASrc: string; ASearchPattern: string; var CompName: string): Boolean;
+//    function GetCompName(ASrc: string): string;
+//    function GetIndex(ASrc: string): string;
     function TryRegExGridConvert(ASrc: string; ASearchPattern, AReplacePattern: string; var ADest: string): Boolean;
 
     property ConvData: TConvertData read FConvData;
@@ -108,7 +103,7 @@ type
 implementation
 
 uses
-//  ConvertUtils,
+  SrcConvertUtils,
   System.IOUtils, Logger, System.RegularExpressions,
   System.Rtti, System.TypInfo;
 
@@ -279,6 +274,11 @@ begin
   end;
 end;
 
+//function TConverter.GetCompName(ASrc: string): string;
+//begin
+//  Result := TRegEx.Match(ASrc, GRIDNAME_REGEX).Value.Replace('.', '').Trim;
+//end;
+
 function TConverter.GetDescription: string;
 begin
 end;
@@ -287,6 +287,23 @@ function TConverter.GetFilename: string;
 begin
   Result := FConvData.FileInfo.Filename;
 end;
+
+//function TConverter.GetIndex(ASrc: string): string;
+//var
+//  Idx: string;
+//begin
+//  Idx := TRegEx.Match(ASrc, INDEX_REGEX).Value.Trim;
+//  // 첫번째 [ 제거
+//  if Idx.StartsWith('[') then
+//    Idx := Idx.Substring(1);
+//  // 마지막 ] 제거(또는 ].)
+//  if Idx.EndsWith('].') then
+//    Idx := Idx.Substring(0, Idx.Length - 2);
+//  if Idx.EndsWith(']') then
+//    Idx := Idx.Substring(0, Idx.Length - 1);
+//
+//  Result := Idx;
+//end;
 
 function TConverter.IsContainsRegEx(ASrc, ASearchPattern: string): Boolean;
 var
@@ -307,7 +324,7 @@ begin
   Result := Matchs.Count > 0;
 
   if Result then
-    CompName  := TRegEx.Match(ASrc, GRIDNAME_REGEX).Value.Replace('.', '').Trim;
+    CompName  := TConvUtils.GetCompName(ASrc);
 end;
 
 function TConverter.TryRegExGridConvert(ASrc, ASearchPattern,
@@ -331,19 +348,9 @@ begin
     Src := Match.Value;
 
     if AReplacePattern.Contains('[[COMP_NAME]]') then
-      Comp  := TRegEx.Match(Src, GRIDNAME_REGEX).Value.Replace('.', '').Trim;
+      Comp  := TConvUtils.GetCompName(Src);
     if AReplacePattern.Contains('[[INDEX]]') then
-    begin
-      Idx := TRegEx.Match(Src, INDEX_REGEX).Value.Trim;
-      // 첫번째 [ 제거
-      if Idx.StartsWith('[') then
-        Idx := Idx.Substring(1);
-      // 마지막 ] 제거(또는 ].)
-      if Idx.EndsWith('].') then
-        Idx := Idx.Substring(0, Idx.Length - 2);
-      if Idx.EndsWith(']') then
-        Idx := Idx.Substring(0, Idx.Length - 1);
-    end;
+      Idx := TConvUtils.GetIndex(Src);
 
     // 이미 변환된 TableView를 그리드로 인식하는 경우 제외
     if Comp.Contains('TableView') then
@@ -407,8 +414,11 @@ begin
     begin
       Idx := Pos('.', Src);
       FProcName := Copy(Src, Idx+1, Pos('(', Src)-Idx-1);
+      if FProcName = '' then
+        FProcName := Copy(Src, Idx+1, Pos(';', Src)-Idx-1);
     end;
 
+    FCurrIndex := I;
     Cnt := ConvertSource(FProcName, Src, Dest);
     if Cnt > 0 then
     begin
@@ -422,6 +432,8 @@ begin
 
   for I := 0 to ImplIdx-1 do
   begin
+    FCurrIndex := I;
+
     Src := AData.Source[I];
     Cnt := ConvertIntfSource(Src, Dest);
     if Cnt > 0 then

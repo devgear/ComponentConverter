@@ -19,6 +19,14 @@ type
     function GetPasFullpath(ARootPath: string): string;
   end;
 
+  // 컴포넌트 이벤트 정보
+  TCompEventInfo = record
+    EventName,
+    IntfCode,
+    ImplCode,
+    BeforeEventName: string;
+  end;
+
   // 변환정보
   TConvertData = class
   private
@@ -34,6 +42,7 @@ type
     FIsInherited: Boolean;
     // 분석 중인 폼의 이름(T 포함)
     FFormName: string;
+    FTotalEventInfos: TArray<TCompEventInfo>;
   public
     property FileInfo: TFileInfo read FFileInfo;
 
@@ -53,6 +62,9 @@ type
     property SrcDfm: TStringList read FSourceDfm;
     property SrcPas: TStringList read FSourcePas;
     property ConvDfm: TStringList read FConvertDfm;
+
+    // 모든 컴포넌트의 이벤트 정보 동일한 이벤트를 공유하면 재사용해야 함
+    property TotalEventInfos: TArray<TCompEventInfo> read FTotalEventInfos write FTotalEventInfos;
   end;
 
 

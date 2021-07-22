@@ -299,7 +299,7 @@ end;
 
 function GetColorToStyleName(AColor: string): string;
 const
-  COLOR_TO_STYLE: array[0..10] of array[0..1] of string = (
+  COLOR_TO_STYLE: array[0..14] of array[0..1] of string = (
     ('8454143', 'cxStyle1'),
     ('8454016', 'cxStyle2'),
     ('12615935', 'cxStyle3'),
@@ -310,8 +310,13 @@ const
     ('clMoneyGreen', 'cxStyle8'),
     ('clSilver', 'cxStyle9'),
     ('clSkyBlue', 'cxStyle10'),
-    ('clYellow', 'cxStyle11')
+    ('clYellow', 'cxStyle11'),
+    ('$0080FFFF', 'cxStyle1'),
+    ('$0080FF80', 'cxStyle2'),
+    ('$00C080FF', 'cxStyle3'),
+    ('$00FF9B9B', 'cxStyle4')
   );
+
 var
   I: Integer;
 begin

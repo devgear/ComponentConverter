@@ -117,7 +117,7 @@
         <DCCReference Include="Converter\ColumnConverter.pas"/>
         <DCCReference Include="Converter\GroupConverter.pas"/>
         <DCCReference Include="ExtractForm.pas">
-            <Form>Form1</Form>
+            <Form>frmExtract</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Release">

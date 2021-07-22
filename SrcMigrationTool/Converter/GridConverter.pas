@@ -7,6 +7,8 @@ uses
 
 type
   TGridConverter = class(TConverter)
+  private
+    function RealGridOptionToStr(ACompName, ASrc: string): string;
   protected
     function GetCvtCompClassName: string; override;
     function GetDescription: string; override;
@@ -20,11 +22,20 @@ type
     [Impl]
     function ConvertGridOptions(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
+    function ConvertGridOptions2(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertGridOptionsCopy(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
     function ConvertGridRowHeight(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertKeyPressToKeyDown(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertDBFooterComment(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Intf]
+    function ConvertRemoveNotUsedIntf(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertRemoveNotUsed(AProc, ASrc: string; var ADest: string): Integer;
 
     [Impl]
     function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
@@ -33,6 +44,7 @@ type
 implementation
 
 uses
+  SrcConverterTypes,
   System.StrUtils,
   SrcConvertUtils,
   System.Classes, System.SysUtils;
@@ -83,8 +95,8 @@ var
   Keywords: TArray<string>;
 begin
   Result := 0;
-  if not SrcFilename.Contains('TbF_206P') then
-    Exit;
+//  if not SrcFilename.Contains('TbF_206P') then
+//    Exit;
 
   if not AProc.Contains('Rtrv') then
     Exit;
@@ -94,6 +106,23 @@ begin
   ];
 
   Inc(Result, AddComments(ADest, Keywords));
+end;
+
+function TGridConverter.RealGridOptionToStr(ACompName, ASrc: string): string;
+var
+  IsAdded: string;
+begin
+  Result := '';
+  ASrc := ASrc.ToLower;
+  IsAdded := IfThen(ASrc.Contains('+'), 'True', 'False');
+  if ASrc.Contains('wgoEditing'.ToLower) then
+    Result := IfThen(Result = '', '', Result + #13#10) + ACompName + Format('.OptionsData.Editing := %s;', [IsAdded]);
+  if ASrc.Contains('wgoInserting'.ToLower) then
+    Result := IfThen(Result = '', '', Result + #13#10) + ACompName + Format('.OptionsData.Inserting := %s;', [IsAdded]);
+  if ASrc.Contains('wgoAlwaysShowEditor'.ToLower) then
+    Result := IfThen(Result = '', '', Result + #13#10) + ACompName + Format('.OptionsBehavior.ImmediateEditor := %s;', [IsAdded]);
+  if ASrc.Contains('wgoDeleting'.ToLower) then
+    Result := IfThen(Result = '', '', Result + #13#10) + ACompName + Format('.OptionsData.Deleting := %s;', [IsAdded]);
 end;
 
 function TGridConverter.ConvertGridOptions(AProc, ASrc: string;
@@ -111,31 +140,83 @@ begin
   if IsContainsRegExCompName(ASrc, SEARCH_PATTERN, CompName) then
   begin
     ADest := '';
-    CompName := GetIndent(ASrc) + REPLACE_FORMAT.Replace('[[COMP_NAME]]', CompName);
-    if ASrc.Contains('+') then
-    begin
-      if ASrc.Contains('wgoEditing') then
-        ADest := IfThen(ADest = '', '', ADest + #13#10) + CompName + '.OptionsData.Editing := True;';
-      if ASrc.Contains('wgoInserting') then
-        ADest := IfThen(ADest = '', '', ADest + #13#10) + CompName + '.OptionsData.Inserting := True;';
-    end
-    else if ASrc.Contains('-') then
-    begin
-      if ASrc.Contains('wgoEditing') then
-        ADest := IfThen(ADest = '', '', ADest + #13#10) + CompName + '.OptionsData.Editing := False;';
-      if ASrc.Contains('wgoInserting') then
-        ADest := IfThen(ADest = '', '', ADest + #13#10) + CompName + '.OptionsData.Inserting := False;';
-    end
-    else
-    // Assign
-    begin
-
-    end;
+    CompName := TConvUtils.GetIndent(ASrc) + REPLACE_FORMAT.Replace('[[COMP_NAME]]', CompName);
+    ADest := RealGridOptionToStr(CompName, ASrc);
 
     if ADest = '' then
       ADest := ASrc
     else
       Result := 1;
+  end;
+end;
+
+{
+         RDBGridMaster.Options := RDBGridMaster.Options
+                                - [wgoAlwaysShowEditor, wgoEditing];
+}
+function TGridConverter.ConvertGridOptions2(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN = '(\+|\-)*[\s]*\[wgo[\w\,\s]+\]\;';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1';
+var
+  CompName: string;
+  SrcPrv: string;
+begin
+  Result := 0;
+  ADest := ASrc;
+
+  if IsContainsRegExCompName(ASrc, SEARCH_PATTERN, CompName) then
+  begin
+    if CompName <> '' then
+      Exit;
+    SrcPrv := FConvData.Source[FCurrIndex - 1];
+    CompName  := TConvUtils.GetCompName(SrcPrv);
+    CompName := TConvUtils.GetIndent(SrcPrv) + REPLACE_FORMAT.Replace('[[COMP_NAME]]', CompName);
+
+    ADest := RealGridOptionToStr(CompName, ASrc);
+    if ADest = '' then
+    begin
+      ADest := ASrc;
+      Exit;
+    end;
+
+    FConvData.Source[FCurrIndex - 1] := '// ' + SrcPrv;
+    Result := 1;
+  end;
+end;
+
+function TGridConverter.ConvertGridOptionsCopy(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Oo]ptions[\s]*\:\=[\s]*' + GRIDNAME_REGEX +'\.[Oo]ptions\;';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1';
+var
+  Tmp, Indent: string;
+  CompName, LCompName, RCompName: string;
+begin
+  Result := 0;
+  ADest := ASrc;
+
+  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  begin
+    Tmp := Copy(ASrc, 1, ASrc.IndexOf(':='));
+    CompName := TConvUtils.GetCompName(Tmp);
+    LCompName := REPLACE_FORMAT.Replace('[[COMP_NAME]]', CompName);
+
+    Tmp := Copy(ASrc, ASrc.IndexOf(':='), Length(ASrc));
+    CompName := TConvUtils.GetCompName(Tmp);
+    RCompName := REPLACE_FORMAT.Replace('[[COMP_NAME]]', CompName);
+
+    Indent := TConvUtils.GetIndent(ASrc);
+
+    ADest := '';
+    ADest := ADest + Indent + LCompName + '.OptionsData.Editing := ' + RCompName + '.OptionsData.Editing;'#13#10;
+    ADest := ADest + Indent + LCompName + '.OptionsData.Inserting := ' + RCompName + '.OptionsData.Inserting;'#13#10;
+    ADest := ADest + Indent + LCompName + '.OptionsData.Deleting := ' + RCompName + '.OptionsData.Deleting;'#13#10;
+    ADest := ADest + Indent + LCompName + '.OptionsBehavior.ImmediateEditor := ' + RCompName + '.OptionsBehavior.ImmediateEditor;'#13#10;
+
+    Inc(Result);
   end;
 end;
 
@@ -153,7 +234,11 @@ end;
 
 function TGridConverter.ConvertKeyPressToKeyDown(AProc, ASrc: string;
   var ADest: string): Integer;
+{
+if ((Key < '0') or (Key > '9')) and (Key <> ',') and (Key <> #8 ) and (Key <> #13 ) and (Key <> #27 )
+}
 var
+  I: Integer;
   Datas: TChangeDatas;
 begin
   Result := 0;
@@ -161,14 +246,67 @@ begin
   if not AProc.Contains('EditKeyDown') then
     Exit;
 
+  Datas.Add('key =',         'Key =');
+
   // #제거
-  Datas.Add('Key := #',                   'Key := ');
-  Datas.Add('Key = #',                    'Key = ');
+  Datas.Add('Key := #',         'Key := ');
+  Datas.Add('Key = #',          'Key = ');
+  Datas.Add('Key <> #',         'Key <> ');
+
+  Datas.Add('Key < ''0''',      'Key < Ord(''0'')');
+  Datas.Add('Key > ''9''',      'Key > Ord(''9'')');
+  Datas.Add('Key <> '',''',     'Key <> Ord('','')');
+
+  for I := 0 to 9 do
+  begin
+    Datas.Add('Key = ''' + IntToStr(I) + '''',    'Key = Ord(''' + IntToStr(I) + ''')');
+    Datas.Add('Key := ''' + IntToStr(I) + '''',   'Key := Ord(''' + IntToStr(I) + ''')');
+  end;
+
+  Datas.Add('Key = ''+''',          'Key = Ord(''+'')');
 
   Datas.Add('Key in [',                   'Chr(Key) in [');
   Datas.Add('Key := UpperCase(Key)[1];',  'Key := Ord(UpperCase(Chr(Key))[1]);');
 
+  Datas.Add('.AsString <> Key',                   '.AsString <> Char(Key)');
+  // Acct
+  Datas.Add('AcctSave2(Key);',                   'AcctSave2(Char(Key));');
+  Datas.Add('TempKey : Char;',                   'TempKey : Word;');
+  Datas.Add('TempKey = ''+''',                   'TempKey = Ord(''+'')');
+
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
+end;
+
+function TGridConverter.ConvertRemoveNotUsed(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+  if SrcFilename.Contains('TaF_467IP') then
+  begin
+    if AProc = 'RealDBGrid1DrawCell' then
+    begin
+      if (ASrc.Trim = '') or (ASrc.Trim.StartsWith('//')) then
+        Exit;
+
+      ADest := '// ' + ASrc;
+      Inc(Result);
+    end;
+  end;
+end;
+
+function TGridConverter.ConvertRemoveNotUsedIntf(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+  if SrcFilename.Contains('TaF_467IP') then
+  begin
+    if ASrc.Contains('procedure RealDBGrid1DrawCell') then
+    begin
+      ADest := '// ' + ASrc;
+      FConvData.Source[FCurrIndex+1] := '// ' + FConvData.Source[FCurrIndex+1];
+      Inc(Result);
+    end;
+  end;
 end;
 
 function TGridConverter.ConvertWithGrid(AProc, ASrc: string;
@@ -206,7 +344,8 @@ begin
   ADest := ASrc;
 
   Keywords := [
-    '.GroupMode := '
+    '.GroupMode := ',
+    '.ImeMode := '
   ];
 
   // 제거

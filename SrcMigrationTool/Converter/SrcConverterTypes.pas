@@ -5,6 +5,17 @@ interface
 uses
   System.Classes, System.SysUtils, System.IOUtils;
 
+const
+  GRIDNAME_REGEX = '(' +
+    'RDBGrid[a-zA-Z\d_]+' +
+    '|' +
+    'RealDBGrid[a-zA-Z\d_]+' +
+  ')';
+
+  VIEWNAME_REGEX = '(SetRGrid|aRGrid|R1)';
+  INDEX_REGEX = '\[[\w\(\)\[\]\+\-\*\.\s]+\]';
+
+
 type
   // DFM 파일 정보
   TFileInfo = class

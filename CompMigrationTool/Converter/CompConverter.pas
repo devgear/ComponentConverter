@@ -8,13 +8,6 @@ uses
   Vcl.Forms, Vcl.Controls;
 
 type
-  TCompEventInfo = record
-    EventName,
-    IntfCode,
-    ImplCode,
-    BeforeEventName: string;
-  end;
-
   TConverterClass = class of TConverter;
   // 실제 전환 작업은 해당 클래스를 상속받아 구현한다.
   // protected의 virtual 메소드를 전환대상에 맞춰 재구현해야 한다.
@@ -26,6 +19,7 @@ type
     procedure ReplaceComponentInDfm(AData: TConvertData);
     procedure InsertCompCodeToPas(AInsertLine: Integer; ASource: TStrings; ACompCode: string);
   protected
+    FConvData: TConvertData;
     // DFM 파일에서 변환할 컴포넌트 탐색(반복 변환 방지 코드 재구현 필요)
     function FindComponentInDfm(AData: TConvertData): Boolean; virtual;
     // 변환기 설명
@@ -371,7 +365,7 @@ var
     I: Integer;
     Text: string;
   begin
-    Result := AData.SrcPas.Count - 1;
+    Result := -1;
     for I := AData.SrcPas.Count - 1 downto 0 do
     begin
       Text := AData.SrcPas[I].Trim;
@@ -380,7 +374,7 @@ var
         Result := I;
       end;
 
-      if (Text = 'end;') then
+      if (Result > 0) and (Text = 'end;') then
       begin
         Break;
       end;
@@ -625,6 +619,8 @@ end;
 function TConverter.Convert(AData: TConvertData): Integer;
 begin
   Result := 0;
+
+  FConvData := AData;
 
   while FindComponentInDfm(AData) do
   begin

@@ -21,11 +21,14 @@ type
     function ConvertTitleVisible(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertGroupsCount(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
 implementation
 
 uses
+  SrcConverterTypes,
   System.StrUtils,
   SrcConvertUtils,
   System.Classes, System.SysUtils;
@@ -56,6 +59,21 @@ begin
   if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
   if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
     Inc(Result);
+end;
+
+function TGroupConverter.ConvertEtc(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Datas: TChangeDatas;
+  Keywords: TArray<string>;
+begin
+  Result := 0;
+  ADest := ASrc;
+
+  Datas.Add('Groups[0].Title.caption',   'Bands[0].Caption');
+
+  // Á¦°Å
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
 function TGroupConverter.ConvertGroupsCount(AProc, ASrc: string;

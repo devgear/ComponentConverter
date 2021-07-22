@@ -600,7 +600,7 @@ begin
   for I := AStartIdx to ADfmFile.Count-1 do
   begin
     S := ADfmFile[I];
-    if (S.TrimLeft.StartsWith('object ')) or (S.Trim = 'item') then
+    if (S.TrimLeft.StartsWith('object ')) or (S.Trim = 'item') or (S.TrimLeft.StartsWith('inherited')) then
       Inc(Level);
     if S.Trim.StartsWith('end') then
     begin

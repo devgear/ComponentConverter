@@ -17,7 +17,7 @@ uses
   GridConverter in 'Converter\GridConverter.pas',
   ColumnConverter in 'Converter\ColumnConverter.pas',
   GroupConverter in 'Converter\GroupConverter.pas',
-  ExtractForm in 'ExtractForm.pas' {Form1};
+  ExtractForm in 'ExtractForm.pas' {frmExtract};
 
 {$R *.res}
 
