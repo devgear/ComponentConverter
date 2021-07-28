@@ -126,7 +126,7 @@ begin
     end;
   end;
 
-  if FParser.FooterCount > 0 then
+  if FParser.FooterInfos.Count > 0 then
   begin
     CodeInfo := Default(TCompEventInfo);
 
@@ -252,8 +252,8 @@ begin
 
   GridText := GridText.Replace('[[POPUP_MENU]]',      FParser.Properties.ValuesDef['PopupMenu', 'nil']);
 
-  GridText := GridText.Replace('[[FOOTER_VISIBLE]]',  BoolToStr(FParser.FooterVisible, True));
-  GridText := GridText.Replace('[[FOOTER_MULTI]]',    BoolToStr(FParser.FooterCount > 1, True));
+  GridText := GridText.Replace('[[FOOTER_VISIBLE]]',  BoolToStr(FParser.FooterVisibleCount > 0, True));
+  GridText := GridText.Replace('[[FOOTER_MULTI]]',    BoolToStr(FParser.FooterVisibleCount > 1, True));
 
   GroupMode := StrToBoolDef(FParser.Properties.ValuesDef['GroupMode', 'False'], False);
   GrpFixedCount := StrToIntDef(FParser.Properties.ValuesDef['GrpFixedCount', '0'], 0);
@@ -375,7 +375,7 @@ begin
       else
         DecimalPlace := (ColumnInfo.EditFormat.Length - (ColumnInfo.EditFormat.IndexOf('.') + 1));
 
-      ColText := ColText.Replace('[[EDIT_FORMAT]]', ColumnInfo.EditFormat);
+      ColText := ColText.Replace('[[EDIT_FORMAT]]', ColumnInfo.EditFormat.Replace('''', ''''''));
       ColText := ColText.Replace('[[DECIMAL_PLACE]]', DecimalPlace.ToString); // 입력 시 소숫점자리수
 
       ColAlignText := TAG_CXGRID_COLUMN_ALIGN_HORZ;
@@ -414,8 +414,6 @@ begin
       ColText := TAG_CXGRID_COLUMN_DEF;
       ColAlignText := TAG_CXGRID_COLUMN_ALIGN_HORZ;
     end;
-
-
 
     FColumnCompList := FColumnCompList + #13#10'    ' + Format(ColName, [Idx]) + ': TcxGridDBBandedColumn;';
 
@@ -458,6 +456,14 @@ begin
     else
       ColText := ColText.Replace('[[COL_ALIGN]]',      ColAlignText.Replace('[[HORZ_ALIGN]]', ColumnInfo.Alignment));
 
+    if ColumnInfo.FooterAlign = '' then
+      if ColumnInfo.Alignment = '' then
+        ColText := ColText.Replace('[[FOOTER_ALIGN]]',      '')
+      else
+        ColText := ColText.Replace('[[FOOTER_ALIGN]]',      TAG_CXGRID_FOOTER_ALIGN.Replace('[[HORZ_ALIGN]]', ColumnInfo.Alignment));
+    else
+      ColText := ColText.Replace('[[FOOTER_ALIGN]]',      TAG_CXGRID_FOOTER_ALIGN.Replace('[[HORZ_ALIGN]]', ColumnInfo.FooterAlign));
+
     ColText := ColText.Replace('[[FIELD_NAME]]',      ColumnInfo.FieldName);
     ColText := ColText.Replace('[[ROW_INDEX]]',       IntToStr(ColumnInfo.Level));
 
@@ -488,13 +494,21 @@ begin
     ColList := ColList + ColText;
 
     // Footer 처리
-    if ColumnInfo.FooterStyle <> '' then
+      // FooterVisibleCount 만큼 생성, FVC > 1 경우
+    if ColumnInfo.FooterStyleVisibleCount > 0 then
     begin
-      FooterItem := TAG_CXGRID_FOOTER_ITEM;
-      FooterItem := FooterItem.Replace('[[FOOTER_KIND]]', ColumnInfo.FooterStyle);
-      FooterItem := FooterItem.Replace('[[FOOTER_COLUMN]]', Format(ColName, [Idx]));
+      for I := 0 to FParser.FooterInfos.Count - 1 do
+      begin
+        if not FParser.FooterInfos[I].Visible then
+          Continue;
+        FooterItem := TAG_CXGRID_FOOTER_ITEM;
+        FooterItem := FooterItem.Replace('[[FOOTER_KIND]]', 'skNone');
+        FooterItem := FooterItem.Replace('[[FOOTER_COLUMN]]', Format(ColName, [Idx]));
+        FooterItem := FooterItem.Replace('[[FOOTER_TEXT]]', ColumnInfo.FooterStyles[I].Value);
+        FooterItem := FooterItem.Replace('[[FOOTER_TAG]]', I.ToString);
 
-      FooterItems := FooterItems + FooterItem;
+        FooterItems := FooterItems + FooterItem;
+      end;
     end;
 
     Inc(Idx);

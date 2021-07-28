@@ -10,6 +10,7 @@ type
   protected
     function GetCvtCompClassName: string; override;
     function GetDescription: string; override;
+    function GetCvtBaseClassName: string; override;
   published
     [Impl]
     function ConvertBandsAdd(AProc, ASrc: string; var ADest: string): Integer;
@@ -19,6 +20,8 @@ type
     function ConvertGroups_Suffix(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertTitleVisible(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertTitleHeight(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertGroupsCount(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
@@ -128,6 +131,19 @@ begin
     Inc(Result);
 end;
 
+function TGroupConverter.ConvertTitleHeight(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Gg]roups' + INDEX_REGEX + '\.[Tt]itle\.[Hh]eight';
+begin
+  Result := 0;
+  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  begin
+    ADest := ASrc;
+    Inc(Result, AddComment(ADest, '].Title.Height'));
+  end;
+end;
+
 function TGroupConverter.ConvertTitleVisible(AProc, ASrc: string;
   var ADest: string): Integer;
 const
@@ -141,6 +157,11 @@ begin
   end;
 end;
 
+function TGroupConverter.GetCvtBaseClassName: string;
+begin
+  Result := 'TfrmTzzRealMaster2';
+end;
+
 function TGroupConverter.GetCvtCompClassName: string;
 begin
   Result := 'TcxGrid';
@@ -148,7 +169,7 @@ end;
 
 function TGroupConverter.GetDescription: string;
 begin
-  Result := '[Group] RG to cxGrid'
+  Result := 'TcxGrid:Groups/Bands'
 end;
 
 initialization

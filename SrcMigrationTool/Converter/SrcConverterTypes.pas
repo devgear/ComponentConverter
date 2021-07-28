@@ -7,11 +7,14 @@ uses
 
 const
   GRIDNAME_REGEX = '(' +
-    'RDBGrid[a-zA-Z\d_]+' +
+    'RDBG[Rr]id[a-zA-Z\d_]+' +
+    '|' +
+    'DBGridMaster' +
+    '|' +
+    'D[Bb]GridDetail' +
     '|' +
     'RealDBGrid[a-zA-Z\d_]+' +
   ')';
-
   VIEWNAME_REGEX = '(SetRGrid|aRGrid|R1)';
   INDEX_REGEX = '\[[\w\(\)\[\]\+\-\*\.\s]+\]';
 
@@ -46,7 +49,23 @@ type
     property Source: TStringList read FSource;
   end;
 
+//function GRIDNAME_REGEX(ACompName: string = ''): string;
+
+
 implementation
+
+//function GRIDNAME_REGEX(ACompName: string = ''): string;
+//begin
+//  Result := '(' +
+//    'RDBG[Rr]id[a-zA-Z\d_]+' +
+//    '|' +
+//    'DBGridMaster' +
+//    '|' +
+//    'D[Bb]GridDetail' +
+//    '|' +
+//    'RealDBGrid[a-zA-Z\d_]+' +
+//  ')';
+//end;
 
 { TFileInfo }
 

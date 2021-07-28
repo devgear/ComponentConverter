@@ -7,6 +7,11 @@ uses
   System.Generics.Collections, System.Classes, System.SysUtils;
 
 type
+  TFooterStyleInfo = record
+    Visible: string;
+    Value: string;
+  end;
+
   // 리얼그리드 컬럼 정보
   TRealGridColumnInfo = record
     Alignment: string;
@@ -20,7 +25,9 @@ type
     LevelIndex: Integer;
     Items: TArray<string>;
     Values: TArray<string>;
-    FooterStyle: string;
+//    FooterStyle: string;
+    FooterStyles: TArray<TFooterStyleInfo>;
+    FooterAlign: string;
 
     //
     Level: Integer;
@@ -34,6 +41,7 @@ type
 
     function EditFormatIsCurrency: Boolean;
     function EditFormatIsDate: Boolean;
+    function FooterStyleVisibleCount: Integer;
   end;
 
   // 리얼그리드 그룹 정보
@@ -46,6 +54,10 @@ type
     Levels: Integer;
   end;
 
+  TRealGridFooterInfo = record
+    Visible: Boolean;
+  end;
+
   TRealGridEventInfo = record
     Prop,           // 이벤트 종류(e.g. OnClick)
     Value: string;  // 이벤트(e.g. Button1Click)
@@ -55,15 +67,16 @@ type
   private
     FCollection: string;
 
-    FFooterCount: Integer;
     FColumn: TRealGridColumnInfo;
     FGroup: TRealGridGroupInfo;
+    FFooter: TRealGridFooterInfo;
 
     FColumnInfos: TList<TRealGridColumnInfo>;
     FGroupInfos: TList<TRealGridGroupInfo>;
+    FFooterInfos: TList<TRealGridFooterInfo>;
     FEventInfos: TList<TRealGridEventInfo>;
     function GetGroupMaxLevels: Integer;
-    function GetUseFooter: Boolean;
+    function GetFooterVisibleCount: Integer;
   protected
     procedure BeginCollection(AName: string); override;
     procedure EndCollection(AName: string); override;
@@ -80,8 +93,8 @@ type
     property ColumnInfos: TList<TRealGridColumnInfo> read FColumnInfos; // 그리드 컬럼 정보
     property GroupInfos: TList<TRealGridGroupInfo> read FGroupInfos;    // 그리드 그룹(밴드) 정보
     property EventInfos: TList<TRealGridEventInfo> read FEventInfos;    // 그리드 이벤트 정보
-    property FooterVisible: Boolean read GetUseFooter;
-    property FooterCount: Integer read FFooterCount;
+    property FooterInfos: TList<TRealGridFooterInfo> read FFooterInfos;
+    property FooterVisibleCount: Integer read GetFooterVisibleCount;
     property GroupMaxLevels: Integer read GetGroupMaxLevels;
   end;
 
@@ -99,8 +112,8 @@ begin
 
   FColumnInfos := TList<TRealGridColumnInfo>.Create;
   FGroupInfos := TList<TRealGridGroupInfo>.Create;
+  FFooterInfos := TList<TRealGridFooterInfo>.Create;
   FEventInfos := TList<TRealGridEventInfo>.Create;
-  FFooterCount := 0;
 end;
 
 
@@ -108,6 +121,7 @@ destructor TRealGridParser.Destroy;
 begin
   FColumnInfos.Free;
   FGroupInfos.Free;
+  FFooterInfos.Free;
   FEventInfos.Free;
 
   inherited;
@@ -143,7 +157,9 @@ begin
     FColumn.LevelIndex := 0;
     FColumn.Items := [];
     FColumn.Values := [];
-    FColumn.FooterStyle := '';
+//    FColumn.FooterStyle := '';
+    FColumn.FooterStyles := [];
+    FColumn.FooterAlign := '';
     FColumn.ColWidth := 64;
     FColumn.Alignment := '';
 
@@ -155,7 +171,7 @@ begin
     FColumn.EditStyle := '';
     FColumn.EditFormat := '';
   end
-  else
+  else if LowerCase(FCollection) = 'groups' then
   begin
     FGroup := Default(TRealGridGroupInfo);
     FGroup.Visible := True;
@@ -163,6 +179,11 @@ begin
     FGroup.TitleVisible := True;
     FGroup.TitleColor := '';
     FGroup.Levels := 1;
+  end
+  else if LowerCase(FCollection) = 'footers' then
+  begin
+    FFooter := Default(TRealGridFooterInfo);
+    FFooter.Visible := True;
   end;
 end;
 
@@ -175,7 +196,7 @@ begin
   else if LowerCase(FCollection) = 'groups' then
     FGroupInfos.Add(FGroup)
   else if LowerCase(FCollection) = 'footers' then
-    Inc(FFooterCount)
+    FFooterInfos.Add(FFooter)
   ;
 end;
 
@@ -191,9 +212,17 @@ begin
   end;
 end;
 
-function TRealGridParser.GetUseFooter: Boolean;
+function TRealGridParser.GetFooterVisibleCount: Integer;
+var
+  Info: TRealGridFooterInfo;
 begin
-  Result := FFooterCount > 0;
+  Result := 0;
+
+  for Info in FFooterInfos do
+  begin
+    if Info.Visible then
+      Inc(Result);
+  end;
 end;
 
 procedure TRealGridParser.WriteProperty(AProp, AValue: string);
@@ -251,6 +280,10 @@ begin
     else if AProp = 'EditFormat' then
       FColumn.EditFormat := AValue
 
+    else if AProp = 'Footer.Alignment' then
+      FColumn.FooterAlign := AValue
+
+
     ;
 
 //    Color: string;
@@ -275,10 +308,17 @@ begin
       FGroup.TitleColor := AValue
     ;
   end
+  else if LowerCase(FCollection) = 'footers' then
+  begin
+    if AProp = 'Visible' then
+      FFooter.Visible := StrToBool(AValue)
+  end
   ;
 end;
 
 procedure TRealGridParser.WriteListItem(AProp, AValue: string);
+var
+  Info: TFooterStyleInfo;
 begin
 //  OutputDebugString(PChar(Format('%s - %s', [AProp, AValue])));
   if LowerCase(FCollection) = 'columns' then
@@ -289,21 +329,25 @@ begin
       FColumn.Values := FColumn.Values + [AValue]
     else if AProp = 'Footer.Style' then
     begin
-      if AValue[1] = '1' then
-        FColumn.FooterStyle := 'skNone'
-      else if AValue[1] = '2' then
-        FColumn.FooterStyle := 'skCount'
-      else if AValue[1] = '3' then
-        FColumn.FooterStyle := 'skSum'
-      else if AValue[1] = '4' then
-        FColumn.FooterStyle := 'skAverage'
-      else if AValue[1] = '5' then
-        FColumn.FooterStyle := 'skMax'
-      else if AValue[1] = '6' then
-        FColumn.FooterStyle := 'skMin'
-      else // 0
-        FColumn.FooterStyle := ''
-      ;
+      Info := Default(TFooterStyleInfo);
+      Info.Visible := AValue[1];
+      Info.Value := Copy(AValue, 2, Length(AValue));
+      FColumn.FooterStyles := FColumn.FooterStyles + [Info];
+//      if AValue[1] = '1' then
+//        FColumn.FooterStyle := 'skNone'
+//      else if AValue[1] = '2' then
+//        FColumn.FooterStyle := 'skCount'
+//      else if AValue[1] = '3' then
+//        FColumn.FooterStyle := 'skSum'
+//      else if AValue[1] = '4' then
+//        FColumn.FooterStyle := 'skAverage'
+//      else if AValue[1] = '5' then
+//        FColumn.FooterStyle := 'skMax'
+//      else if AValue[1] = '6' then
+//        FColumn.FooterStyle := 'skMin'
+//      else // 0
+//        FColumn.FooterStyle := ''
+//      ;
     end;
   end;
 end;
@@ -324,6 +368,18 @@ begin
     Exit(False);
 
   Result := EditFormat.Contains('-') and EditFormat.Contains(';');
+end;
+
+function TRealGridColumnInfo.FooterStyleVisibleCount: Integer;
+var
+  Info: TFooterStyleInfo;
+begin
+  Result := 0;
+  for Info in FooterStyles do
+  begin
+    if Info.Visible = '1' then
+      Inc(Result);
+  end;
 end;
 
 end.

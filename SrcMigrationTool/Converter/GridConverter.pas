@@ -12,6 +12,7 @@ type
   protected
     function GetCvtCompClassName: string; override;
     function GetDescription: string; override;
+    function GetCvtBaseClassName: string; override;
   published
     [Impl]
     function ConvertWithGrid(AProc, ASrc: string; var ADest: string): Integer;
@@ -28,6 +29,8 @@ type
     [Impl]
     function ConvertGridRowHeight(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
+    function ConvertGridHeaderHeight(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
     function ConvertKeyPressToKeyDown(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertDBFooterComment(AProc, ASrc: string; var ADest: string): Integer;
@@ -36,6 +39,9 @@ type
     function ConvertRemoveNotUsedIntf(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertRemoveNotUsed(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
+    function ConvertBuildFromDataSet(AProc, ASrc: string; var ADest: string): Integer;
 
     [Impl]
     function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
@@ -70,6 +76,18 @@ begin
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
+function TGridConverter.ConvertBuildFromDataSet(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Bb]uild[Ff]rom[Dd]ata[Ss]et';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.DataController.CreateAllItems';
+begin
+  Result := 0;
+
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
+end;
+
 function TGridConverter.ConvertCustomDrawCell(AProc, ASrc: string;
   var ADest: string): Integer;
 var
@@ -84,6 +102,7 @@ begin
   Datas.Add('(AColumn <> nil)',           '(AViewInfo.Item <> nil)');
   Datas.Add('BCol',                       'ACanvas.Brush.Color');
   Datas.Add('FCol',                       'ACanvas.Font.Color');
+  Datas.Add('fCol',                       'ACanvas.Font.Color');
   Datas.Add('FStyle',                     'ACanvas.Font.Style');
 
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
@@ -123,6 +142,18 @@ begin
     Result := IfThen(Result = '', '', Result + #13#10) + ACompName + Format('.OptionsBehavior.ImmediateEditor := %s;', [IsAdded]);
   if ASrc.Contains('wgoDeleting'.ToLower) then
     Result := IfThen(Result = '', '', Result + #13#10) + ACompName + Format('.OptionsData.Deleting := %s;', [IsAdded]);
+end;
+
+function TGridConverter.ConvertGridHeaderHeight(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Hh]eaders\.[Hh]eight';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.OptionsView.HeaderHeight';
+begin
+  Result := 0;
+
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
 end;
 
 function TGridConverter.ConvertGridOptions(AProc, ASrc: string;
@@ -324,6 +355,11 @@ begin
     Inc(Result);
 end;
 
+function TGridConverter.GetCvtBaseClassName: string;
+begin
+  Result := 'TfrmTzzRealMaster2';
+end;
+
 function TGridConverter.GetCvtCompClassName: string;
 begin
   Result := 'TcxGrid';
@@ -331,7 +367,7 @@ end;
 
 function TGridConverter.GetDescription: string;
 begin
-  Result := '그리드 관련';
+  Result := 'TcxGrid:Grid';
 end;
 
 function TGridConverter.ConvertEtc(AProc, ASrc: string;

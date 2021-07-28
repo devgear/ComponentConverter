@@ -10,6 +10,7 @@ type
   protected
     function GetCvtCompClassName: string; override;
     function GetDescription: string; override;
+    function GetCvtBaseClassName: string; override;
   published
     [Impl]
     function ConvertFixedCount(AProc, ASrc: string; var ADest: string): Integer;
@@ -43,6 +44,9 @@ type
 
     [Impl]
     function ConvertColumItemsAdd(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
+    function ConvertColumsNum(AProc, ASrc: string; var ADest: string): Integer;
 
     // 단순변경은 최종적으로
     [Impl]
@@ -311,6 +315,21 @@ begin
   // To   : RealDBGrid1DBBandedTableView1.Columns[8].Styles.Header := dmDataBase.cxStyleBlue;
 end;
 
+function TColumnConverter.ConvertColumsNum(AProc, ASrc: string;
+  var ADest: string): Integer;
+{
+Acolumn = RealDBGrid1.Columns[27] then
+}
+const
+  SEARCH_PATTERN  = '\=\s' + GRIDNAME_REGEX + '\.[Cc]olumns'+INDEX_REGEX+'\sthen';
+  REPLACE_FORMAT  = '= [[COMP_NAME]]DBBandedTableView1.Columns[[[INDEX]]] then';
+begin
+  Result := 0;
+
+  if TryRegExGridConvert(ASrc, SEARCH_PATTERN, REPLACE_FORMAT, ADest) then
+    Inc(Result);
+end;
+
 function TColumnConverter.ConvertDBColumnsCaption(AProc, ASrc: string;
   var ADest: string): Integer;
 const
@@ -380,6 +399,11 @@ begin
     Inc(Result);
 end;
 
+function TColumnConverter.GetCvtBaseClassName: string;
+begin
+  Result := 'TfrmTzzRealMaster2';
+end;
+
 function TColumnConverter.GetCvtCompClassName: string;
 begin
   Result := 'TcxGrid';
@@ -387,7 +411,7 @@ end;
 
 function TColumnConverter.GetDescription: string;
 begin
-  Result := 'Column - TRealDBGrid to TcxGrid ';
+  Result := 'TcxGrid:Column';
 end;
 
 initialization

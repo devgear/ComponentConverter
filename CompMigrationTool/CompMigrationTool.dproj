@@ -131,6 +131,7 @@
         <DCCReference Include="Converter\Types\wControlDefine.pas"/>
         <DCCReference Include="Converter\ReplaceMemoFieldToStringFieldConv.pas"/>
         <DCCReference Include="Converter\FDQryDirectExecuteConv.pas"/>
+        <DCCReference Include="Converter\LabelColorConverter.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

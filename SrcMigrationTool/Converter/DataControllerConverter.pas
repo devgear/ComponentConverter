@@ -10,6 +10,7 @@ type
   protected
     function GetCvtCompClassName: string; override;
     function GetDescription: string; override;
+    function GetCvtBaseClassName: string; override;
   published
     [Impl]
     function ConvertDataSource(AProc, ASrc: string; var ADest: string): Integer;
@@ -66,6 +67,11 @@ begin
     Inc(Result);
 end;
 
+function TDataControllerConverter.GetCvtBaseClassName: string;
+begin
+  Result := 'TfrmTzzRealMaster2';
+end;
+
 function TDataControllerConverter.GetCvtCompClassName: string;
 begin
   Result := 'TcxGrid';
@@ -73,7 +79,7 @@ end;
 
 function TDataControllerConverter.GetDescription: string;
 begin
-  Result := 'TcxGrid DataController';
+  Result := 'TcxGrid:DataController';
 end;
 
 initialization

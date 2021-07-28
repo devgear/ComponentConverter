@@ -65,7 +65,11 @@ const
     '    OptionsCustomize.ColumnSorting = False'#13#10 +      // 컬럼 소팅 미사용
     '    OptionsBehavior.FocusCellOnCycle = True'#13#10 +     // 마지막 컬럼에서 다음 행 첫컬럼으로 이동
 
+    '    OptionsView.NoDataToDisplayInfoText = ''<데이터가 없습니다.>'''#13#10 +
     '    Styles.Selection = [[SEL_BG_COLOR]]'#13#10 +         // 선택 색상
+    '    Styles.Footer = dmDataBase.cxStyleFooter9'#13#10 +
+    '    Styles.Header = dmDataBase.cxStyleHeader'#13#10 +
+    '    Styles.BandHeader = dmDataBase.cxStyleHeader'#13#10 +
 
     '[[DATA_EVENT]]'#13#10 +
     '    Bands = <'#13#10 +
@@ -90,7 +94,7 @@ const
     '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
 
     '      Visible = [[VISIBLE]]'#13#10 +
-    '      FooterAlignmentHorz = taCenter'#13#10 +
+    '      [[FOOTER_ALIGN]]'+
     '      HeaderAlignmentHorz = taCenter'#13#10 +
     '      HeaderAlignmentVert = vaCenter'#13#10 +
     '      HeaderGlyphAlignmentHorz = taCenter'#13#10 +
@@ -155,6 +159,7 @@ const
 
   TAG_CXGRID_COLUMN_ALIGN_HORZ  = 'Properties.Alignment.Horz = [[HORZ_ALIGN]]'#13#10;
   TAG_CXGRID_COLUMN_ALIGN       = 'Properties.Alignment = [[HORZ_ALIGN]]'#13#10;
+  TAG_CXGRID_FOOTER_ALIGN       = 'FooterAlignmentHorz = [[HORZ_ALIGN]]'#13#10;
 
   TAG_CXGRID_COLUMN_ITEM = '' +
     '        item'#13#10 +
@@ -209,6 +214,8 @@ const
     '        OnGetText = SummaryItemsGetText'#13#10 +
     '        Kind = [[FOOTER_KIND]]'#13#10 +
     '        Column = [[FOOTER_COLUMN]]'#13#10 +
+    '        DisplayText = ''[[FOOTER_TEXT]]'''#13#10 +
+    '        Tag = [[FOOTER_TAG]]'#13#10 +
     '      end'#13#10
   ;
 
@@ -259,9 +266,12 @@ const
   TAG_PROC_VIEW_RECCHG = TAG_PROC_VIEW_COMMON + '('#13#10 +
     '      Sender: TcxCustomGridTableView; APrevFocusedRecord,'#13#10 +
     '      AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);';
+  TAG_PROC_VIEW_INIT_EDIT = TAG_PROC_VIEW_COMMON + '('#13#10 +
+    '      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;'#13#10 +
+    '      AEdit: TcxCustomEdit);';
 
 const
-  EventTagInfos: array[0..8] of TEventTagInfo =
+  EventTagInfos: array[0..9] of TEventTagInfo =
     (
       (EventName: 'EditDblClick';         RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDIT_DBLCLICK),
       (EventName: 'EditKeyDown';          RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
@@ -272,7 +282,8 @@ const
       (EventName: 'Enter';                RGEvent: 'OnEnter';	            EventOwner: eoGrid;         ProcTag: TAG_PROC_GRID_SENDER),
       (EventName: 'Exit';                 RGEvent: 'OnExit';              EventOwner: eoGrid;         ProcTag: TAG_PROC_GRID_SENDER),
       (EventName: 'MouseDown';            RGEvent: 'OnMouseDown';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_MOUSEDOWN),
-      (EventName: 'FocusedRecordChanged'; RGEvent: 'OnRowChange';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_RECCHG)
+      (EventName: 'FocusedRecordChanged'; RGEvent: 'OnRowChange';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_RECCHG),
+      (EventName: 'InitEdit';             RGEvent: 'OnEdit';	            EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_INIT_EDIT)
     );
 
 function GetEventTagInfo(ARGEventProp: string; var OutInfo: TEventTagInfo): Boolean;

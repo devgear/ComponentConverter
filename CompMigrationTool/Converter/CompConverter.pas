@@ -33,7 +33,7 @@ type
     //  하나의 컴포넌트를 여러개의 컴포넌트로 변환 시 추가 컴포넌트 내용
     function GetConvertCompList(AMainCompName: string): string; virtual;
     //  제거할 Uses 구문
-    function GetRemoveUses: TArray<string>; virtual; abstract;
+    function GetRemoveUses: TArray<string>; virtual;
     //  추가할 Uses 구문
     function GetAddedUses: TArray<string>; virtual;
 
@@ -245,6 +245,11 @@ begin
   Result := Format('%s to %s 변화', [GetComponentClassName, GetConvertCompClassName])
 end;
 
+function TConverter.GetRemoveUses: TArray<string>;
+begin
+  Result := [];
+end;
+
 procedure TConverter.InsertCompCodeToPas(AInsertLine: Integer; ASource: TStrings; ACompCode: string);
 var
   I: Integer;
@@ -352,11 +357,14 @@ var
         Exit(True);
     end;
 
-    for I := UsesIdx.ImplimentationUsesStartIndex to UsesIdx.ImplimentationUsesEndIndex do
+    if UsesIdx.ImplimentationUsesStartIndex > -1 then
     begin
-      Line := AData.SrcPas[I];
-      if IsIncludeUnitNameInUses(AUnitName, Line) then
-        Exit(True);
+      for I := UsesIdx.ImplimentationUsesStartIndex to UsesIdx.ImplimentationUsesEndIndex do
+      begin
+        Line := AData.SrcPas[I];
+        if IsIncludeUnitNameInUses(AUnitName, Line) then
+          Exit(True);
+      end;
     end;
   end;
 

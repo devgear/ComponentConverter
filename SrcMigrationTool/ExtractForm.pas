@@ -17,6 +17,7 @@ type
     mmoFooter: TMemo;
     Label1: TLabel;
     edtKeywordFooter: TEdit;
+    Label2: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnFooterClick(Sender: TObject);
   private
@@ -42,9 +43,10 @@ procedure TfrmExtract.btnFooterClick(Sender: TObject);
 var
   Info: TFileInfo;
   SrcFile: TStringList;
-  I, ImplIdx, Idx: Integer;
+  I, J, ImplIdx, Idx: Integer;
   S, Pattern: string;
   Matchs: TMatchCollection;
+  HasWhile, HasFind: Boolean;
 begin
   SrcFile := TStringList.Create;
   Pattern := edtKeywordFooter.Text;
@@ -67,29 +69,34 @@ begin
         Continue;
       end;
 
-      Matchs := TRegEx.Matches(S, Pattern, [roIgnoreCase]);
-      if Matchs.Count > 0 then
-      begin
-        Idx := I;
-        Break;
-      end;
-    end;
-
-    // 찾는 패턴이 없으면 다음 파일
-    if idx = -1 then
-      Continue;
-
-    // Idx 위로 올라가며 procedure 시작전 enableControls가 있는지 찾기
-    for I := Idx downto ImplIdx do
-    begin
-      S := SrcFile[I];
-      if S.Contains('EnableControls') or S.Contains('enablecontrols') then
-        Break;
-
       if S.StartsWith('procedure ') then
       begin
-        mmoFooter.Lines.Add(Info.Filename);
-        Break;
+        HasWhile := False;
+        HasFind := False;
+      end;
+
+      if (not HasWhile) and S.Contains('while ') then
+        HasWhile := True;
+
+      Matchs := TRegEx.Matches(S, Pattern, [roIgnoreCase]);
+      if (not HasFind) and HasWhile and (Matchs.Count > 0) then
+      begin
+        Idx := I;
+
+        // Idx 위로 올라가며 procedure 시작전 enableControls가 있는지 찾기
+        for J := Idx downto ImplIdx do
+        begin
+          S := SrcFile[J];
+          if S.Contains('EnableControls') or S.Contains('enablecontrols') then
+            Break;
+
+          if S.StartsWith('procedure ') then
+          begin
+            mmoFooter.Lines.Add(Format('%s (%d : %s)', [Info.Filename, Idx, SrcFile[Idx]]));
+            HasFind := True;
+            Break;
+          end;
+        end;
       end;
     end;
   end;

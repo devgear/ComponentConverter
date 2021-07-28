@@ -110,6 +110,15 @@ end
     function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
   end;
 
+  TConverterwDateEdit = class(TConverterwControl)
+  protected
+    function GetComponentClassName: string; override;
+    function GetConvertCompClassName: string; override;
+    function GetAddedUses: TArray<string>; override;
+
+    function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
+  end;
+
 implementation
 
 { TConverterwControl }
@@ -141,6 +150,8 @@ begin
           .Replace('mlbsLine', 'ebsSingle')   // wNumLabel, wLabel
     else if S.Contains(' Format =') then
       ACompText[I] := S.Replace(' Format =', ' Properties.DisplayFormat =')
+    else if S.Contains(' EditFormat =') then
+      ACompText[I] := S.Replace(' EditFormat =', ' Properties.EditFormat =')
 
     else if S.Contains(' EditMask =') then
       ACompText[I] := S.Replace(' EditMask =', ' Properties.EditMask =').Replace(';0;''', ';0;_''')
@@ -314,12 +325,48 @@ begin
   Result.Insert(1, Props);
 end;
 
+{ TConverterwDateEdit }
+
+function TConverterwDateEdit.GetAddedUses: TArray<string>;
+begin
+  Result := ['cxCalendar'];
+end;
+
+function TConverterwDateEdit.GetComponentClassName: string;
+begin
+  Result := 'TwDateEdit';
+end;
+
+function TConverterwDateEdit.GetConvertCompClassName: string;
+begin
+  Result := 'TcxDateEdit';
+end;
+
+function TConverterwDateEdit.GetConvertedCompStrs(
+  ACompText: TStrings): TStrings;
+var
+  I: Integer;
+  S: string;
+begin
+  Result := inherited;
+
+  for I := 0 to Result.Count - 1 do
+  begin
+    S := Result[I];
+    if S.Contains('Time = ') then
+      Result[I] := ''
+    else if S.Contains('Checked = ') then
+      Result[I] := '';
+  end;
+end;
+
 initialization
   TConvertManager.Instance.Regist(TConverterwNumEdit);
   TConvertManager.Instance.Regist(TConverterwLabel);
   TConvertManager.Instance.Regist(TConverterwNumLabel);
   TConvertManager.Instance.Regist(TConverterwEdit);
   TConvertManager.Instance.Regist(TConverterwMaskEdit);
+  TConvertManager.Instance.Regist(TConverterwDateEdit);
 
 finalization
 

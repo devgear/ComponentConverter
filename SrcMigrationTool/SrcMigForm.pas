@@ -150,6 +150,7 @@ begin
     Application.ProcessMessages;
   end;
 
+  ProgressBar1.Position := ProgressBar1.Max;
   ShowMessage(Format('%d 건이 변경되었습니다.', [TotalCount]));
   TLogger.Log('Finish migration [Count: %d]', [TotalCount]);
 end;

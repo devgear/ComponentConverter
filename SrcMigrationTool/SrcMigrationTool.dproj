@@ -110,15 +110,18 @@
         <DCCReference Include="..\Common\ConverterManager.pas"/>
         <DCCReference Include="..\Common\Converter.pas"/>
         <DCCReference Include="..\Common\ConverterTypes.pas"/>
-        <DCCReference Include="Converter\SelectedConverter.pas"/>
-        <DCCReference Include="Converter\EtcConverter.pas"/>
-        <DCCReference Include="Converter\DataControllerConverter.pas"/>
-        <DCCReference Include="Converter\GridConverter.pas"/>
-        <DCCReference Include="Converter\ColumnConverter.pas"/>
-        <DCCReference Include="Converter\GroupConverter.pas"/>
         <DCCReference Include="ExtractForm.pas">
             <Form>frmExtract</Form>
-            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Converter\GridConverter.pas"/>
+        <DCCReference Include="Converter\DataControllerConverter.pas"/>
+        <DCCReference Include="Converter\ColumnConverter.pas"/>
+        <DCCReference Include="Converter\GroupConverter.pas"/>
+        <DCCReference Include="Converter\SelectedConverter.pas"/>
+        <DCCReference Include="Converter\EventConverter.pas"/>
+        <DCCReference Include="Converter\CustomConverter.pas"/>
+        <DCCReference Include="Converter\EtcConverter.pas">
+            <Form>$R *.res</Form>
         </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

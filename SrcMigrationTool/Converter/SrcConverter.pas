@@ -50,6 +50,7 @@ type
     FCurrIndex: Integer;
     // 컨버터 설명
     function GetCvtCompClassName: string; virtual; abstract; // 변환 대상 컴포넌트 클래스명
+    function GetCvtBaseClassName: string; virtual;
     function GetDescription: string; virtual;
 
     function ConvertSource(AProc, ASrc: string; var ADest: string): Integer; virtual;
@@ -279,6 +280,11 @@ end;
 //  Result := TRegEx.Match(ASrc, GRIDNAME_REGEX).Value.Replace('.', '').Trim;
 //end;
 
+function TConverter.GetCvtBaseClassName: string;
+begin
+  Result := '';
+end;
+
 function TConverter.GetDescription: string;
 begin
 end;
@@ -368,7 +374,7 @@ end;
 
 function TConverter.Convert(AData: TConvertData): Integer;
 var
-  Src, Dest, CompTag, Converted, CompClassName: string;
+  Src, Dest, CompTag, Converted, CompClassName, BaseClassName: string;
   I, ImplIdx, Idx, Cnt: Integer;
   HasComp: Boolean;
   FProcName: string;
@@ -379,6 +385,7 @@ begin
 
   // 작업 대상 확인
   CompClassName := GetCvtCompClassName;
+  BaseClassName := GetCvtBaseClassName;
   if CompClassName <> '' then
   begin
     HasComp := False;
@@ -386,9 +393,19 @@ begin
     for I := 0 to AData.Source.Count - 1 do
     begin
       Src := AData.Source[I];
-
       if Src.Contains(CompTag) then
         HasComp := True;
+    end;
+
+    if (not HasComp) and (BaseClassName <> '') then
+    begin
+      CompTag := Format(' = class(%s)', [BaseClassName]);
+      for I := 0 to AData.Source.Count - 1 do
+      begin
+        Src := AData.Source[I];
+        if Src.Contains(CompTag) then
+          HasComp := True;
+      end;
     end;
 
     if not HasComp then

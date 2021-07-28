@@ -24,7 +24,8 @@ uses
   wControlConv in 'Converter\wControlConv.pas',
   wControlDefine in 'Converter\Types\wControlDefine.pas',
   ReplaceMemoFieldToStringFieldConv in 'Converter\ReplaceMemoFieldToStringFieldConv.pas',
-  FDQryDirectExecuteConv in 'Converter\FDQryDirectExecuteConv.pas';
+  FDQryDirectExecuteConv in 'Converter\FDQryDirectExecuteConv.pas',
+  LabelColorConverter in 'Converter\LabelColorConverter.pas';
 
 {$R *.res}
 

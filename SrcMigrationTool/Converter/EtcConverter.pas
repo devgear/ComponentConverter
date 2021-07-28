@@ -10,6 +10,7 @@ type
   protected
     function GetCvtCompClassName: string; override;
     function GetDescription: string; override;
+    function GetCvtBaseClassName: string; override;
   published
     [Intf]
     [Impl]
@@ -132,6 +133,8 @@ begin
   Datas.Add('.DataBase;', '.Connection as TFDConnection;');
   Datas.Add('.DataBase.Commit;', '.Connection.Commit;');
 
+  // Make
+  Datas.Add('UsedPaperCHK[j];', 'UsedPaperCHK[j] := 0;');
 
   Datas.Add('Sender is TwEdit', 'Sender is TcxTextEdit');
   Datas.Add('Sender As TwEdit', 'Sender As TcxTextEdit');
@@ -303,6 +306,11 @@ begin
   end;
 end;
 
+function TEtcConverter.GetCvtBaseClassName: string;
+begin
+  Result := 'TfrmTzzRealMaster2';
+end;
+
 function TEtcConverter.GetCvtCompClassName: string;
 begin
   Result := '';
@@ -371,13 +379,8 @@ var
   Keywords: TArray<string>;
 begin
   Result := 0;
-  if not SrcFilename.Contains('TbF_206P') then
-    Exit;
 
-  if not AProc.Contains('Rtrv') then
-    Exit;
-
-  if ASrc.Contains('kmt_master.AddIndex') then
+  if ASrc.Contains('.AddIndex(') then
   begin
     if ASrc.Contains(''', ''''{Exp}, []);') then
       Exit;
@@ -385,6 +388,7 @@ begin
     ADest := ASrc;
     Inc(Result, ReplaceKeyword(ADest, ''', []);', ''', ''''{Exp}, []);'));
   end;
+
 end;
 
 function TKbmMemTableConvert.GetCvtCompClassName: string;
