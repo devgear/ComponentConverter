@@ -25,7 +25,7 @@ type
     function GetRemoveUses: TArray<string>; override;
     // 컴포넌트 이름 취득 후 UpdateObject에 해당 이름이 설정된 TFDQuery 찾기
     // TFDQuery의 Connection 속성을 TFDUpdateSQL에 복사
-    function GetConvertedCompText(ACompText: TStrings): string; override;
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
 
     function GetDescription: string; override;
   end;
@@ -111,11 +111,12 @@ begin
   Result := 'TFDUpdateSQL';
 end;
 
-function TConverterUpdateSQLConnection.GetConvertedCompText(ACompText: TStrings): string;
+function TConverterUpdateSQLConnection.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 begin
   if FConnStr <> '' then
     ACompText.Insert(1, FConnStr);
-  Result := ACompText.Text;
+  Result := True;
+  Output := ACompText.Text;
 end;
 
 function TConverterUpdateSQLConnection.GetDescription: string;

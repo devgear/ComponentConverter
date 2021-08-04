@@ -15,7 +15,7 @@ type
     function GetComponentClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetRemoveUses: TArray<string>; override;
-    function GetConvertedCompText(ACompText: TStrings): string; override;
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
 
     function GetDescription: string; override;
   end;
@@ -64,9 +64,10 @@ begin
   Result := '';
 end;
 
-function TConverterRmPnlSkinSetting.GetConvertedCompText(ACompText: TStrings): string;
+function TConverterRmPnlSkinSetting.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 begin
-  Result := '';
+  Output := '';
+  Result := True;
 end;
 
 function TConverterRmPnlSkinSetting.GetDescription: string;

@@ -25,7 +25,10 @@ uses
   wControlDefine in 'Converter\Types\wControlDefine.pas',
   ReplaceMemoFieldToStringFieldConv in 'Converter\ReplaceMemoFieldToStringFieldConv.pas',
   FDQryDirectExecuteConv in 'Converter\FDQryDirectExecuteConv.pas',
-  LabelColorConverter in 'Converter\LabelColorConverter.pas';
+  EtcPropsConverter in 'Converter\EtcPropsConverter.pas',
+  FDQueryFieldSizeConverter in 'Converter\FDQueryFieldSizeConverter.pas',
+  cxGridViewParser in 'Parser\cxGridViewParser.pas',
+  GridBandHeaderMergeForm in 'GridBandHeaderMergeForm.pas' {frmBandHeader};
 
 {$R *.res}
 

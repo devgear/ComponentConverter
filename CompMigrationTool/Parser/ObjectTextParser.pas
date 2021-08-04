@@ -16,6 +16,9 @@ type
   // Reference : System.Classes.ObjectTextToBinary
   TObjectTextParser = class
   private
+    FClassName, FObjectName: string;
+    FObjectLevel: Integer;
+
     FPropertyName: string;
     FCollectionName: string;
     FListName: string;
@@ -45,6 +48,9 @@ type
     procedure FindCollectionItemBegin;
     procedure FindCollectionItemEnd;
 
+    procedure FindObjectBegin;
+    procedure FindObjectEnd;
+
     procedure FindSetStart;
     procedure FindSetValue(AValue: string);
     procedure FindSetEnd;
@@ -63,6 +69,9 @@ type
     procedure BeginSet(AName: string); virtual;
     procedure EndSet(AName: string); virtual;
 
+    procedure BeginObject(AName, AClassName: string); virtual;
+    procedure EndObject(AName, AClassName: string); virtual;
+
     // 속성 기록
     procedure WriteProperty(AProp, AValue: string); virtual;
     // 속성 중 Collection 기록
@@ -77,11 +86,14 @@ type
     property CompName: string read FCompName;
     property Properties: TStringList read FProperties;
     property SetProp[APropName: string]: TArray<string> read GetSetProp;
+
+    property ObjectLevel: Integer read FObjectLevel;
   end;
 
 implementation
 
 uses
+  Winapi.Windows,
   System.StrUtils,
   ConvertUtils;
 
@@ -89,6 +101,7 @@ uses
 
 constructor TObjectTextParser.Create;
 begin
+  FObjectLevel := -1;
   FIsCollection := False;
 
   FProperties := TStringList.Create;
@@ -117,9 +130,12 @@ procedure TObjectTextParser.BeginList(AName: string);
 begin
 end;
 
+procedure TObjectTextParser.BeginObject(AName, AClassName: string);
+begin
+end;
+
 procedure TObjectTextParser.BeginSet(AName: string);
 begin
-
 end;
 
 procedure TObjectTextParser.EndCollectionItem;
@@ -127,6 +143,11 @@ begin
 end;
 
 procedure TObjectTextParser.EndList(AName: string);
+begin
+
+end;
+
+procedure TObjectTextParser.EndObject(AName, AClassName: string);
 begin
 
 end;
@@ -173,6 +194,22 @@ begin
   FListName := FPropertyName;
 
   BeginList(FListName);
+end;
+
+procedure TObjectTextParser.FindObjectBegin;
+begin
+  Inc(FObjectLevel);
+
+  if FObjectLevel > 0 then
+    BeginObject(FObjectName, FClassName);
+end;
+
+procedure TObjectTextParser.FindObjectEnd;
+begin
+  if FObjectLevel > 0 then
+    EndObject(FObjectName, FClassName);
+
+  Dec(FObjectLevel);
 end;
 
 procedure TObjectTextParser.FindListEnd;
@@ -287,19 +324,18 @@ var
 
   procedure ConvertHeader(IsInherited, IsInline: Boolean);
   var
-    ClassName, ObjectName: string;
     Flags: TFilerFlags;
     Position: Integer;
   begin
     Parser.CheckToken(toSymbol);
-    ClassName := Parser.TokenString;
-    ObjectName := '';
+    FClassName := Parser.TokenString;
+    FObjectName := '';
     if Parser.NextToken = ':' then
     begin
       Parser.NextToken;
       Parser.CheckToken(toSymbol);
-      ObjectName := ClassName;
-      ClassName := Parser.TokenString;
+      FObjectName := FClassName;
+      FClassName := Parser.TokenString;
       Parser.NextToken;
     end;
     Flags := [];
@@ -451,6 +487,7 @@ var
       Parser.CheckTokenSymbol('OBJECT');
     Parser.NextToken;
     ConvertHeader(InheritedObject, InlineObject);
+    FindObjectBegin;
     while not Parser.TokenSymbolIs('END') and
       not Parser.TokenSymbolIs('OBJECT') and
       not Parser.TokenSymbolIs('INHERITED') and
@@ -458,6 +495,7 @@ var
       ConvertProperty;
 //    Writer.WriteListEnd;
     while not Parser.TokenSymbolIs('END') do ConvertObject;
+    FindObjectEnd;
 //    Writer.WriteListEnd;
     Parser.NextToken;
   end;

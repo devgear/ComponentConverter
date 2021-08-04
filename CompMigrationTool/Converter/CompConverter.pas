@@ -41,14 +41,14 @@ type
     function IsWantWriteEvnetCodeToPas: Boolean; virtual;
 
     // 변환된 컴포넌트 문자열 반환
-    function GetConvertedCompText(ACompText: TStrings): string; virtual;
-    function GetConvertedCompStrs(ACompText: TStrings): TStrings; virtual;
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; virtual;
+    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; virtual;
 
     // 컴포넌트 이벤트코드 정보/변환정보 반환
     function GetCompEventInfos(AFormClass: string): TArray<TCompEventInfo>; virtual;
 
     // 변환대상 컴포넌를 읽어 변경할 컴포넌트 소스코드로 변경한다.
-    procedure ConvertDfm(AData: TConvertData); virtual;
+    function ConvertDfm(AData: TConvertData): Boolean; virtual;
     procedure ConvertPas(AData: TConvertData); virtual;
   public
     function Convert(AData: TConvertData): Integer;
@@ -230,14 +230,16 @@ begin
   Result := '';
 end;
 
-function TConverter.GetConvertedCompStrs(ACompText: TStrings): TStrings;
+function TConverter.GetConvertedCompStrs(var ACompText: TStrings): Boolean;
 begin
-  Result := ACompText;
+  Result := True;
 end;
 
-function TConverter.GetConvertedCompText(ACompText: TStrings): string;
+function TConverter.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 begin
-  Result := GetConvertedCompStrs(ACompText).Text;
+  Result := GetConvertedCompStrs(ACompText);
+  if Result then
+    Output := ACompText.Text;
 end;
 
 function TConverter.GetDescription: string;
@@ -276,11 +278,13 @@ begin
   Result := False;
 end;
 
-procedure TConverter.ConvertDfm(AData: TConvertData);
+function TConverter.ConvertDfm(AData: TConvertData): Boolean;
 var
   I: Integer;
   Strs: TStringList;
+  Output: string;
 begin
+  Result := False;
   // 상속받은 폼의 컴포넌트는 컴포넌트 클래스명만 변경, 제거인 경우 제외
   // inherited RealGrid2: TRealGrid [31]
   if AData.IsInherited and (GetConvertCompClassName <> '') then
@@ -298,11 +302,14 @@ begin
     for I := AData.CompStartIndex to AData.CompEndIndex do
       Strs.Add(AData.SrcDfm[I]);
 
-    AData.ConvDfm.Text := GetConvertedCompText(Strs);
+    Result := GetConvertedCompText(Strs, Output);
+    if Result then
+    begin
+      AData.ConvDfm.Text := Output;
+      TLogger.Log(Format('[DFM] Org: %s'#13#10'Converted: %s', [Strs.Text, AData.ConvDfm.Text]));
 
-    TLogger.Log(Format('[DFM] Org: %s'#13#10'Converted: %s', [Strs.Text, AData.ConvDfm.Text]));
-
-    ReplaceComponentInDfm(AData);
+      ReplaceComponentInDfm(AData);
+    end;
 //    TfrmViewer.ShowData('Converted CompText', AData.ConvDfm.Text);
   finally
     Strs.Free;
@@ -632,12 +639,14 @@ begin
 
   while FindComponentInDfm(AData) do
   begin
-    ConvertDfm(AData);
-    if not AData.IsInherited then
-      ConvertPas(AData);
+    if ConvertDfm(AData) then
+    begin
+      if not AData.IsInherited then
+        ConvertPas(AData);
 
-//    AData.FileInfo.Filename
-    Inc(Result);
+  //    AData.FileInfo.Filename
+      Inc(Result);
+    end;
   end;
 end;
 

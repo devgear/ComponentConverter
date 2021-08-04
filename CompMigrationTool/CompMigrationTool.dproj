@@ -131,7 +131,13 @@
         <DCCReference Include="Converter\Types\wControlDefine.pas"/>
         <DCCReference Include="Converter\ReplaceMemoFieldToStringFieldConv.pas"/>
         <DCCReference Include="Converter\FDQryDirectExecuteConv.pas"/>
-        <DCCReference Include="Converter\LabelColorConverter.pas"/>
+        <DCCReference Include="Converter\EtcPropsConverter.pas"/>
+        <DCCReference Include="Converter\FDQueryFieldSizeConverter.pas"/>
+        <DCCReference Include="Parser\cxGridViewParser.pas"/>
+        <DCCReference Include="GridBandHeaderMergeForm.pas">
+            <Form>frmBandHeader</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -14,7 +14,7 @@ type
     function GetConvertCompClassName: string; override;
     function GetRemoveUses: TArray<string>; override;
 
-    function GetConvertedCompText(ACompText: TStrings): string; override;
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
   end;
 
   TfrxDesignerRemoveConv = class(TBaseCompRemoveConverter)
@@ -42,9 +42,10 @@ begin
   Result := ''; // Á¦°Å
 end;
 
-function TBaseCompRemoveConverter.GetConvertedCompText(ACompText: TStrings): string;
+function TBaseCompRemoveConverter.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 begin
-  Result := '';
+  Result := True;
+  Output := '';
 end;
 
 function TBaseCompRemoveConverter.GetDescription: string;

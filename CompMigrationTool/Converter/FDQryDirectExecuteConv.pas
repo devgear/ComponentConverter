@@ -21,7 +21,7 @@ type
     function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompText(ACompText: TStrings): string; override;
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
   end;
 
 
@@ -62,14 +62,15 @@ begin
   Result := 'TFDQuery';
 end;
 
-function TConverterFDQryDirectExecute.GetConvertedCompText(ACompText: TStrings): string;
+function TConverterFDQryDirectExecute.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 var
   I, SIdx, EIdx: Integer;
   S: string;
 begin
   ACompText.Insert(1, '    ResourceOptions.AssignedValues = [rvDirectExecute]'#13#10'    ResourceOptions.DirectExecute = True');
 
-  Result := ACompText.Text;
+  Result := True;
+  Output := ACompText.Text;
 end;
 
 function TConverterFDQryDirectExecute.GetDescription: string;

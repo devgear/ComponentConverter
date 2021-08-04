@@ -37,6 +37,7 @@ type
   private
     FFileInfo: TFileInfo;
     FSource: TStringList;
+    FRootPath: string;
   public
     property FileInfo: TFileInfo read FFileInfo;
 
@@ -47,6 +48,7 @@ type
     procedure SaveToFile(ARootPath: string);
 
     property Source: TStringList read FSource;
+    property RootPath: string read FRootPath;
   end;
 
 //function GRIDNAME_REGEX(ACompName: string = ''): string;
@@ -94,6 +96,7 @@ end;
 
 procedure TConvertData.LoadFromFile(ARootPath: string);
 begin
+  FRootPath := ARootPath;
   FSource.LoadFromFile(FFileInfo.GetFullpath(ARootPath));
 end;
 

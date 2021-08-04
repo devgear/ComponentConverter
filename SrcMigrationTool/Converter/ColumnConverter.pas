@@ -301,6 +301,8 @@ function TColumnConverter.ConvertColumnTitleColor(AProc, ASrc: string;
 const
   SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Cc]olumns' + INDEX_REGEX + '\.[Tt]itle\.[Cc]olor[\s]+\:\=';
   REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.Columns[[[INDEX]]].Styles.Header :=';
+var
+  ColorCode: string;
 begin
   Result := 0;
 
@@ -308,6 +310,10 @@ begin
   begin
     Inc(Result);
     ADest := ADest.Replace(':= cl', ':= dmDataBase.cxStyle');
+
+    ColorCode := GetColorCode(ADest);
+    if ColorCode <> '' then
+      ADest := ADest.Replace(ColorCode, GetColorToStyleName(ColorCode));
 
     Result := 1;
   end;

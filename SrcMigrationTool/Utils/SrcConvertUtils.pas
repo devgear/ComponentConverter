@@ -42,6 +42,8 @@ function AddComments(var AValue: string; AKeywords: TArray<string>): Integer;
 function GetColorCode(ASource: string): string;
 function GetColorToStyleName(AColor: string): string;
 
+function InArrayContains(AList: TArray<string>; AKeyword: string): Boolean;
+
 implementation
 
 uses
@@ -201,6 +203,16 @@ begin
     Idx := Idx.Substring(0, Idx.Length - 1);
 
   Result := Idx;
+end;
+
+function InArrayContains(AList: TArray<string>; AKeyword: string): Boolean;
+var
+  S: string;
+begin
+  Result := False;
+  for S in AList do
+    if AKeyword.Contains(S) then
+      Exit(True);
 end;
 
 end.

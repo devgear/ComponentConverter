@@ -80,7 +80,7 @@ function TGridConverter.ConvertBuildFromDataSet(AProc, ASrc: string;
   var ADest: string): Integer;
 const
   SEARCH_PATTERN  = GRIDNAME_REGEX + '\.[Bb]uild[Ff]rom[Dd]ata[Ss]et';
-  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.DataController.CreateAllItems';
+  REPLACE_FORMAT  = '[[COMP_NAME]]DBBandedTableView1.(*RealGridHelper*)BuildFromDataSet'; // RealGridHelper
 begin
   Result := 0;
 

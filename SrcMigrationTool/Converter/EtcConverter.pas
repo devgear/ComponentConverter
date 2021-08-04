@@ -50,6 +50,8 @@ type
   published
     [Impl]
     function ConvertParamValue(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertDataSetParam(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
   TKbmMemTableConvert = class(TConverter)
@@ -143,9 +145,13 @@ begin
 
   Datas.Add('Sender AS TwMaskEdit', 'Sender As TcxMaskEdit');
 
+  // NewSuppl
+
+  Datas.Add('''NewSupp2010_Config.ini''', '''NewSupp2021_Config.inii''');
+
 
   Keywords := [
-    '.BuildFromDataSet;'
+//    '.BuildFromDataSet;'
   ];
 
   // 제거
@@ -323,6 +329,19 @@ end;
 
 { TSPParamValueConvert }
 
+function TFDStoredProcConvert.ConvertDataSetParam(AProc, ASrc: string;
+  var ADest: string): Integer;
+var
+  Datas: TChangeDatas;
+begin
+  Result := 0;
+
+  Datas.AddInFile('TbF_321I',
+    'qry_Master.ParamByName(''p계산서번호'').AsString',
+    'qry_Master.ParamByName(''p계산서번호'').Value');
+  Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
+end;
+
 function TFDStoredProcConvert.ConvertParamValue(AProc, ASrc: string;
   var ADest: string): Integer;
 var
@@ -351,6 +370,25 @@ begin
   Datas.AddInFile('TbF_129I',
     'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
     'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+
+
+  Datas.AddInFile('TbF_303_2I',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+  Datas.AddInFile('TbF_307I',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+  Datas.AddInFile('TbF_307_1I',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+  Datas.AddInFile('TbF_306I',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+  Datas.AddInFile('TbF_321I',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString := ''101'';',
+    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsInteger := 101;');
+
+
 
 //  Datas.AddInFile('TbF_003I',
 //    'spGetJumunNum.ParamByName(''@Gubun_COD'').AsString',

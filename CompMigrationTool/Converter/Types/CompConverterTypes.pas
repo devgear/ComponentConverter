@@ -43,8 +43,10 @@ type
     // 분석 중인 폼의 이름(T 포함)
     FFormName: string;
     FTotalEventInfos: TArray<TCompEventInfo>;
+    FRootPath: string;
   public
     property FileInfo: TFileInfo read FFileInfo;
+    property RootPath: string read FRootPath;
 
     constructor Create(AFileInfo: TFileInfo);
     destructor Destroy; override;
@@ -107,6 +109,8 @@ end;
 
 procedure TConvertData.LoadFromFile(ARootPath: string);
 begin
+  FRootPath := ARootPath;
+
   FSourceDfm.LoadFromFile(FFileInfo.GetDfmFullpath(ARootPath));
   FSourcePas.LoadFromFile(FFileInfo.GetPasFullpath(ARootPath));
 end;

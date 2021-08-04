@@ -15,7 +15,7 @@ type
     function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompText(ACompText: TStrings): string; override;
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
   end;
 
 
@@ -38,9 +38,10 @@ begin
   Result := ''; // Á¦°Å
 end;
 
-function TConverterRemoveSkinProvider.GetConvertedCompText(ACompText: TStrings): string;
+function TConverterRemoveSkinProvider.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 begin
-  Result := '';
+  Result := True;
+  Output := '';
 end;
 
 function TConverterRemoveSkinProvider.GetDescription: string;

@@ -30,6 +30,7 @@ type
     chkAllFiles: TCheckBox;
     chkAllConverter: TCheckBox;
     btnExtractProps: TButton;
+    Button1: TButton;
     procedure btnSelectDirClick(Sender: TObject);
     procedure btnLoadFilesClick(Sender: TObject);
     procedure chkAllConverterClick(Sender: TObject);
@@ -38,6 +39,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure btnRunConvertClick(Sender: TObject);
     procedure btnExtractPropsClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     FRootPath: string;
@@ -56,7 +58,7 @@ implementation
 
 uses
   System.IOUtils, System.StrUtils, Environments,
-  ExtractPropForm, Logger;
+  ExtractPropForm, Logger, GridBandHeaderMergeForm;
 
 {$R *.dfm}
 
@@ -143,6 +145,13 @@ begin
     Exit;
 
   edtRootPath.Text := FileOpenDialog1.FileName;
+end;
+
+procedure TfrmCompMigTool.Button1Click(Sender: TObject);
+begin
+  if not Assigned(frmBandHeader) then
+    frmBandHeader := TfrmBandHeader.Create(Self);
+  frmBandHeader.Show;
 end;
 
 procedure TfrmCompMigTool.chkAllConverterClick(Sender: TObject);

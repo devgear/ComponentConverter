@@ -8,7 +8,7 @@ uses
 type
   TConverterwControl = class(TConverter)
   protected
-    function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
+    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
     function GetRemoveUses: TArray<string>; override;
   end;
 
@@ -33,7 +33,7 @@ end
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
+    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
   end;
 
 {
@@ -56,7 +56,7 @@ end
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
+    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
   end;
 
 {
@@ -91,7 +91,7 @@ end
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
+    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
   end;
 
   TConverterwEdit = class(TConverterwControl)
@@ -107,7 +107,7 @@ end
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
+    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
   end;
 
   TConverterwDateEdit = class(TConverterwControl)
@@ -116,14 +116,14 @@ end
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompStrs(ACompText: TStrings): TStrings; override;
+    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
   end;
 
 implementation
 
 { TConverterwControl }
 
-function TConverterwControl.GetConvertedCompStrs(ACompText: TStrings): TStrings;
+function TConverterwControl.GetConvertedCompStrs(var ACompText: TStrings): Boolean;
 var
   I: Integer;
   S: string;
@@ -163,10 +163,13 @@ begin
       ACompText[I] := ''
     else if S.Contains(' MarginRight =') then
       ACompText[I] := ''
+
+    else if S.Contains(' OnChange =') then
+      ACompText[I] := S.Replace(' OnChange =', ' Properties.OnChange =')
     ;
   end;
 
-  Result := ACompText;
+  Result := True;
 end;
 
 function TConverterwControl.GetRemoveUses: TArray<string>;
@@ -191,11 +194,11 @@ begin
   Result := 'TcxCurrencyEdit';
 end;
 
-function TConverterwNumEdit.GetConvertedCompStrs(ACompText: TStrings): TStrings;
+function TConverterwNumEdit.GetConvertedCompStrs(var ACompText: TStrings): Boolean;
 var
   Props: string;
 begin
-  Result := inherited;
+  Result := inherited GetConvertedCompStrs(ACompText);
 
   Props := '' +
     '  EditValue = 0'#13#10 +
@@ -204,7 +207,7 @@ begin
     '  Properties.UseThousandSeparator = True'
   ;
 
-  Result.Insert(1, Props);
+  ACompText.Insert(1, Props);
 end;
 
 { TConverterwLabel }
@@ -224,18 +227,18 @@ begin
   Result := 'TcxLabel';
 end;
 
-function TConverterwLabel.GetConvertedCompStrs(ACompText: TStrings): TStrings;
+function TConverterwLabel.GetConvertedCompStrs(var ACompText: TStrings): Boolean;
 var
   Props: string;
 begin
-  Result := inherited;
+  Result := inherited GetConvertedCompStrs(ACompText);
 
   Props := '' +
     '  AutoSize = False'#13#10 +
     '  ParentColor = False'
   ;
 
-  Result.Insert(1, Props);
+  ACompText.Insert(1, Props);
 end;
 
 { TConverterwNumLabel }
@@ -255,12 +258,11 @@ begin
   Result := 'TcxCurrencyEdit';
 end;
 
-function TConverterwNumLabel.GetConvertedCompStrs(
-  ACompText: TStrings): TStrings;
+function TConverterwNumLabel.GetConvertedCompStrs(var ACompText: TStrings): Boolean;
 var
   Props: string;
 begin
-  Result := inherited;
+  Result := inherited GetConvertedCompStrs(ACompText);
 
   Props := '' +
     '  EditValue = 0'#13#10 +
@@ -275,7 +277,7 @@ begin
   Properties.AutoSelect = False
   Properties.HideSelection = False
   Properties.ReadOnly = True}
-  Result.Insert(1, Props);
+  ACompText.Insert(1, Props);
 end;
 
 { TConverterwEdit }
@@ -312,17 +314,16 @@ begin
   Result := 'TcxMaskEdit';
 end;
 
-function TConverterwMaskEdit.GetConvertedCompStrs(
-  ACompText: TStrings): TStrings;
+function TConverterwMaskEdit.GetConvertedCompStrs(var ACompText: TStrings): Boolean;
 var
   Props: string;
 begin
-  Result := inherited;
+  Result := inherited GetConvertedCompStrs(ACompText);
 
   Props := '' +
     '  Properties.AlwaysshowBlanksAndLiterals = True'
   ;
-  Result.Insert(1, Props);
+  ACompText.Insert(1, Props);
 end;
 
 { TConverterwDateEdit }
@@ -342,21 +343,20 @@ begin
   Result := 'TcxDateEdit';
 end;
 
-function TConverterwDateEdit.GetConvertedCompStrs(
-  ACompText: TStrings): TStrings;
+function TConverterwDateEdit.GetConvertedCompStrs(var ACompText: TStrings): Boolean;
 var
   I: Integer;
   S: string;
 begin
-  Result := inherited;
+  Result := inherited GetConvertedCompStrs(ACompText);
 
-  for I := 0 to Result.Count - 1 do
+  for I := 0 to ACompText.Count - 1 do
   begin
-    S := Result[I];
+    S := ACompText[I];
     if S.Contains('Time = ') then
-      Result[I] := ''
+      ACompText[I] := ''
     else if S.Contains('Checked = ') then
-      Result[I] := '';
+      ACompText[I] := '';
   end;
 end;
 

@@ -27,7 +27,7 @@ type
     function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompText(ACompText: TStrings): string; override;
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
   end;
 
 
@@ -94,7 +94,7 @@ begin
   Result := 'TFDMemTable';
 end;
 
-function TConverterkbmMemTable.GetConvertedCompText(ACompText: TStrings): string;
+function TConverterkbmMemTable.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 var
   I, SIdx, EIdx: Integer;
   S: string;
@@ -137,7 +137,8 @@ begin
   end;
 
 
-  Result := ACompText.Text;
+  Result := True;
+  Output := ACompText.Text;
 end;
 
 function TConverterkbmMemTable.GetDescription: string;

@@ -13,7 +13,18 @@ type
     [Impl]
     function ConvertTbF_010I(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
-    function ConvertDataSetDCEC(AProc, ASrc: string; var ADest: string): Integer;
+    function ConvertTbF_201I(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertTbF_4207P(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertTbF_4105P(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertTbF_4407_1P(AProc, ASrc: string; var ADest: string): Integer;
+
+
+    [Impl]
+    // DataSet while 문 앞뒤에 DisableControls > EnableControls 추가 자동화
+    function ConvertDataSetWhile(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
   TCustomMakeConvert = class(TConverter)
@@ -147,7 +158,7 @@ end;
 
 { TCustomBusConvert }
 
-function TCustomBusConvert.ConvertDataSetDCEC(AProc, ASrc: string;
+function TCustomBusConvert.ConvertDataSetWhile(AProc, ASrc: string;
   var ADest: string): Integer;
 var
   I: Integer;
@@ -157,6 +168,7 @@ var
 begin
   Result := 0;
   Datas := [
+    // 유닛명,      함수명,                 데이터셋 컴포넌트 명
       ['TbF_101I', 'Rtrv',                  'QryBusDB']
     , ['TbF_101I', 'Qry_MasterAfterScroll', 'QryBusDB']
     , ['TbF_101I', 'QryBusDB1AfterScroll',  'QryBusDB']
@@ -195,7 +207,7 @@ begin
 
     , ['TbF_602P', 'Rtrv',                  'Qry_Master']
 
-    , ['TmF_DayMonth_Report_P', 'Rtrv',                  'Qry_Master']
+    , ['TmF_DayMonth_Report_P', 'Rtrv',     'Qry_Master']
   ];
 
   for I := 0 to Length(Datas) - 1 do
@@ -272,6 +284,130 @@ begin
       '.Footers[1]'
     ];
     Inc(Result, AddComments(ADest, Keywords));
+  end;
+end;
+
+function TCustomBusConvert.ConvertTbF_201I(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_201I') then
+    Exit;
+
+  if AProc.Contains('RealDBGrid1DBBandedTableView1EditKeyDown') then
+  begin
+    if ASrc.Trim = 'inherited;' then
+    begin
+      ADest := ASrc +'(*mig: appended 1 line below*)' + #13#10 + '  Exit;';
+      Inc(Result);
+    end;
+  end;
+end;
+
+function TCustomBusConvert.ConvertTbF_4105P(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_4105P') then
+    Exit;
+
+  if AProc.Contains('Rtrv') then
+  begin
+    if ASrc = '   While not qry_Master.EOF do begin' then
+    begin
+      ADest := '' +
+        '   qry_Master.DisableControls;'#13#10 +
+        '   kbmMemMasterT.DisableControls;'#13#10 +
+        '   While not qry_Master.EOF(*DC*) do begin';
+
+      Inc(Result);
+    end
+    else if ASrc = '      qry_Master.Next;' then
+    begin
+      ADest := '      qry_Master.Next(*EC*);';
+      FConvData.Source[FCurrIndex+1] := '   end;'#13#10 +
+        '   qry_Master.EnableControls;'#13#10 +
+        '   kbmMemMasterT.EnableControls;'
+      ;
+      Inc(Result);
+    end;
+
+
+//   While not qry_Master.EOF do begin
+{
+   qry_Master.DisableControls;
+   kbmMemMasterT.DisableControls;
+   While not qry_Master.EOF(*DC*) do begin
+}
+
+{
+      qry_Master.Next;
+   end;
+      qry_Master.Next(*EC*);
+   end;
+
+}
+  end;
+end;
+
+function TCustomBusConvert.ConvertTbF_4207P(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_4207P') then
+    Exit;
+
+  if not AProc.Contains('Rtrv') then
+    Exit;
+
+  if ASrc.Trim = 'RealDBGrid2DBBandedTableView1.Bands.Clear;' then
+  begin
+    ADest := '' +
+      '   kbmMaster.Open;'#13#10 +
+      '   RealDBGrid2DBBandedTableView1.OptionsView.BandHeaders := True;'#13#10 +
+      ''#13#10 +
+      ASrc + '(*mig: appended 3 line above*)'
+      ;
+    Inc(Result);
+  end
+  else if ASrc.Trim = 'for I := 0 to 4 do begin' then
+  begin
+    ADest := ASrc + '(*mig: appended 1 line below*)' + #13#10 +
+      '      RealDBGrid2DBBandedTableView1.Columns[I].PropertiesClassName := ''TcxTextEditProperties'';'
+      ;
+    Inc(Result);
+  end;
+
+
+end;
+
+function TCustomBusConvert.ConvertTbF_4407_1P(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_4407_1P') then
+    Exit;
+
+  if not AProc.Contains('Rtrv') then
+    Exit;
+
+  if ASrc.Trim = 'Qry_Detail.Active := True;' then
+  begin
+    ADest := ''#13#10 +
+      '  Qry_Detail.MasterFields := ''작업코드;계산서번호;세금계산서번호'';'#13#10 +
+      '  Qry_Detail.ParamByName(''작업코드'').DataType := ftFixedChar;'#13#10 +
+      '  Qry_Detail.ParamByName(''작업코드'').Size := 5;'#13#10 +
+      '  if Assigned(Qry_Detail.FindParam(''세금계산서번호'')) then'#13#10 +
+      '    Qry_Detail.ParamByName(''세금계산서번호'').DataType := ftInteger;'#13#10 +
+      '  if Assigned(Qry_Detail.FindParam(''계산서번호'')) then'#13#10 +
+      '    Qry_Detail.ParamByName(''계산서번호'').DataType := ftInteger;'#13#10 +
+      '  Qry_Detail.Active := True(*mig*);'
+      ;
+    Inc(Result);
   end;
 end;
 

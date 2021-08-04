@@ -22,7 +22,7 @@ type
     function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompText(ACompText: TStrings): string; override;
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
   public
     constructor Create;
   end;
@@ -38,9 +38,11 @@ end;
 
 function TConverterMemoToStrField.FindComponentInDfm(AData: TConvertData): Boolean;
 const
-  TARGET_COMPS: array[0..1] of TTargetComp = (
-    (FN: 'TbF_128P'; CN: 'Qry_MasterMemoField'),
-    (FN: 'TbF_128P'; CN: 'Qry_DetailMemoField')
+  TARGET_COMPS: array[0..3] of TTargetComp = (
+      (FN: 'TbF_128P'; CN: 'Qry_MasterMemoField')
+    , (FN: 'TbF_128P'; CN: 'Qry_DetailMemoField')
+    , (FN: 'TbF_4409P'; CN: 'Qry_HomeTaxMemoField')
+    , (FN: 'TbF_4409P'; CN: 'Qry_HomeTaxMemoField2')
   );
 var
   I: Integer;
@@ -79,7 +81,7 @@ begin
   Result := 'TStringField';
 end;
 
-function TConverterMemoToStrField.GetConvertedCompText(ACompText: TStrings): string;
+function TConverterMemoToStrField.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 var
   I, SIdx, EIdx: Integer;
   S: string;
@@ -93,7 +95,8 @@ begin
     else if S.Contains('Size = ') then      ACompText[I] := '';
   end;
 
-  Result := ACompText.Text;
+  Result := True;
+  Output := ACompText.Text;
 end;
 
 function TConverterMemoToStrField.GetDescription: string;

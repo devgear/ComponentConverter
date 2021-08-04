@@ -9,6 +9,7 @@ const
     '  Top = [[COMP_TOP]]'#13#10 +
     '  Width = [[COMP_WIDTH]]'#13#10 +
     '  Height = [[COMP_HEIGHT]]'#13#10 +
+    '  Visible = [[COMP_VISIBLE]]'#13#10 +
     '  Align = [[COMP_ALIGN]]'#13#10 +
     '  Font.Charset = DEFAULT_CHARSET'#13#10 +
     '  Font.Color = clWindowText'#13#10 +
@@ -46,20 +47,22 @@ const
 
     // RealDBGrid.Options 처리
     '    OptionsData.DeletingConfirmation = [[wgoConfirmDelete]]'#13#10 +
+    '    OptionsData.Inserting = [[wgoInserting]]'#13#10 +
+    '    OptionsData.Appending = [[wgoInserting]]'#13#10 +
+    '    OptionsData.Editing = [[wgoEditing]]'#13#10 +
+    '    OptionsData.CancelOnExit = [[wgoCancelOnExit]]'#13#10 +
+    '    OptionsData.Deleting = [[wgoDeleting]]'#13#10 +
+
     '    OptionsBehavior.GoToNextCellOnenter = [[wgoEnterToTab]]'#13#10 +
     '    OptionsView.FocusRect = [[wgoFocusRect]]'#13#10 +
     '    OptionsSelection.InvertSelect = [[wgoRowSelect]]'#13#10 +
     '    OptionsCustomize.ColumnHorzSizing = [[wgoColSizing]]'#13#10 +
     '    OptionsCustomize.DataRowSizing = [[wgoRowSizing]]'#13#10 +
     '    OptionsBehavior.ImmediateEditor = [[wgoAlwaysShowEditor]]'#13#10 +
-    '    OptionsData.Editing = [[wgoEditing]]'#13#10 +
     '    OptionsBehavior.AlwaysShowEditor = True'#13#10 +
 //    '    OptionsBehavior.AlwaysShowEditor = [[wgoAlwaysShowEditor]]'#13#10 +  // PickList(ComboBox) 선택 시 바로 항목 표시하기 위해 항상 True(기본)
-    '    OptionsData.Inserting = [[wgoInserting]]'#13#10 +
     '    OptionsCustomize.ColumnMoving = [[wgoColMoving]]'#13#10 +
     '    OptionsSelection.MultiSelect = [[wgoMultiSelect]]'#13#10 +
-    '    OptionsData.CancelOnExit = [[wgoCancelOnExit]]'#13#10 +
-    '    OptionsData.Deleting = [[wgoDeleting]]'#13#10 +
 
     '    OptionsCustomize.ColumnFiltering = False'#13#10 +    // 컬럼 필터링 미사용
     '    OptionsCustomize.ColumnSorting = False'#13#10 +      // 컬럼 소팅 미사용
@@ -67,7 +70,7 @@ const
 
     '    OptionsView.NoDataToDisplayInfoText = ''<데이터가 없습니다.>'''#13#10 +
     '    Styles.Selection = [[SEL_BG_COLOR]]'#13#10 +         // 선택 색상
-    '    Styles.Footer = dmDataBase.cxStyleFooter9'#13#10 +
+    '    Styles.Footer = [[STYLE_FOOTER]]'#13#10 +  // dmDataBase.cxStyleFooter9
     '    Styles.Header = dmDataBase.cxStyleHeader'#13#10 +
     '    Styles.BandHeader = dmDataBase.cxStyleHeader'#13#10 +
 
@@ -98,6 +101,7 @@ const
     '      HeaderAlignmentHorz = taCenter'#13#10 +
     '      HeaderAlignmentVert = vaCenter'#13#10 +
     '      HeaderGlyphAlignmentHorz = taCenter'#13#10 +
+    '      HeaderHint = ''[[HEADER_HINT]]'''#13#10 +
 
     '      Position.BandIndex = [[BAND_INDEX]]'#13#10 +
     '      Position.ColIndex = [[COL_INDEX]]'#13#10 +
@@ -121,15 +125,17 @@ const
     '    object [[COLUMN_NAME]]: TcxGridDBBandedColumn'#13#10 +
     '      Caption = ''[[COLUMN_CAPTION]]'''#13#10 +
     '      PropertiesClassName = ''TcxCurrencyEditProperties'''#13#10 +
+    '[[EDIT_FORMAT_PROPS]]' +
+    TAG_CXGRID_COLUMN_COMMON_PROP +
+    '    end'#13#10
+  ;
 
+  TAG_CXGRID_EDIT_FORMAT =
     '      Properties.AssignedValues.DisplayFormat = True'#13#10 +
     '      Properties.AssignedValues.EditFormat = True'#13#10 +
     '      Properties.DecimalPlaces = [[DECIMAL_PLACE]]'#13#10 +
     '      Properties.DisplayFormat = ''[[EDIT_FORMAT]]'''#13#10 +
-    '      Properties.EditFormat = ''[[EDIT_FORMAT]]'''#13#10 +
-
-    TAG_CXGRID_COLUMN_COMMON_PROP +
-    '    end'#13#10
+    '      Properties.EditFormat = ''[[EDIT_FORMAT]]'''#13#10
   ;
 
   TAG_CXGRID_COLUMN_MASK = '' +
@@ -154,6 +160,16 @@ const
     '      Properties.ValueUnchecked = ''[[VALUE_UNCHK]]'''#13#10 +
 
     TAG_CXGRID_COLUMN_COMMON_PROP +
+    '    end'#13#10
+  ;
+
+  TAG_CXGRID_COLUMN_HIDDEN = '' +
+    '    object [[COLUMN_NAME]]: TcxGridDBBandedColumn'#13#10 +
+    '      DataBinding.FieldName = ''[[FIELD_NAME]]'''#13#10 +
+    '      Visible = False'#13#10 +
+    '      Position.BandIndex = -1'#13#10 +
+    '      Position.ColIndex = -1'#13#10 +
+    '      Position.RowIndex = -1'#13#10 +
     '    end'#13#10
   ;
 
@@ -270,8 +286,13 @@ const
     '      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;'#13#10 +
     '      AEdit: TcxCustomEdit);';
 
+  TAG_PROC_VIEW_FOCUSED_ITEM_CHANGED = TAG_PROC_VIEW_COMMON + '('#13#10 +
+    '      Sender: TcxCustomGridTableView; APrevFocusedItem,'#13#10 +
+    '      AFocusedItem: TcxCustomGridTableItem);';
+
+
 const
-  EventTagInfos: array[0..9] of TEventTagInfo =
+  EventTagInfos: array[0..11] of TEventTagInfo =
     (
       (EventName: 'EditDblClick';         RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDIT_DBLCLICK),
       (EventName: 'EditKeyDown';          RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
@@ -283,11 +304,14 @@ const
       (EventName: 'Exit';                 RGEvent: 'OnExit';              EventOwner: eoGrid;         ProcTag: TAG_PROC_GRID_SENDER),
       (EventName: 'MouseDown';            RGEvent: 'OnMouseDown';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_MOUSEDOWN),
       (EventName: 'FocusedRecordChanged'; RGEvent: 'OnRowChange';         EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_RECCHG),
-      (EventName: 'InitEdit';             RGEvent: 'OnEdit';	            EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_INIT_EDIT)
+      (EventName: 'InitEdit';             RGEvent: 'OnEdit';	            EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_INIT_EDIT),
+
+      (EventName: 'FocusedItemChanged';   RGEvent: 'OnCellExit';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_FOCUSED_ITEM_CHANGED),
+      (EventName: 'EditKeyDown';          RGEvent: 'OnKeyDown';	          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN)
     );
 
 function GetEventTagInfo(ARGEventProp: string; var OutInfo: TEventTagInfo): Boolean;
-function GetColorToStyleName(AColor: string): string;
+function GetColorToStyleName(AColor: string; AFontColor: string = 'clWindowText'): string;
 
 implementation
 
@@ -308,24 +332,25 @@ begin
   end;
 end;
 
-function GetColorToStyleName(AColor: string): string;
+function GetColorToStyleName(AColor: string; AFontColor: string): string;
 const
-  COLOR_TO_STYLE: array[0..14] of array[0..1] of string = (
-    ('8454143', 'cxStyle1'),
-    ('8454016', 'cxStyle2'),
-    ('12615935', 'cxStyle3'),
-    ('16751515', 'cxStyle4'),
-    ('clAqua', 'cxStyle5'),
-    ('clInactiveCaptionText', 'cxStyle6'),
-    ('clLime', 'cxStyle7'),
-    ('clMoneyGreen', 'cxStyle8'),
-    ('clSilver', 'cxStyle9'),
-    ('clSkyBlue', 'cxStyle10'),
-    ('clYellow', 'cxStyle11'),
-    ('$0080FFFF', 'cxStyle1'),
-    ('$0080FF80', 'cxStyle2'),
-    ('$00C080FF', 'cxStyle3'),
-    ('$00FF9B9B', 'cxStyle4')
+  COLOR_TO_STYLE: array[0..15] of array[0..2] of string = (
+    ('8454143',                 'clWindowText',   'cxStyle1'),
+    ('8454143',                 'clRed',          'cxStyle1Red'),
+    ('8454016',                 'clWindowText',   'cxStyle2'),
+    ('12615935',                'clWindowText',   'cxStyle3'),
+    ('16751515',                'clWindowText',   'cxStyle4'),
+    ('clAqua',                  'clWindowText',   'cxStyle5'),
+    ('clInactiveCaptionText',   'clWindowText',   'cxStyle6'),
+    ('clLime',                  'clWindowText',   'cxStyle7'),
+    ('clMoneyGreen',            'clWindowText',   'cxStyle8'),
+    ('clSilver',                'clWindowText',   'cxStyle9'),
+    ('clSkyBlue',               'clWindowText',   'cxStyle10'),
+    ('clYellow',                'clWindowText',   'cxStyle11'),
+    ('$0080FFFF',               'clWindowText',   'cxStyle1'),
+    ('$0080FF80',               'clWindowText',   'cxStyle2'),
+    ('$00C080FF',               'clWindowText',   'cxStyle3'),
+    ('$00FF9B9B',               'clWindowText',   'cxStyle4')
   );
 
 var
@@ -333,8 +358,8 @@ var
 begin
   Result := 'nil';
   for I := 0 to Length(COLOR_TO_STYLE) - 1 do
-    if COLOR_TO_STYLE[I][0] = AColor then
-      Exit('dmDatabase.' + COLOR_TO_STYLE[I][1]);
+    if (COLOR_TO_STYLE[I][0] = AColor) and (COLOR_TO_STYLE[I][1] = AFontColor) then
+      Exit('dmDatabase.' + COLOR_TO_STYLE[I][2]);
 end;
 
 //{$Message Error 'Not implemented'}

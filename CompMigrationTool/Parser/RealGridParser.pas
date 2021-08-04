@@ -33,11 +33,13 @@ type
     Level: Integer;
     Color: string;
     TitleColor: string;
+    FontColor: string;
     FieldName: string;
     GrpWidth: Integer;
 
     EditStyle: string;
     EditFormat: string;
+    TitleClicking: Boolean;
 
     function EditFormatIsCurrency: Boolean;
     function EditFormatIsDate: Boolean;
@@ -251,6 +253,8 @@ begin
       FColumn.Group := StrToIntDef(AValue, 0)
     else if AProp = 'Title.Caption' then
       FColumn.TitleCaption := AValue
+    else if AProp = 'Title.Clicking' then
+      FColumn.TitleClicking := StrToBoolDef(AVAlue, False)
     else if AProp = 'Visible' then
       FColumn.Visible := StrToBoolDef(AValue, True)
     else if AProp = 'ReadOnly' then
@@ -268,6 +272,8 @@ begin
       FColumn.Color := AValue
     else if AProp = 'Title.Color' then
       FColumn.TitleColor := AValue
+    else if AProp = 'Font.Color' then
+      FColumn.FontColor := AValue
     else if AProp = 'FieldName' then
       FColumn.FieldName := AValue
     else if AProp = 'GrpWidth' then
@@ -283,7 +289,9 @@ begin
     else if AProp = 'Footer.Alignment' then
       FColumn.FooterAlign := AValue
 
-
+    else if AProp = 'Footer.Font.Style' then
+      if AValue = '[fsBold]' then
+        Properties.Values['FooterBold'] := 'True';
     ;
 
 //    Color: string;

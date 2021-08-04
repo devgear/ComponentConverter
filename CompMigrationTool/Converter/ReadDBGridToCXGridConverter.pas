@@ -15,6 +15,8 @@ type
   protected
     function GetDescription: string; override;
 
+    function GetCustomHiddenColumns(AFilename, AGridName: string): TArray<string>;
+
     function GetComponentClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetConvertCompList(AMainCompName: string): string; override;
@@ -22,7 +24,7 @@ type
     function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
 
-    function GetConvertedCompText(ACompText: TStrings): string; override;
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
 
     // PAS 파일에 이벤트 추가
     function IsWantWriteEvnetCodeToPas: Boolean; override;
@@ -179,8 +181,7 @@ begin
   Result := Result + #13#10'    ' + LevelName + ': TcxGridLevel;';
 end;
 
-function TConverterRealDBGridToCXGrid.GetConvertedCompText(
-  ACompText: TStrings): string;
+function TConverterRealDBGridToCXGrid.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 
   function _InArray(AArray: TArray<TCompEventInfo>; AItem: string; var MethodName: string): Boolean;
   var
@@ -200,6 +201,7 @@ var
   Idx: Integer;
   GridName, ViewName, LevelName, ColName: string;
   GridText, ColText, ColAlignText, ColList, GroupText, GroupList: string;
+  EditFormatProps: string;
 
   GridEvent, ViewEvent, DataEvent: string;
   MethodName: string;
@@ -224,6 +226,7 @@ var
   Options: TArray<string>;
   GridOptionText: string;
   DecimalPlace: Integer;
+  HiddenColumns: TArray<string>;
 begin
   if not Assigned(FParser) then
     FParser.Free;
@@ -246,6 +249,7 @@ begin
   GridText := GridText.Replace('[[COMP_WIDTH]]',      FParser.Properties.ValuesDef['Width', '0']);
   GridText := GridText.Replace('[[COMP_HEIGHT]]',     FParser.Properties.ValuesDef['Height', '0']);
   GridText := GridText.Replace('[[COMP_ALIGN]]',      FParser.Properties.ValuesDef['Align', 'alNone']);
+  GridText := GridText.Replace('[[COMP_VISIBLE]]',    FParser.Properties.ValuesDef['Visible', 'True']);
 
   GridText := GridText.Replace('[[TAB_ORDER]]',      FParser.Properties.ValuesDef['TabOrder', '0']);
   GridText := GridText.Replace('[[DATASOURCE]]',      FParser.Properties.ValuesDef['DataSource', 'nil']);
@@ -332,6 +336,10 @@ begin
     GridText := GridText.Replace('[[DATAROW_HEIGHT]]',      FParser.Properties.ValuesDef['GrpRowHeight', '25']);
   end;
   GridText := GridText.Replace('[[SEL_BG_COLOR]]',        GetColorToStyleName(FParser.Properties.ValuesDef['SelBgColor', '']));
+  if FParser.Properties.Values['Footer.Font.Style'].Contains('fsBold') then
+    GridText := GridText.Replace('[[STYLE_FOOTER]]',        'dmDataBase.cxStyleFooter9Bold')
+  else
+    GridText := GridText.Replace('[[STYLE_FOOTER]]',        'dmDataBase.cxStyleFooter9');
 
   Options := FParser.SetProp['Options'];
   GridText := GridText.Replace('[[wgoConfirmDelete]]',    BoolToStr(InArray(Options, 'wgoConfirmDelete'), True));
@@ -370,13 +378,21 @@ begin
     begin
       ColText := TAG_CXGRID_COLUMN_CURRENCY;
 
-      if not ColumnInfo.EditFormat.Contains('.') then
-        DecimalPlace := 0
+      if ColumnInfo.EditFormat = '' then
+        EditFormatProps := ''
       else
-        DecimalPlace := (ColumnInfo.EditFormat.Length - (ColumnInfo.EditFormat.IndexOf('.') + 1));
+      begin
+        EditFormatProps := TAG_CXGRID_EDIT_FORMAT;
+        if not ColumnInfo.EditFormat.Contains('.') then
+          DecimalPlace := 0
+        else
+          DecimalPlace := (ColumnInfo.EditFormat.Length - (ColumnInfo.EditFormat.IndexOf('.') + 1));
 
-      ColText := ColText.Replace('[[EDIT_FORMAT]]', ColumnInfo.EditFormat.Replace('''', ''''''));
-      ColText := ColText.Replace('[[DECIMAL_PLACE]]', DecimalPlace.ToString); // 입력 시 소숫점자리수
+        EditFormatProps := EditFormatProps.Replace('[[EDIT_FORMAT]]', ColumnInfo.EditFormat.Replace('''', ''''''));
+        EditFormatProps := EditFormatProps.Replace('[[DECIMAL_PLACE]]', DecimalPlace.ToString); // 입력 시 소숫점자리수
+      end;
+
+      ColText := ColText.Replace('[[EDIT_FORMAT_PROPS]]', EditFormatProps);
 
       ColAlignText := TAG_CXGRID_COLUMN_ALIGN_HORZ;
     end
@@ -424,8 +440,23 @@ begin
       ColText := ColText.Replace('[[VISIBLE]]',         'False')
     else
       ColText := ColText.Replace('[[VISIBLE]]',       BoolToStr(ColumnInfo.Visible, True));
-    ColText := ColText.Replace('[[READONLY]]',        BoolToStr(ColumnInfo.ReadOnly, True));
-    ColText := ColText.Replace('[[EDITING]]',         BoolToStr(not ColumnInfo.ReadOnly, True));
+
+    if ColumnInfo.TitleClicking then
+      ColText := ColText.Replace('[[HEADER_HINT]]',         ColumnInfo.TitleCaption)
+    else
+      ColText := ColText.Replace('[[HEADER_HINT]]',         '');
+
+    if ColumnInfo.FieldName.ToLower.StartsWith('calc_') then
+    begin
+      // Calcfield 강제 ReadOnly
+      ColText := ColText.Replace('[[READONLY]]',        'True');
+      ColText := ColText.Replace('[[EDITING]]',         'False');
+    end
+    else
+    begin
+      ColText := ColText.Replace('[[READONLY]]',        BoolToStr(ColumnInfo.ReadOnly, True));
+      ColText := ColText.Replace('[[EDITING]]',         BoolToStr(not ColumnInfo.ReadOnly, True));
+    end;
 
     // 리얼그리드에서 Group과 LevelIndex를 설정하지 않은 경우(TbF_0006I)
       // BandIndex = 0, ColIndex는 순번(0..)으로 설정해야 함
@@ -442,6 +473,7 @@ begin
       end;
       ColText := ColText.Replace('[[COL_INDEX]]',       IntToStr(Seq));
       ColText := ColText.Replace('[[WIDTH]]',           IntToStr(Trunc(ColumnInfo.ColWidth*1.1)));
+      ColText := ColText.Replace('[[ROW_INDEX]]',       '0');
       Inc(Seq);
     end
     else
@@ -449,6 +481,7 @@ begin
       ColText := ColText.Replace('[[BAND_INDEX]]',      IntToStr(ColumnInfo.Group));
       ColText := ColText.Replace('[[COL_INDEX]]',       IntToStr(ColumnInfo.LevelIndex));
       ColText := ColText.Replace('[[WIDTH]]',           IntToStr(Trunc(ColumnInfo.GrpWidth*1.1)));
+      ColText := ColText.Replace('[[ROW_INDEX]]',       IntToStr(ColumnInfo.Level));
     end;
 
     if ColumnInfo.Alignment = '' then
@@ -460,17 +493,16 @@ begin
       if ColumnInfo.Alignment = '' then
         ColText := ColText.Replace('[[FOOTER_ALIGN]]',      '')
       else
-        ColText := ColText.Replace('[[FOOTER_ALIGN]]',      TAG_CXGRID_FOOTER_ALIGN.Replace('[[HORZ_ALIGN]]', ColumnInfo.Alignment));
+        ColText := ColText.Replace('[[FOOTER_ALIGN]]',      TAG_CXGRID_FOOTER_ALIGN.Replace('[[HORZ_ALIGN]]', ColumnInfo.Alignment))
     else
       ColText := ColText.Replace('[[FOOTER_ALIGN]]',      TAG_CXGRID_FOOTER_ALIGN.Replace('[[HORZ_ALIGN]]', ColumnInfo.FooterAlign));
 
     ColText := ColText.Replace('[[FIELD_NAME]]',      ColumnInfo.FieldName);
-    ColText := ColText.Replace('[[ROW_INDEX]]',       IntToStr(ColumnInfo.Level));
 
     // cxGridView의 Column.Position.LineCount는 라인 몇칸을 차지할지 설정
       // 리얼그리드는 그룹의 Levels는 몇행을 표시할지 설정
       // 즉, RG.Levels가 1이면 CX.LineCount는 전체 해더 행수를 설정해야 함
-    if (ColumnInfo.Group > -1) and (FParser.GroupInfos.Count > ColumnInfo.Group) then
+    if GroupMode and (ColumnInfo.Group > -1) and (FParser.GroupInfos.Count > ColumnInfo.Group) then
     begin
       GroupInfo := FParser.GroupInfos[ColumnInfo.Group];
       if GroupInfo.Levels = 1 then
@@ -489,7 +521,7 @@ begin
     if ColumnInfo.TitleColor = '' then
       ColText := ColText.Replace('[[STYLE_HEADER]]', '')
     else
-      ColText := ColText.Replace('[[STYLE_HEADER]]', 'Styles.Header = ' + GetColorToStyleName(ColumnInfo.TitleColor));
+      ColText := ColText.Replace('[[STYLE_HEADER]]', 'Styles.Header = ' + GetColorToStyleName(ColumnInfo.TitleColor, ColumnInfo.FontColor));
 
     ColList := ColList + ColText;
 
@@ -513,6 +545,18 @@ begin
 
     Inc(Idx);
   end;
+
+  HiddenColumns := GetCustomHiddenColumns(FConvData.FileInfo.Filename, GridName);
+  for I := 0 to Length(HiddenColumns) - 1 do
+  begin
+    ColText := TAG_CXGRID_COLUMN_HIDDEN;
+    ColText := ColText.Replace('[[COLUMN_NAME]]',     Format(ColName, [Idx]));
+    ColText := ColText.Replace('[[FIELD_NAME]]',     HiddenColumns[I]);
+
+    ColList := ColList + ColText;
+    Inc(Idx);
+  end;
+
   GridText := GridText.Replace('[[COLUMN_LIST]]', ColList);
   GridText := GridText.Replace('[[FOOTER_ITEMS]]', FooterItems);
 
@@ -551,7 +595,41 @@ begin
   GridText := GridText.Replace('[[VIEW_EVENT]]', ViewEvent);
   GridText := GridText.Replace('[[DATA_EVENT]]', DataEvent);
 
-  Result := GridText;
+  Output := GridText;
+  Result := True;
+end;
+
+function TConverterRealDBGridToCXGrid.GetCustomHiddenColumns(AFilename,
+  AGridName: string): TArray<string>;
+var
+  I: Integer;
+  Datas: TArray<TArray<string>>;
+begin
+  if FConvData.RootPath.ToLower.Contains('bus') then
+  begin
+    Datas := [
+      ['TbF_101I', 'RealDBGrid3', '협회발행구분'],
+      ['TbF_101I', 'RealDBGrid3', '주문구분'],
+      ['TbF_109P', 'RealDBGrid1', '교육청코드'],
+      ['TbF_109P', 'RealDBGrid1', '학교코드'],
+      ['TbF_4101P', 'RDBGridMaster2', '그룹코드'],
+      ['TbF_4102P', 'RDBGridMaster', '교지코드'],
+      ['TbF_503P', 'RealDBGrid1', '인덱스']
+    ];
+  end;
+
+
+  Result := [];
+  for I := 0 to Length(Datas) - 1 do
+  begin
+    if not AFilename.Contains(Datas[I][0]) then
+      Continue;
+
+    if AGridName <> Datas[I][1] then
+      Continue;
+
+    Result := Result + [Datas[I][2]];
+  end;
 end;
 
 function TConverterRealDBGridToCXGrid.GetAddedUses: TArray<string>;
