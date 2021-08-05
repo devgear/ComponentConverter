@@ -392,28 +392,41 @@ begin
   if not SrcFilename.Contains('TbF_4407_1P') then
     Exit;
 
-  if not AProc.Contains('Rtrv') then
-    Exit;
-
-  if ASrc.Trim = 'Qry_Detail.Active := True;' then
+  if AProc.Contains('Rtrv') then
   begin
-    ADest := ''#13#10 +
-      '  Qry_Detail.MasterFields := ''작업코드;계산서번호;세금계산서번호'';'#13#10 +
-      '  Qry_Detail.ParamByName(''작업코드'').DataType := ftFixedChar;'#13#10 +
-      '  Qry_Detail.ParamByName(''작업코드'').Size := 5;'#13#10 +
-      '  if Assigned(Qry_Detail.FindParam(''세금계산서번호'')) then'#13#10 +
-      '    Qry_Detail.ParamByName(''세금계산서번호'').DataType := ftInteger;'#13#10 +
-      '  if Assigned(Qry_Detail.FindParam(''계산서번호'')) then'#13#10 +
-      '    Qry_Detail.ParamByName(''계산서번호'').DataType := ftInteger;'#13#10 +
-      '  Qry_Detail.Active := True(*mig*);'
-      ;
-    Inc(Result);
+    if ASrc.Trim = 'Qry_Detail.Active := True;' then
+    begin
+      ADest := ''#13#10 +
+        '  Qry_Detail.MasterFields := ''작업코드;계산서번호;세금계산서번호'';'#13#10 +
+        '  Qry_Detail.ParamByName(''작업코드'').DataType := ftFixedChar;'#13#10 +
+        '  Qry_Detail.ParamByName(''작업코드'').Size := 5;'#13#10 +
+        '  if Assigned(Qry_Detail.FindParam(''세금계산서번호'')) then'#13#10 +
+        '    Qry_Detail.ParamByName(''세금계산서번호'').DataType := ftInteger;'#13#10 +
+        '  if Assigned(Qry_Detail.FindParam(''계산서번호'')) then'#13#10 +
+        '    Qry_Detail.ParamByName(''계산서번호'').DataType := ftInteger;'#13#10 +
+        '  Qry_Detail.Active := True(*mig*);'
+        ;
+      Inc(Result);
+    end;
+  end
+  else if AProc.Contains('Tax_Save3') then
+  begin
+    if ASrc.Trim = 'with Qry_Master do begin' then
+    begin
+      ADest := '' +
+        '   DataBase := dmDataBase.DBKatasBusDB2;'#13#10 +
+        '   with Qry_Master do begin(*mig: append 1 line above*)';
+
+      Inc(Result);
+    end;
   end;
+
 end;
 
 function TCustomBusConvert.GetCvtCompClassName: string;
 begin
-  Result := 'TcxGrid';end;
+  Result := 'TcxGrid';
+end;
 
 function TCustomBusConvert.GetDescription: string;
 begin

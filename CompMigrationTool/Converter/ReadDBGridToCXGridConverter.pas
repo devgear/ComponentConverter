@@ -12,6 +12,8 @@ type
   private
     FParser: TRealGridParser;
     FColumnCompList: string;
+
+    function GetCustomEventPropName(APropName: string): string;
   protected
     function GetDescription: string; override;
 
@@ -73,7 +75,6 @@ function TConverterRealDBGridToCXGrid.GetCompEventInfos(
       if Conv.BeforeEventName = AItem then
         Exit(True);
   end;
-
 const
   INDENT = '    ';
 var
@@ -81,7 +82,7 @@ var
   RGEvent: TRealGridEventInfo;
   TagInfo: TEventTagInfo;
   CodeInfo: TCompEventInfo;
-  ProcTag: string;
+  ProcTag, PropName: string;
   I: Integer;
 begin
   GridName  := FParser.CompName;
@@ -93,7 +94,8 @@ begin
     if _InArray(FConvData.TotalEventInfos, RGEvent.Value) then
       Continue;
 
-    if GetEventTagInfo(RGEvent.Prop, TagInfo) then
+    PropName := GetCustomEventPropName(RGEvent.Prop);
+    if GetEventTagInfo(PropName, TagInfo) then
     begin
       CodeInfo := Default(TCompEventInfo);
       // 일부 이벤트 무시(에러 발생)
@@ -127,6 +129,10 @@ begin
       FConvData.TotalEventInfos := FConvData.TotalEventInfos + [CodeInfo];
     end;
   end;
+
+  // KeyPress 이벤트를 갖고, KeyPress에서 Key = 13 사용하는 경우
+    // KeyDown 이벤트 생성 후 KeyPress 호출
+    // 만약, KeyDown 이벤트를 갖는 다면 추가
 
   if FParser.FooterInfos.Count > 0 then
   begin
@@ -227,6 +233,7 @@ var
   GridOptionText: string;
   DecimalPlace: Integer;
   HiddenColumns: TArray<string>;
+  PropName: string;
 begin
   if not Assigned(FParser) then
     FParser.Free;
@@ -553,6 +560,7 @@ begin
     ColText := ColText.Replace('[[COLUMN_NAME]]',     Format(ColName, [Idx]));
     ColText := ColText.Replace('[[FIELD_NAME]]',     HiddenColumns[I]);
 
+    FColumnCompList := FColumnCompList + #13#10'    ' + Format(ColName, [Idx]) + ': TcxGridDBBandedColumn;';
     ColList := ColList + ColText;
     Inc(Idx);
   end;
@@ -566,7 +574,8 @@ begin
   DataEvent := '';
   for EventInfo in FParser.EventInfos do
   begin
-    if GetEventTagInfo(EventInfo.Prop, EventTagInfo) then
+    PropName := GetCustomEventPropName(EventInfo.Prop);
+    if GetEventTagInfo(PropName, EventTagInfo) then
     begin
       // 이미 구현된 이벤트라면 MethodName 재사용 아니라면 신규 메소드 설정
       if not _InArray(FConvData.TotalEventInfos, EventInfo.Value, MethodName) then
@@ -599,13 +608,153 @@ begin
   Result := True;
 end;
 
+function TConverterRealDBGridToCXGrid.GetCustomEventPropName(
+  APropName: string): string;
+var
+  Path: string;
+  Target: TArray<string>;
+  Targets: TArray<TArray<string>>;
+begin
+  Result := APropName;
+  Path := FConvData.RootPath.ToLower;
+  if Path.Contains('bus') then
+  begin
+    Targets := [
+        ['TbF_001I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_001I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_003I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_004I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_006I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_130I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_201I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_202I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_203I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_205I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_207I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_208I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_213I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_502I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_502I_2.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_509I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_513I.dfm',	'RealDBGrid2', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_513_2I.dfm',	'RealDBGrid2', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_805I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_IpgoKumSu_I.dfm',	'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+    ];
+  end
+  else if Path.Contains('cust') then
+  begin
+    Targets := [
+        ['TbF_001I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_003I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_004I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_006I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_201I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_202I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_203I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_502I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_509I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+    ];
+  end
+  else if Path.Contains('acct') then
+  begin
+    Targets := [
+        ['TaF_103I.dfm', 'RealDBGrid_detailKeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_201I.dfm', 'RealDBGrid2KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TgF_501I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+    ];
+  end
+  else if Path.Contains('acost') then
+  begin
+    Targets := [
+        ['TaF_006I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_103I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_212I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_213I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_304I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_504I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+    ];
+  end
+  else if Path.Contains('budget') then
+  begin
+    Targets := [
+      ['TaF_201I.dfm', 'RealDBGrid2KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+    ];
+  end
+  else if Path.Contains('make') then
+  begin
+    Targets := [
+        ['TaF_212I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Book_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Box_Chulgo_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Company_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_DokRyue_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Film_DaySet_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Film_SuJung_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_GongImUP_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_GongIm_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_GongIm_Jibul_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_IpgoKumSu_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Jiler_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Paper_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_ScheduledIpGo_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Yong101I.dfm', 'RDBGridMasterKeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Yong104I.dfm', 'RealDBGrid2KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_YongJi_Ipgo_I2.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_YongJi_Ipgo_I2.dfm', 'RealDBGrid2KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_YongJi_Ipgo_Jeji_I.dfm', 'RealDBGrid3KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+    ];
+  end
+  else if Path.Contains('newsupp') then
+  begin
+    Targets := [
+        ['TmF_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TsF_BookStorePosI.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+    ];
+  end
+  else if Path.Contains('supply') then
+  begin
+    Targets := [
+        ['Sup3061.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['Sup3071.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['Sup3071.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['Sup7002.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+    ];
+  end
+  else if Path.Contains('plan') then
+  begin
+    Targets := [
+        ['TaF_212I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_BosangJikub_I.dfm', 'DBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_Bosang_I.dfm', 'DBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_SJ_CDModify_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_SJ_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_SJ_JegoBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_SJ_Josa_I.dfm', 'DBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+    ];
+  end;
+
+  for Target in Targets do
+  begin
+    if (FconvData.FileInfo.Filename = Target[0])
+      and (FParser.CompName = Target[1])
+      and(APropName = Target[2]) then
+        Exit(Target[3]);
+  end;
+end;
+
 function TConverterRealDBGridToCXGrid.GetCustomHiddenColumns(AFilename,
   AGridName: string): TArray<string>;
 var
   I: Integer;
+  Path: string;
   Datas: TArray<TArray<string>>;
 begin
-  if FConvData.RootPath.ToLower.Contains('bus') then
+  Path := FConvData.RootPath.ToLower;
+  if Path.Contains('bus') then
   begin
     Datas := [
       ['TbF_101I', 'RealDBGrid3', '협회발행구분'],
@@ -616,8 +765,38 @@ begin
       ['TbF_4102P', 'RDBGridMaster', '교지코드'],
       ['TbF_503P', 'RealDBGrid1', '인덱스']
     ];
+  end
+  else if Path.Contains('cust') then
+  begin
+    Datas := [
+      ['TbF_4101P', 'RDBGridMaster2', '그룹코드']
+    ];
+  end
+  else if Path.Contains('newsupp') then
+  begin
+    Datas := [
+        ['ThF_003aP',                 'RealDBGrid1', '작업구분코드']
+      , ['TsF_Banpum_KumsuI',         'RealDBGrid1', '반품부수']
+      , ['TsF_Banpum_Kumsu_BarCodeI', 'RealDBGrid1', '반품부수']
+    ];
+  end
+  else if Path.Contains('supply') then
+  begin
+    Datas := [
+        ['Sup2011', 'RealDBGrid_Elem', 'Num']
+      , ['Sup2011', 'RealDBGrid_Elem', '본주문제한']
+      , ['Sup2011', 'RealDBGrid_Elem', '추가주문제한']
+      , ['Sup2011', 'RealDBGrid_Elem', '개별주문제한']
+      , ['Sup2011', 'RealDBGrid_High', 'Num']
+      , ['Sup2011', 'RealDBGrid_High', '본주문제한']
+      , ['Sup2011', 'RealDBGrid_High', '추가주문제한']
+      , ['Sup2011', 'RealDBGrid_Mid', 'Num']
+      , ['Sup3041', 'RealDBGrid2', '확인']
+      , ['Sup5081', 'RealDBGrid1', '인덱스']
+      , ['Sup7003', 'RealDBGrid2', '보내준부수']
+      , ['Sup7003', 'RealDBGrid2', '총주문부수']
+    ];
   end;
-
 
   Result := [];
   for I := 0 to Length(Datas) - 1 do

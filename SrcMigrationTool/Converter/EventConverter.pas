@@ -133,10 +133,45 @@ begin
       'TbF_4102P',
       'TbF_503P'
     ];
-  end;
-  if FConvData.RootPath.ToLower.Contains('cust') then
+  end
+  else if FConvData.RootPath.ToLower.Contains('cust') then
   begin
     CompleteUnits := [
+      'TbF_101I',
+      'TbF_104P',
+      'TbF_109P',
+      'TbF_311I',
+      'TbF_313I',
+      'TbF_314P',
+      'TbF_315I',
+      'TbF_315I_cust',
+      'TbF_316I',
+      'TbF_316I_cust',
+      'TbF_321I',
+      'TbF_322P',
+      'TbF_323P',
+      'TbF_338I',
+      'TbF_391IP',
+      'TbF_4101P',
+      'TbF_4105P',
+      'TbF_4107P',
+      'TbF_4201P',
+      'TbF_4202P',
+      'TbF_4206P',
+      'TbF_4301P',
+      'TbF_4302P',
+      'TbF_4304P',
+      'TbF_4305P',
+      'TbF_4401P',
+      'TbF_4402P',
+      'TbF_4403P',
+      'TbF_4404P',
+      'TbF_4404_2P',
+      'TbF_4406P',
+      'TbF_4409P',
+      'TbF_4411P',
+      'TbF_301I',
+      'TbF_302I',
       'TbF_309I',
       'TbF_310I',
       'TbF_324I',
@@ -144,16 +179,31 @@ begin
       'TbF_4102P',
       'TbF_4111P',
       'TbF_4410P',
-      'TbF_503P'
+      'TbF_503P',
+      'TbF_312I'
     ];
-  end;
-  if FConvData.RootPath.ToLower.Contains('newsupp') then
+  end
+  else if FConvData.RootPath.ToLower.Contains('newsupp') then
   begin
     CompleteUnits := [
       'TbF_120P',
       'TbF_4201P',
       'TsF_BalsongMasterI',
       'TbF_120P_20151201'
+    ];
+  end
+  else if FConvData.RootPath.ToLower.Contains('supply') then
+  begin
+    CompleteUnits := [
+      'Sup2011',
+      'Sup2071',
+      'Sup2081',
+      'Sup3041',
+      'Sup5041',
+      'Sup5051',
+      'Sup5071',
+      'Sup5081',
+      'Sup7003'
     ];
   end;
 

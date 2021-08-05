@@ -22,15 +22,13 @@ object frmExtractProperties: TfrmExtractProperties
     Height = 485
     Align = alClient
     TabOrder = 0
-    ExplicitTop = 89
-    ExplicitHeight = 396
   end
   object PageControl1: TPageControl
     Left = 0
     Top = 0
     Width = 644
     Height = 485
-    ActivePage = TabSheet3
+    ActivePage = TabSheet4
     Align = alClient
     TabHeight = 30
     TabOrder = 1
@@ -43,8 +41,6 @@ object frmExtractProperties: TfrmExtractProperties
         Height = 89
         Align = alTop
         TabOrder = 0
-        ExplicitTop = 8
-        ExplicitWidth = 281
         object Label1: TLabel
           Left = 20
           Top = 23
@@ -106,10 +102,6 @@ object frmExtractProperties: TfrmExtractProperties
         Align = alClient
         ScrollBars = ssVertical
         TabOrder = 1
-        ExplicitLeft = 1
-        ExplicitTop = 1
-        ExplicitWidth = 642
-        ExplicitHeight = 353
       end
       object Panel3: TPanel
         Left = 0
@@ -118,9 +110,6 @@ object frmExtractProperties: TfrmExtractProperties
         Height = 41
         Align = alBottom
         TabOrder = 2
-        ExplicitLeft = 1
-        ExplicitTop = 354
-        ExplicitWidth = 642
         DesignSize = (
           636
           41)
@@ -143,7 +132,6 @@ object frmExtractProperties: TfrmExtractProperties
           Caption = '&Close'
           TabOrder = 1
           OnClick = btnCloseClick
-          ExplicitLeft = 560
         end
       end
     end
@@ -179,8 +167,6 @@ object frmExtractProperties: TfrmExtractProperties
         Align = alClient
         ScrollBars = ssVertical
         TabOrder = 1
-        ExplicitTop = 41
-        ExplicitHeight = 404
       end
     end
     object TabSheet3: TTabSheet
@@ -193,7 +179,6 @@ object frmExtractProperties: TfrmExtractProperties
         Height = 49
         Align = alTop
         TabOrder = 0
-        ExplicitTop = 8
         DesignSize = (
           636
           49)
@@ -216,8 +201,41 @@ object frmExtractProperties: TfrmExtractProperties
         Align = alClient
         ScrollBars = ssVertical
         TabOrder = 1
-        ExplicitTop = 41
-        ExplicitHeight = 404
+      end
+    end
+    object TabSheet4: TTabSheet
+      Caption = 'OnKeyPress(Key = 13) '#51060#48292#53944' '#47785#47197
+      ImageIndex = 3
+      object Panel6: TPanel
+        Left = 0
+        Top = 0
+        Width = 636
+        Height = 49
+        Align = alTop
+        TabOrder = 0
+        ExplicitTop = 8
+        DesignSize = (
+          636
+          49)
+        object Button2: TButton
+          Left = 8
+          Top = 10
+          Width = 617
+          Height = 25
+          Anchors = [akLeft, akTop, akRight]
+          Caption = #52628#52636
+          TabOrder = 0
+          OnClick = Button2Click
+        end
+      end
+      object mmoKeyPress: TMemo
+        Left = 0
+        Top = 49
+        Width = 636
+        Height = 396
+        Align = alClient
+        ScrollBars = ssVertical
+        TabOrder = 1
       end
     end
   end

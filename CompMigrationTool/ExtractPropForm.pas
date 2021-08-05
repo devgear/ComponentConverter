@@ -33,6 +33,10 @@ type
     Panel5: TPanel;
     btnBandHeader: TButton;
     mmoBandHeader: TMemo;
+    TabSheet4: TTabSheet;
+    Panel6: TPanel;
+    Button2: TButton;
+    mmoKeyPress: TMemo;
     procedure btnCompPropsClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -41,6 +45,7 @@ type
     procedure btnSaveClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure btnBandHeaderClick(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
     FDataList: TStringList;
@@ -323,6 +328,98 @@ end;
 procedure TfrmExtractProperties.WriteLog(const AValue: string);
 begin
   mmoProperties.Lines.Add(AValue);
+end;
+
+procedure TfrmExtractProperties.Button2Click(Sender: TObject);
+type
+  TCompIdx = record
+    CompStart, CompEnd: Integer;
+  end;
+var
+  I, ImplIdx: Integer;
+  Info: TFileInfo;
+  SrcFile: TStringList;
+  S, CompClassName, ProcName, CompName, CompTag: string;
+  SearchProcName, SearchKeyword: string;
+  InProcName: string;
+  CompList, ProcList: TArray<string>;
+  Path: string;
+begin
+  CompClassName := 'TRealDBGrid';
+  SearchProcName := 'KeyPress';
+  SearchKeyword := 'Key = #13';
+
+  SrcFile := TStringList.Create;
+  for Info in FFileInfos do
+  begin
+    Path := Info.GetPasFullpath(TEnv.Instance.RootPath);
+    if not FileExists(Path) then
+      Continue;
+    SrcFile.LoadFromFile(Info.GetPasFullpath(TEnv.Instance.RootPath));
+
+    CompList := [];
+    ProcList := [];
+
+    CompTag := Format(': %s;', [CompClassName]);
+    for I := 0 to SrcFile.Count - 1 do
+    begin
+      S := SrcFile[I];
+      if S.Contains(CompTag) then
+      begin
+        CompName := Copy(S, 1, Pos(':', S)-1).Trim;
+        CompList := CompList + [CompName];
+      end;
+
+      if S.Contains(SearchProcName) then
+      begin
+        for CompName in CompList do
+        begin
+          if S.Contains(CompName + SearchProcName) then
+            ProcList := ProcList + [CompName + SearchProcName];
+        end;
+      end;
+
+      if S = 'implementation' then
+      begin
+        ImplIdx := I;
+        Break;
+      end;
+    end;
+
+    if Length(ProcList) = 0 then
+      Continue;
+
+    InProcName := '';
+    for I := ImplIdx to SrcFile.Count - 1 do
+    begin
+      S := SrcFile[I];
+
+      if InProcName = '' then
+      begin
+        for ProcName in ProcList do
+        begin
+          if S.Contains(ProcName) then
+            InProcName := ProcName;
+        end;
+      end
+      else
+      begin
+        if S.Contains(SearchKeyword) then
+        begin
+          mmoKeyPress.Lines.Add(Format(', [''%s'', ''%s'', ''OnKeyPress'', ''OnKeyPressToDown'']', [ExtractFileName(Info.Filename), InProcName]));
+//          mmoKeyPress.Lines.Add(S);
+        end
+        else if S = 'end;' then
+        begin
+          InProcName := '';
+        end;
+      end;
+    end;
+
+
+//    Info.
+  end;
+  SrcFile.Free;
 end;
 
 end.

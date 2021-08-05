@@ -239,7 +239,7 @@ const
 //        Visible = False
 
 type
-  TEventOwner = (eoNone, eoGrid, eoView, eoData, eoDataSummury, eoIgnore);
+  TEventOwner = (eoNone, eoGrid, eoView, eoData, eoDataSummury, eoIgnore, eoCase);
   TEventTagInfo = record
     EventName: string;
     RGEvent: string;
@@ -266,6 +266,9 @@ const
   TAG_PROC_VIEW_EDITKEYDOWN = TAG_PROC_VIEW_COMMON + '('#13#10 +
     '      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;'#13#10 +
     '      AEdit: TcxCustomEdit; var Key: Word; Shift: TShiftState);';
+  TAG_PROC_VIEW_EDITKEYPRESS = TAG_PROC_VIEW_COMMON + '('#13#10 +
+    '      Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem;'#13#10 +
+    '      AEdit: TcxCustomEdit; var Key: Char);';
   TAG_PROC_VIEW_MOUSEDOWN = TAG_PROC_VIEW_COMMON + '(Sender: TObject;'#13#10 +
     '      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);';
   TAG_PROC_VIEW_COL_HDR = TAG_PROC_VIEW_COMMON + '('#13#10 +
@@ -292,10 +295,13 @@ const
 
 
 const
-  EventTagInfos: array[0..11] of TEventTagInfo =
+  EventTagInfos: array[0..12] of TEventTagInfo =
     (
       (EventName: 'EditDblClick';         RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDIT_DBLCLICK),
-      (EventName: 'EditKeyDown';          RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
+
+      (EventName: 'EditKeyDown';          RGEvent: 'OnKeyPressToDown';    EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
+      (EventName: 'EditKeyPress';         RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYPRESS),
+
       (EventName: 'ColumnHeaderClick';    RGEvent: 'OnColumnTitleClick';  EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_COL_HDR),
       (EventName: 'CustomDrawCell';       RGEvent: 'OnDrawCell';	        EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CUST_DRAW),
       (EventName: 'CellClick';            RGEvent: 'OnClick';             EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_CELL_CLICK),
@@ -320,6 +326,12 @@ var
   Info: TEventTagInfo;
 begin
   Result := False;
+
+  if ARGEventProp = 'OnKeyPress' then
+  begin
+
+  end;
+
   for Info in EventTagInfos do
   begin
     if (Info.EventOwner = eoNone) then
