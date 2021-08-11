@@ -17,6 +17,8 @@ const
   ')';
   VIEWNAME_REGEX = '(SetRGrid|aRGrid|R1)';
   INDEX_REGEX = '\[[\w\(\)\[\]\+\-\*\.\s]+\]';
+  KOR_REGEX = 'ㄱ-ㅎㅏ-ㅣ가-힣';
+  STRS_REGEX = '[\wㄱ-ㅎㅏ-ㅣ가-힣]+';
 
 
 type

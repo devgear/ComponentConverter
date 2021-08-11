@@ -281,7 +281,7 @@ end;
 function TConverter.ConvertDfm(AData: TConvertData): Boolean;
 var
   I: Integer;
-  Strs: TStringList;
+  Strs, Orgs: TStringList;
   Output: string;
 begin
   Result := False;
@@ -298,21 +298,24 @@ begin
   AData.ConvDfm.Clear;
 
   Strs := TStringList.Create;
+  Orgs := TStringList.Create;
   try
     for I := AData.CompStartIndex to AData.CompEndIndex do
       Strs.Add(AData.SrcDfm[I]);
 
+    Orgs.Assign(Strs);
     Result := GetConvertedCompText(Strs, Output);
     if Result then
     begin
       AData.ConvDfm.Text := Output;
-      TLogger.Log(Format('[DFM] Org: %s'#13#10'Converted: %s', [Strs.Text, AData.ConvDfm.Text]));
+      TLogger.Log(Format('[DFM] Org: %s'#13#10'Converted: %s', [Orgs.Text, AData.ConvDfm.Text]));
 
       ReplaceComponentInDfm(AData);
     end;
 //    TfrmViewer.ShowData('Converted CompText', AData.ConvDfm.Text);
   finally
     Strs.Free;
+    Orgs.Free;
   end;
 end;
 

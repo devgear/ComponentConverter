@@ -6,7 +6,7 @@ uses
   System.Generics.Collections, SrcConverterTypes,
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.StdCtrls,
-  Vcl.Menus;
+  Vcl.Menus, Vcl.Samples.Gauges;
 
 type
   TfrmSrcMainForm = class(TForm)
@@ -30,7 +30,6 @@ type
     btnRunConvert: TButton;
     chkBackup: TCheckBox;
     FileOpenDialog1: TFileOpenDialog;
-    ProgressBar1: TProgressBar;
     lblCount: TLabel;
     PopupMenu1: TPopupMenu;
     mniAfterSelect: TMenuItem;
@@ -40,6 +39,7 @@ type
     N5: TMenuItem;
     cbxLogLevel: TComboBox;
     Button1: TButton;
+    ProgressBar1: TGauge;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
@@ -118,8 +118,8 @@ begin
 
   TLogger.Instance.LogLevel := TLogLevel(cbxLogLevel.ItemIndex);
 
-  ProgressBar1.Max := lvFiles.Items.Count;
-  lblCount.Caption := Format('(%d / %d)', [0, ProgressBar1.Max]);
+  ProgressBar1.MaxValue := lvFiles.Items.Count;
+  lblCount.Caption := Format('(%d / %d)', [0, ProgressBar1.MaxValue]);
 
   // 선택 파일을 위 컨버터들로 전환실행
   for I := 0 to lvFiles.Items.Count - 1 do
@@ -143,14 +143,14 @@ begin
     R := lvFiles.Selected.DisplayRect(drBounds);
     lvFiles.Scroll(0, (R.Top - lvFiles.ClientHeight div 2));
 
-    ProgressBar1.Position := I+1;
-    lblCount.Caption := Format('(%d / %d)', [I+1, ProgressBar1.Max]);
+    ProgressBar1.Progress := I+1;
+    lblCount.Caption := Format('(%d / %d)', [I+1, ProgressBar1.MaxValue]);
 
     lvFiles.Items[I].Checked := False;
     Application.ProcessMessages;
   end;
 
-  ProgressBar1.Position := ProgressBar1.Max;
+  ProgressBar1.Progress := ProgressBar1.MaxValue;
   ShowMessage(Format('%d 건이 변경되었습니다.', [TotalCount]));
   TLogger.Log('Finish migration [Count: %d]', [TotalCount]);
 end;

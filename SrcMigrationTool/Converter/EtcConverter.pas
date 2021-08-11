@@ -349,44 +349,47 @@ var
 begin
   Result := 0;
 
-  Datas.AddInFile('TbF_129I',
+  Datas.Add(
     'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
     'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_323P',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_331I',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_338I',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_4407_2P',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_4407P',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_129I',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-
-
-  Datas.AddInFile('TbF_303_2I',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_307I',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_307_1I',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_306I',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
-  Datas.AddInFile('TbF_321I',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString := ''101'';',
-    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsInteger := 101;');
+//  Datas.AddInFile('TbF_129I',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_323P',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_331I',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_338I',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_4407_2P',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_4407P',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_129I',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//
+//
+//  Datas.AddInFile('TbF_303_2I',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_307I',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_307_1I',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_306I',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+//  Datas.AddInFile('TbF_321I',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString := ''101'';',
+//    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsInteger := 101;');
 
 
 

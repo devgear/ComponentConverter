@@ -210,6 +210,13 @@ object frmSrcMainForm: TfrmSrcMainForm
       Width = 3
       Height = 13
     end
+    object ProgressBar1: TGauge
+      Left = 329
+      Top = 13
+      Width = 385
+      Height = 17
+      Progress = 0
+    end
     object btnRunConvert: TButton
       Left = 8
       Top = 8
@@ -229,32 +236,25 @@ object frmSrcMainForm: TfrmSrcMainForm
       State = cbChecked
       TabOrder = 1
     end
-    object ProgressBar1: TProgressBar
-      Left = 330
-      Top = 13
-      Width = 383
-      Height = 17
-      TabOrder = 2
-    end
     object cbxLogLevel: TComboBox
       Left = 215
       Top = 10
       Width = 97
       Height = 21
       Style = csDropDownList
-      TabOrder = 3
+      TabOrder = 2
       Items.Strings = (
         'Info'
         'Error')
     end
     object Button1: TButton
-      Left = 744
-      Top = 6
+      Left = 736
+      Top = 9
       Width = 75
       Height = 25
       Anchors = [akTop, akRight]
       Caption = 'Extract'
-      TabOrder = 4
+      TabOrder = 3
       OnClick = Button1Click
     end
   end

@@ -12,7 +12,6 @@ uses
   Converter in '..\Common\Converter.pas',
   ConverterTypes in '..\Common\ConverterTypes.pas',
   ExtractForm in 'ExtractForm.pas' {frmExtract},
-
   GridConverter in 'Converter\GridConverter.pas',
   DataControllerConverter in 'Converter\DataControllerConverter.pas',
   ColumnConverter in 'Converter\ColumnConverter.pas',
@@ -20,7 +19,8 @@ uses
   SelectedConverter in 'Converter\SelectedConverter.pas',
   EventConverter in 'Converter\EventConverter.pas',
   CustomConverter in 'Converter\CustomConverter.pas',
-  EtcConverter in 'Converter\EtcConverter.pas';
+  EtcConverter in 'Converter\EtcConverter.pas' {$R *.res},
+  DataSetConverter in 'Converter\DataSetConverter.pas';
 
 {$R *.res}
 
