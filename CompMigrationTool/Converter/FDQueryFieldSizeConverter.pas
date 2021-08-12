@@ -118,18 +118,25 @@ begin
     end;
   end;
 
-  if (FieldName = '') or (FieldSize = -1) then
+  if (FieldName = '') then
     Exit;
 
   for Info in ChangeTargets do
   begin
-    if (Info.FN = FieldName) and (Info.FS = FieldSize)  then
+    if Info.FN = FieldName then
     begin
-      ACompText[Idx] := ' Size = ' + Info.CS.ToString;
-      Exit(True);
+      if Info.FS = FieldSize then
+      begin
+        ACompText[Idx] := ' Size = ' + Info.CS.ToString;
+        Exit(True);
+      end
+      else if (Info.FS = 20) and (FieldSize = -1) then
+      begin
+        ACompText.Insert(ACompText.Count - 1, ' Size = ' + Info.CS.ToString);
+        Exit(True);
+      end;
     end;
   end;
-
 
 //  for I := ACompText.CompStartIndex + 1 to AData.CompEndIndex - 2 do
 //  begin

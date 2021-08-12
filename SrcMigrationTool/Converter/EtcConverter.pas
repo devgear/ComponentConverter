@@ -146,8 +146,11 @@ begin
   Datas.Add('Sender AS TwMaskEdit', 'Sender As TcxMaskEdit');
 
   // NewSuppl
-
   Datas.Add('''NewSupp2010_Config.ini''', '''NewSupp2021_Config.inii''');
+
+
+  // Acct
+  Datas.Add('''Acct2010_config.ini''', 'ExtractFilePath(Application.ExeName) + ''Acct2021_config.ini''');
 
 
   Keywords := [

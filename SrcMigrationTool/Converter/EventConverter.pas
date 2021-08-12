@@ -205,6 +205,36 @@ begin
       'Sup5081',
       'Sup7003'
     ];
+  end
+  else if FConvData.RootPath.ToLower.Contains('acct') then
+  begin
+    CompleteUnits := [
+      'TaF_201I',
+      'TaF_103I',
+      'TaF_105I',
+      'TaF_499IP',
+      'TaF_202I',
+      'TaF_499_1IP',
+      'TaF_763P',
+      'TaF_771P',
+      'TaF_774P',
+      'TaF_776P',
+      'TaF_103_1P',
+      'TaF_777P',
+      'TaF_772P',
+      'TaF_773P'
+    ];
+  end
+  else if FConvData.RootPath.ToLower.Contains('acost') then
+  begin
+    CompleteUnits := [
+      'TbF_4402P',
+      'TbF_4403P',
+      'TbF_4404P',
+      'TbF_4406P',
+      'TbF_4404_2P',
+      'TbF_4411P'
+    ];
   end;
 
   if IsContainsRegEx(ASrc, SEARCH_PATTERN) then

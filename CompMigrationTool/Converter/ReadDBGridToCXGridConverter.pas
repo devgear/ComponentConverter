@@ -796,6 +796,13 @@ begin
       , ['Sup7003', 'RealDBGrid2', '보내준부수']
       , ['Sup7003', 'RealDBGrid2', '총주문부수']
     ];
+  end
+  else if Path.Contains('acct') then
+  begin
+    Datas := [
+        ['TaF_103I', 'RealDBGrid_detail', 'Num']
+      , ['', '', '']
+    ];
   end;
 
   Result := [];

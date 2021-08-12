@@ -368,6 +368,9 @@ const
 var
   I: Integer;
 begin
+  if AFontColor = '' then
+    AFontColor := 'clWindowText';
+
   Result := 'nil';
   for I := 0 to Length(COLOR_TO_STYLE) - 1 do
     if (COLOR_TO_STYLE[I][0] = AColor) and (COLOR_TO_STYLE[I][1] = AFontColor) then
