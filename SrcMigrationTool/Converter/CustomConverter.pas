@@ -27,6 +27,15 @@ type
     function ConvertDataSetWhile(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
+  TCustomCustConvert = class(TConverter)
+  protected
+    function GetCvtCompClassName: string; override;
+    function GetDescription: string; override;
+  published
+    [Impl]
+    function ConvertTbF_319P(AProc, ASrc: string; var ADest: string): Integer;
+  end;
+
   TCustomMakeConvert = class(TConverter)
   protected
     function GetCvtCompClassName: string; override;
@@ -431,6 +440,38 @@ end;
 function TCustomBusConvert.GetDescription: string;
 begin
   Result := 'Bus Ä¿½ºÅÒ';
+end;
+
+{ TCustomCustConvert }
+
+function TCustomCustConvert.ConvertTbF_319P(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_319P') then
+    Exit;
+  if AProc.Contains('Rtrv') then
+  begin
+    if ASrc = '   for I := 0 to 7 do begin' then
+    begin
+      ADest := ASrc + '(*mig: 1Çà Ãß°¡*)'#13#10 +
+        '      RealDBGrid2DBBandedTableView1.Columns[I].PropertiesClassName := ''TcxTextEditProperties'';';
+
+      Inc(Result);
+    end;
+  end;
+
+end;
+
+function TCustomCustConvert.GetCvtCompClassName: string;
+begin
+  Result := 'TcxGrid';
+end;
+
+function TCustomCustConvert.GetDescription: string;
+begin
+  Result := 'Cust Ä¿½ºÅÒ';
 end;
 
 initialization

@@ -47,6 +47,20 @@ type
     function GetDescription: string; override;
   end;
 
+  // TLabel의 Color 설정된 경우 Transparent = True 설정
+  TConverterStaticTextColor = class(TConverter)
+  protected
+    function FindComponentInDfm(AData: TConvertData): Boolean; override;
+
+    function GetComponentClassName: string; override;
+    function GetConvertCompClassName: string; override;
+
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
+
+    function GetDescription: string; override;
+  end;
+
+
 implementation
 
 { TConverterUpdateSQLConnection }
@@ -227,9 +241,68 @@ begin
   Result := 'TDBGrid - DrawingStyle = gdsClassic'
 end;
 
+{ TConverterStaticTextColor }
+
+function TConverterStaticTextColor.FindComponentInDfm(
+  AData: TConvertData): Boolean;
+var
+  I: Integer;
+  S: string;
+  HasColor: Boolean;
+begin
+  while True do
+  begin
+    Result := inherited;
+    if not Result then
+      Break;
+
+    HasColor := False;
+    for I := AData.CompStartIndex + 1 to AData.CompEndIndex - 2 do
+    begin
+      S := AData.SrcDfm[I];
+      if S.Contains(' Transparent =') then
+      begin
+        HasColor := False;
+        Break;
+      end;
+
+      if S.Contains(' Color = ') then
+        HasColor := True;
+    end;
+    if HasColor then
+      Exit(True);
+  end;
+
+  Result := False;
+end;
+
+function TConverterStaticTextColor.GetComponentClassName: string;
+begin
+  Result := 'TStaticText';
+end;
+
+function TConverterStaticTextColor.GetConvertCompClassName: string;
+begin
+  Result := 'TStaticText';
+end;
+
+function TConverterStaticTextColor.GetConvertedCompText(ACompText: TStrings;
+  var Output: string): Boolean;
+begin
+  ACompText.Insert(ACompText.Count - 1, '  Transparent = False');
+  Result := True;
+  Output := ACompText.Text;
+end;
+
+function TConverterStaticTextColor.GetDescription: string;
+begin
+  Result := 'Label.Color 설정';
+end;
+
 initialization
   TConvertManager.Instance.Regist(TConverterLabelColor);
   TConvertManager.Instance.Regist(TConverterGroupBoxColor);
   TConvertManager.Instance.Regist(TConverterDBGrid);
+  TConvertManager.Instance.Regist(TConverterStaticTextColor);
 
 end.

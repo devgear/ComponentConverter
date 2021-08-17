@@ -152,6 +152,12 @@ begin
   // Acct
   Datas.Add('''Acct2010_config.ini''', 'ExtractFilePath(Application.ExeName) + ''Acct2021_config.ini''');
 
+  // Acost
+  Datas.Add('''Acost2010_config.ini''', 'ExtractFilePath(Application.ExeName) + ''Acost2010_config.ini''');
+
+  // BookStore
+  Datas.Add('''BookStore2010_config.ini''', 'ExtractFilePath(Application.ExeName) + ''BookStore2021_config.ini''');
+
 
   Keywords := [
 //    '.BuildFromDataSet;'

@@ -801,7 +801,22 @@ begin
   begin
     Datas := [
         ['TaF_103I', 'RealDBGrid_detail', 'Num']
-      , ['', '', '']
+      , ['TaF_774P', 'RDBGridMaster', 'Num']
+      , ['TaF_776P', 'RealDBGrid4', '格内靛']
+      , ['TaF_103_1P', 'RealDBGrid_detail', 'Num']
+      , ['TaF_777P', 'RealDBGrid1', 'Num']
+      , ['TaF_777P', 'RealDBGrid2', 'Num']
+    ];
+  end
+  else if Path.Contains('acost') then
+  begin
+    Datas := [
+        ['TaF_103I', 'RealDBGrid_detail', 'Num']
+      , ['TaF_774P', 'RDBGridMaster', 'Num']
+      , ['TaF_776P', 'RealDBGrid4', '格内靛']
+      , ['TaF_103_1P', 'RealDBGrid_detail', 'Num']
+      , ['TaF_777P', 'RealDBGrid1', 'Num']
+      , ['TaF_777P', 'RealDBGrid2', 'Num']
     ];
   end;
 
