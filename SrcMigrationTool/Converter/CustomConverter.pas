@@ -34,6 +34,10 @@ type
   published
     [Impl]
     function ConvertTbF_319P(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertTbF_339I(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertTbF_509I(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
   TCustomMakeConvert = class(TConverter)
@@ -464,6 +468,37 @@ begin
 
 end;
 
+function TCustomCustConvert.ConvertTbF_339I(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_339I') then
+    Exit;
+
+  if ASrc.Trim = '환불구분 := DataSet.FieldByName(''환불구분'').NewValue;' then
+  begin
+    ADest := ASrc.Replace('.NewValue', '.Value');
+    Inc(Result);
+  end;
+
+end;
+
+function TCustomCustConvert.ConvertTbF_509I(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_509I') then
+    Exit;
+
+  if ASrc.Trim = 'CodePickup_Company.QueryCode(Qry_Master.FieldByName(''서점코드'').AsString,nil);' then
+  begin
+    ADest := ASrc.Replace('Qry_Master.FieldByName(''서점코드'').AsString', 'TcxTextEdit(AEdit).Text');
+    Inc(Result);
+  end;
+end;
+
 function TCustomCustConvert.GetCvtCompClassName: string;
 begin
   Result := 'TcxGrid';
@@ -476,6 +511,7 @@ end;
 
 initialization
   TConvertManager.Instance.Regist(TCustomBusConvert);
+  TConvertManager.Instance.Regist(TCustomCustConvert);
   TConvertManager.Instance.Regist(TCustomMakeConvert);
   TConvertManager.Instance.Regist(TCustomBookStoreConvert);
 

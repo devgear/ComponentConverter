@@ -645,95 +645,95 @@ begin
   else if Path.Contains('cust') then
   begin
     Targets := [
-        ['TbF_001I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TbF_003I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TbF_004I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TbF_006I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TbF_201I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TbF_202I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TbF_203I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TbF_502I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TbF_509I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+        ['TbF_001I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_003I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_004I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_006I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_201I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_202I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_203I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_502I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TbF_509I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
     ];
   end
   else if Path.Contains('acct') then
   begin
     Targets := [
-        ['TaF_103I.dfm', 'RealDBGrid_detailKeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TaF_201I.dfm', 'RealDBGrid2KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TgF_501I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+        ['TaF_103I.dfm', 'RealDBGrid_detail', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_201I.dfm', 'RealDBGrid2', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TgF_501I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
     ];
   end
   else if Path.Contains('acost') then
   begin
     Targets := [
-        ['TaF_006I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TaF_103I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TaF_212I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TaF_213I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TaF_304I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TaF_504I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+        ['TaF_006I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_103I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_212I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_213I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_304I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TaF_504I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_InfBook_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
     ];
   end
   else if Path.Contains('budget') then
   begin
     Targets := [
-      ['TaF_201I.dfm', 'RealDBGrid2KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+      ['TaF_201I.dfm', 'RealDBGrid2', 'OnKeyPress', 'OnKeyPressToDown']
     ];
   end
   else if Path.Contains('make') then
   begin
     Targets := [
-        ['TaF_212I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_Book_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_Box_Chulgo_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_Company_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_DokRyue_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_Film_DaySet_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_Film_SuJung_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_GongImUP_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_GongIm_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_GongIm_Jibul_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_IpgoKumSu_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_Jiler_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_Paper_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_ScheduledIpGo_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_Yong101I.dfm', 'RDBGridMasterKeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_Yong104I.dfm', 'RealDBGrid2KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_YongJi_Ipgo_I2.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_YongJi_Ipgo_I2.dfm', 'RealDBGrid2KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_YongJi_Ipgo_Jeji_I.dfm', 'RealDBGrid3KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+        ['TaF_212I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Book_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Box_Chulgo_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Company_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_DokRyue_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Film_DaySet_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Film_SuJung_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_GongImUP_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_GongIm_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_GongIm_Jibul_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_InfBook_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_IpgoKumSu_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Jiler_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Paper_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_ScheduledIpGo_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Yong101I.dfm', 'RDBGridMaster', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_Yong104I.dfm', 'RealDBGrid2', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_YongJi_Ipgo_I2.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_YongJi_Ipgo_I2.dfm', 'RealDBGrid2', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_YongJi_Ipgo_Jeji_I.dfm', 'RealDBGrid3', 'OnKeyPress', 'OnKeyPressToDown']
     ];
   end
   else if Path.Contains('newsupp') then
   begin
     Targets := [
-        ['TmF_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TsF_BookStorePosI.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+        ['TmF_InfBook_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TsF_BookStorePosI.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
     ];
   end
   else if Path.Contains('supply') then
   begin
     Targets := [
-        ['Sup3061.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['Sup3071.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['Sup3071.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['Sup7002.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+        ['Sup3061.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['Sup3071.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['Sup3071.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['Sup7002.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
     ];
   end
   else if Path.Contains('plan') then
   begin
     Targets := [
-        ['TaF_212I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TmF_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TpF_BosangJikub_I.dfm', 'DBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TpF_Bosang_I.dfm', 'DBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TpF_SJ_CDModify_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TpF_SJ_InfBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TpF_SJ_JegoBook_I.dfm', 'RealDBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
-      , ['TpF_SJ_Josa_I.dfm', 'DBGrid1KeyPress', 'OnKeyPress', 'OnKeyPressToDown']
+        ['TaF_212I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TmF_InfBook_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_BosangJikub_I.dfm', 'DBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_Bosang_I.dfm', 'DBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_SJ_CDModify_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_SJ_InfBook_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_SJ_JegoBook_I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+      , ['TpF_SJ_Josa_I.dfm', 'DBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
     ];
   end;
 

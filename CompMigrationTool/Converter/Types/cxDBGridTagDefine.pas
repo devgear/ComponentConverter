@@ -258,6 +258,7 @@ const
 
   TAG_PROC_GRID_SENDER = TAG_PROC_GRID_COMMON + '(Sender: TObject);';
   TAG_PROC_VIEW_SENDER = TAG_PROC_VIEW_COMMON + '(Sender: TObject);';
+  TAG_PROC_VIEW_DBLCLICK = TAG_PROC_VIEW_SENDER;
 
   TAG_PROC_GRID_KEYPRESS = TAG_PROC_GRID_COMMON + '(Sender: TObject;'#13#10 +
     '  var Key: Char);';
@@ -297,7 +298,7 @@ const
 const
   EventTagInfos: array[0..12] of TEventTagInfo =
     (
-      (EventName: 'EditDblClick';         RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDIT_DBLCLICK),
+      (EventName: 'DblClick';             RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_DBLCLICK),
 
       (EventName: 'EditKeyDown';          RGEvent: 'OnKeyPressToDown';    EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
       (EventName: 'EditKeyPress';         RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYPRESS),
