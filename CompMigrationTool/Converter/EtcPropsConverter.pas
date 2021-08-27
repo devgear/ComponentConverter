@@ -47,7 +47,6 @@ type
     function GetDescription: string; override;
   end;
 
-  // TLabel의 Color 설정된 경우 Transparent = True 설정
   TConverterStaticTextColor = class(TConverter)
   protected
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
@@ -60,6 +59,28 @@ type
     function GetDescription: string; override;
   end;
 
+  TConverterComboBoxStyle = class(TConverter)
+  protected
+    function GetComponentClassName: string; override;
+    function GetConvertCompClassName: string; override;
+
+    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
+
+    function GetDescription: string; override;
+  end;
+
+  // TPanel의 ParentBackground = False 처리
+  TConverterPanelParentBackground = class(TConverter)
+  protected
+    function FindComponentInDfm(AData: TConvertData): Boolean; override;
+
+    function GetComponentClassName: string; override;
+    function GetConvertCompClassName: string; override;
+
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
+
+    function GetDescription: string; override;
+  end;
 
 implementation
 
@@ -82,13 +103,13 @@ begin
     for I := AData.CompStartIndex + 1 to AData.CompEndIndex - 2 do
     begin
       S := AData.SrcDfm[I];
-      if S.Contains(' Transparent =') then
+      if S.Trim.StartsWith('Transparent =') then
       begin
         HasColor := False;
         Break;
       end;
 
-      if S.Contains(' Color = ') then
+      if S.Trim.StartsWith('Color = ') then
         HasColor := True;
     end;
     if HasColor then
@@ -139,7 +160,7 @@ begin
     for I := AData.CompStartIndex + 1 to AData.CompEndIndex - 2 do
     begin
       S := AData.SrcDfm[I];
-      if S.Contains(' ParentBackground = False') then
+      if S.Trim.Contains('ParentBackground = False') then
       begin
         HasColor := False;
         Break;
@@ -150,7 +171,7 @@ begin
         Break;
       end;
 
-      if S.Contains(' Color = ') then
+      if S.Trim.StartsWith('Color = ') then
         HasColor := True;
     end;
     if HasColor then
@@ -200,7 +221,7 @@ begin
     for I := AData.CompStartIndex + 1 to AData.CompEndIndex - 2 do
     begin
       S := AData.SrcDfm[I];
-      if S.Contains(' DrawingStyle = gdsClassic') then
+      if S.Trim.Contains('DrawingStyle = gdsClassic') then
       begin
         HasTag := True;
         Break;
@@ -260,13 +281,13 @@ begin
     for I := AData.CompStartIndex + 1 to AData.CompEndIndex - 2 do
     begin
       S := AData.SrcDfm[I];
-      if S.Contains(' Transparent =') then
+      if S.Trim.StartsWith('Transparent =') then
       begin
         HasColor := False;
         Break;
       end;
 
-      if S.Contains(' Color = ') then
+      if S.Trim.StartsWith('Color = ') then
         HasColor := True;
     end;
     if HasColor then
@@ -299,10 +320,99 @@ begin
   Result := 'Label.Color 설정';
 end;
 
+{ TConverterComboBoxStyle }
+
+function TConverterComboBoxStyle.GetComponentClassName: string;
+begin
+  Result := 'TComboBox';
+end;
+
+function TConverterComboBoxStyle.GetConvertCompClassName: string;
+begin
+  Result := 'TComboBox';
+end;
+
+function TConverterComboBoxStyle.GetConvertedCompStrs(
+  var ACompText: TStrings): Boolean;
+var
+  I: Integer;
+  S: string;
+begin
+  for I := 1 to ACompText.Count - 2 do
+  begin
+    S := ACompText[I];
+    if S.Trim = 'Style = csDropDownList' then
+    begin
+      ACompText[I] := S.Replace('csDropDownList', 'csOwnerDrawFixed');
+      Exit(True);
+    end;
+  end;
+  Result := False;
+end;
+
+function TConverterComboBoxStyle.GetDescription: string;
+begin
+  Result := 'ComboBox Style 변경';
+end;
+
+{ TConverterPanelParentBackground }
+
+function TConverterPanelParentBackground.FindComponentInDfm(
+  AData: TConvertData): Boolean;
+var
+  I: Integer;
+  S: string;
+begin
+  while True do
+  begin
+    Result := inherited;
+    if not Result then
+      Break;
+
+    for I := AData.CompStartIndex + 1 to AData.CompEndIndex - 2 do
+    begin
+      S := AData.SrcDfm[I];
+      if S.Trim = 'ParentBackground = False' then
+      begin
+        Result := False;
+        Break;
+      end;
+    end;
+
+    if Result then
+      Exit;
+  end;
+end;
+
+function TConverterPanelParentBackground.GetComponentClassName: string;
+begin
+  Result := 'TPanel';
+end;
+
+function TConverterPanelParentBackground.GetConvertCompClassName: string;
+begin
+  Result := 'TPanel';
+end;
+
+function TConverterPanelParentBackground.GetConvertedCompText(
+  ACompText: TStrings; var Output: string): Boolean;
+begin
+  ACompText.Insert(1, '  ParentBackground = False');
+  Result := True;
+  Output := ACompText.Text;
+end;
+
+function TConverterPanelParentBackground.GetDescription: string;
+begin
+  Result := 'Panel.ParentBackgound 설정';
+end;
+
 initialization
   TConvertManager.Instance.Regist(TConverterLabelColor);
   TConvertManager.Instance.Regist(TConverterGroupBoxColor);
   TConvertManager.Instance.Regist(TConverterDBGrid);
   TConvertManager.Instance.Regist(TConverterStaticTextColor);
+  TConvertManager.Instance.Regist(TConverterComboBoxStyle);
+  TConvertManager.Instance.Regist(TConverterPanelParentBackground);
 
 end.

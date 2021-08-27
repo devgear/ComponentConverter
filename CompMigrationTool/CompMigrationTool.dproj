@@ -130,7 +130,7 @@
         <DCCReference Include="Converter\wControlConv.pas"/>
         <DCCReference Include="Converter\Types\wControlDefine.pas"/>
         <DCCReference Include="Converter\ReplaceMemoFieldToStringFieldConv.pas"/>
-        <DCCReference Include="Converter\FDQryDirectExecuteConv.pas"/>
+        <DCCReference Include="Converter\FireDACConv.pas"/>
         <DCCReference Include="Converter\EtcPropsConverter.pas"/>
         <DCCReference Include="Converter\FDQueryFieldSizeConverter.pas"/>
         <DCCReference Include="Parser\cxGridViewParser.pas"/>

@@ -24,7 +24,7 @@ uses
   wControlConv in 'Converter\wControlConv.pas',
   wControlDefine in 'Converter\Types\wControlDefine.pas',
   ReplaceMemoFieldToStringFieldConv in 'Converter\ReplaceMemoFieldToStringFieldConv.pas',
-  FDQryDirectExecuteConv in 'Converter\FDQryDirectExecuteConv.pas',
+  FireDACConv in 'Converter\FireDACConv.pas',
   EtcPropsConverter in 'Converter\EtcPropsConverter.pas',
   FDQueryFieldSizeConverter in 'Converter\FDQueryFieldSizeConverter.pas',
   cxGridViewParser in 'Parser\cxGridViewParser.pas',

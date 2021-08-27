@@ -75,8 +75,10 @@ type
     CS: Integer;
   end;
 const
-  ChangeTargets: array[0..14] of TFieldSizeChage = (
-      (FN: '출판사명';              FS: 8;  CS: 16)
+  ChangeTargets: array[0..18] of TFieldSizeChage = (
+      (FN: '출판사명';              FS: 8;  CS: 20)
+    , (FN: '출판사명';              FS: 16;  CS: 20)
+    , (FN: '출판사명';              FS: 20;  CS: 40)
     , (FN: '도서구분';              FS: 2;  CS: 6)
     , (FN: '교지코드';              FS: 5;  CS: 10)
     , (FN: '세금계산서발행일';      FS: 1;  CS: 8)  // BUS.TbF_4407_1P.Qry_Master
@@ -84,13 +86,15 @@ const
     , (FN: '발행일';                FS: 1;  CS: 8)  // BUS.TbF_4407_1P.Qry_Master
     , (FN: '날짜';                  FS: 8;  CS: 10) // BUS.TbF_503P.Qry_Master
     , (FN: '도서코드';              FS: 4;  CS: 5)  // BUS.TbF_4201P.Qry_Book
-    , (FN: '출판사';                FS: 8;  CS: 16)
-    , (FN: '과목명';                FS: 20;  CS: 40)
-    , (FN: '도서명';                FS: 20;  CS: 40)
+    , (FN: '출판사';                FS: 8;  CS: 20)
+    , (FN: '과목명';                FS: 20;  CS: 50)
+    , (FN: '과목명';                FS: 26;  CS: 50)
+    , (FN: '도서명';                FS: 20;  CS: 50)
     , (FN: '매출처';                FS: 11;  CS: 22)
     , (FN: '작업코드';              FS: 3;  CS: 5)
     , (FN: '상호';                  FS: 20;  CS: 40)
     , (FN: '구분';                  FS: 10;  CS: 20)
+    , (FN: '적재위치';              FS: 5;  CS: 10)
   );
 
 var
@@ -103,6 +107,7 @@ begin
   Result := False;
   FieldName := '';
   FieldSize := -1;
+
   for I := 1 to ACompText.Count - 1 do
   begin
     S := ACompText[I];

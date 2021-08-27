@@ -38,11 +38,21 @@ end;
 
 function TConverterMemoToStrField.FindComponentInDfm(AData: TConvertData): Boolean;
 const
-  TARGET_COMPS: array[0..3] of TTargetComp = (
-      (FN: 'TbF_128P'; CN: 'Qry_MasterMemoField')
-    , (FN: 'TbF_128P'; CN: 'Qry_DetailMemoField')
-    , (FN: 'TbF_4409P'; CN: 'Qry_HomeTaxMemoField')
-    , (FN: 'TbF_4409P'; CN: 'Qry_HomeTaxMemoField2')
+  TARGET_COMPS: array[0..13] of TTargetComp = (
+      (FN: 'TbF_128P';            CN: 'Qry_MasterMemoField')
+    , (FN: 'TbF_128P';            CN: 'Qry_DetailMemoField')
+    , (FN: 'TbF_4409P';           CN: 'Qry_HomeTaxMemoField')
+    , (FN: 'TbF_4409P';           CN: 'Qry_HomeTaxMemoField2')
+    , (FN: 'TsF_OderAndOutP';     CN: 'Qry_MasterMemoField')
+    , (FN: 'TsF_Banpum_KumsuPI';  CN: 'qry_MasterMemoField')
+    , (FN: 'TsF_Banpum_KumsuPI';  CN: 'qry_Master_')
+    , (FN: 'TaF_771P';            CN: 'Qry_ChangeMemoField')
+    , (FN: 'TaF_772P';            CN: 'Qry_ChangeMemoField')
+    , (FN: 'TaF_773P';            CN: 'Qry_ChangeMemoField')
+    , (FN: 'TaF_774P';            CN: 'Qry_ChangeMemoField')
+    , (FN: 'TaF_775P';            CN: 'Qry_ChangeMemoField')
+    , (FN: 'TaF_776P';            CN: 'Qry_ChangeMemoField')
+    , (FN: 'TaF_757P';            CN: 'Qry_ChangeMemoField')
   );
 var
   I: Integer;

@@ -20,6 +20,8 @@ const
     '  TabOrder = [[TAB_ORDER]]'#13#10 +
     '  LookAndFeel.NativeStyle = False'#13#10 +
     '  LookAndFeel.Kind = lfFlat'#13#10 +
+    '  LookAndFeel.ScrollbarMode = sbmClassic'#13#10 +
+    '  LookAndFeel.ScrollMode = scmClassic'#13#10 +
     '[[GRID_EVENT]]'#13#10 +
     '  object [[VIEW_NAME]]: TcxGridDBBandedTableView'#13#10 +
     '[[VIEW_EVENT]]'#13#10 +
@@ -36,6 +38,8 @@ const
     '    OptionsView.Indicator = True'#13#10 +
     '    OptionsView.BandHeaders = [[BAND_HEADERS]]'#13#10 +
     '    OptionsView.Footer = [[FOOTER_VISIBLE]]'#13#10 +
+    '    OptionsView.FixedBandSeparatorWidth = 1'#13#10 +
+
     '    OptionsView.FooterMultiSummaries = [[FOOTER_MULTI]]'#13#10 +
 
     '    OptionsView.BandHeaderHeight = [[BAND_HEADER_HEIGHT]]'#13#10 +
@@ -200,6 +204,7 @@ const
     '      item'#13#10 +
     '        Caption = ''[[CAPTION]]'''#13#10 +
     '        FixedKind = [[FIXED_KIND]]'#13#10 +
+    '        [[STYLE_CONTENT]]'#13#10 +
     '        Visible = [[VISIBLE]]'#13#10 +
 //    '        Width = [[WIDTH]]'#13#10 +
     '        [[STYLE_HEADER]]'#13#10 +
@@ -218,6 +223,7 @@ const
     '      item'#13#10 +
     '        Caption = ''Normal band'''#13#10 +
     '        FixedKind = fkLeft'#13#10 +
+    '        Styles.Content = dmDataBase.cxStyleHeader'#13#10 +
     '      end'#13#10 +
     '      item'#13#10 +
     '        Caption = ''Hidden band'''#13#10 +
@@ -296,9 +302,10 @@ const
 
 
 const
-  EventTagInfos: array[0..12] of TEventTagInfo =
+  EventTagInfos: array[0..13] of TEventTagInfo =
     (
-      (EventName: 'DblClick';             RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_DBLCLICK),
+      (EventName: 'EditDblClick';         RGEvent: 'OnDblClick';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDIT_DBLCLICK),
+      (EventName: 'DblClick';             RGEvent: 'OnDblClickKeep';      EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_DBLCLICK),
 
       (EventName: 'EditKeyDown';          RGEvent: 'OnKeyPressToDown';    EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYDOWN),
       (EventName: 'EditKeyPress';         RGEvent: 'OnKeyPress';          EventOwner: eoView;         ProcTag: TAG_PROC_VIEW_EDITKEYPRESS),

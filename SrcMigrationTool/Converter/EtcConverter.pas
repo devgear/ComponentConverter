@@ -40,6 +40,9 @@ type
     function ConvertTreeMake(AProc, ASrc: string; var ADest: string): Integer;
 
     [Impl]
+    function ConvertAnsiFormat(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
     function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
@@ -151,6 +154,7 @@ begin
 
   // Acct
   Datas.Add('''Acct2010_config.ini''', 'ExtractFilePath(Application.ExeName) + ''Acct2021_config.ini''');
+  Datas.Add('''Acct2010_Corp.ini''', 'ExtractFilePath(Application.ExeName) + ''Acct2021_Corp.ini''');
 
   // Acost
   Datas.Add('''Acost2010_config.ini''', 'ExtractFilePath(Application.ExeName) + ''Acost2010_config.ini''');
@@ -302,6 +306,26 @@ begin
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
+function TEtcConverter.ConvertAnsiFormat(AProc, ASrc: string;
+  var ADest: string): Integer;
+{
+      SN_EDT.Items.Add(Format('%-12s', [copy(Kmt_SchoolList.FieldByName('교육청명').AsString,1,12)])+
+                       Format('%-20s', [copy(Kmt_SchoolList.FieldByName('학교명').AsString,1,20)])+
+                       Kmt_SchoolList.FieldByName('교육청코드').AsString + '  ' + Kmt_SchoolList.FieldByName('학교코드').AsString);
+}
+const
+  SEARCH_PATTERN  = '[\=\+(\s]Format\(''%\-[\d]+s''';
+  REPLACE_FORMAT  = 'up_ExcelExportFromGridType2([[COMP_NAME]]DBBandedTableView1,';
+begin
+  Result := 0;
+
+  if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
+  begin
+    ADest := ASrc.Replace('Format(', 'AnsiFormat(');
+    Inc(Result);
+  end;
+end;
+
 function TEtcConverter.ConvertBus2021(AProc, ASrc: string;
   var ADest: string): Integer;
 var
@@ -361,6 +385,12 @@ begin
   Datas.Add(
     'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
     'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');
+  Datas.Add(
+    'SpGetSeqNum1.ParamByName(''@Gubun_COD'').AsString',
+    'SpGetSeqNum1.ParamByName(''@Gubun_COD'').Value');
+  Datas.Add(
+    'SpGetSeqNum2.ParamByName(''@Gubun_COD'').AsString',
+    'SpGetSeqNum2.ParamByName(''@Gubun_COD'').Value');
 //  Datas.AddInFile('TbF_129I',
 //    'spGetSeqNum.ParamByName(''@Gubun_COD'').AsString',
 //    'spGetSeqNum.ParamByName(''@Gubun_COD'').Value');

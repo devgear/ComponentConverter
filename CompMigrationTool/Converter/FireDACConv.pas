@@ -1,4 +1,4 @@
-unit FDQryDirectExecuteConv;
+unit FireDACConv;
 
 interface
 
@@ -22,6 +22,19 @@ type
     function GetAddedUses: TArray<string>; override;
 
     function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
+  end;
+
+  // TFDQutoIncField의 AutoIncrementSeed = 1 처리
+  TConverterFDAutoIncSeed = class(TConverter)
+  protected
+    function FindComponentInDfm(AData: TConvertData): Boolean; override;
+
+    function GetComponentClassName: string; override;
+    function GetConvertCompClassName: string; override;
+
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
+
+    function GetDescription: string; override;
   end;
 
 
@@ -83,8 +96,61 @@ begin
   Result := [];
 end;
 
+{ TConverterFDAutoIncSeed }
+
+function TConverterFDAutoIncSeed.FindComponentInDfm(
+  AData: TConvertData): Boolean;
+var
+  I: Integer;
+  S: string;
+begin
+  while True do
+  begin
+    Result := inherited;
+    if not Result then
+      Break;
+
+    for I := AData.CompStartIndex + 1 to AData.CompEndIndex - 2 do
+    begin
+      S := AData.SrcDfm[I];
+      if S.Trim = 'AutoIncrementSeed = 1' then
+      begin
+        Result := False;
+        Break;
+      end;
+    end;
+
+    if Result then
+      Exit;
+  end;
+end;
+
+function TConverterFDAutoIncSeed.GetComponentClassName: string;
+begin
+  Result := 'TFDAutoIncField';
+end;
+
+function TConverterFDAutoIncSeed.GetConvertCompClassName: string;
+begin
+  Result := 'TFDAutoIncField';
+end;
+
+function TConverterFDAutoIncSeed.GetConvertedCompText(ACompText: TStrings;
+  var Output: string): Boolean;
+begin
+  ACompText.Insert(1, '  AutoIncrementSeed = 1'#13#10'  AutoIncrementStep = 1');
+  Result := True;
+  Output := ACompText.Text;
+end;
+
+function TConverterFDAutoIncSeed.GetDescription: string;
+begin
+  Result := 'TFDAutoIncField.Seed 재설절';
+end;
+
 initialization
   TConvertManager.Instance.Regist(TConverterFDQryDirectExecute);
+  TConvertManager.Instance.Regist(TConverterFDAutoIncSeed);
 
 end.
 

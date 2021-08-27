@@ -38,6 +38,8 @@ type
     function ConvertTbF_339I(AProc, ASrc: string; var ADest: string): Integer;
     [Impl]
     function ConvertTbF_509I(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertTbF_4407_2P(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
   TCustomMakeConvert = class(TConverter)
@@ -61,6 +63,17 @@ type
   published
     [Impl]
     function ConvertBS102I(AProc, ASrc: string; var ADest: string): Integer;
+  end;
+
+  TCustomNewSuppConvert = class(TConverter)
+  protected
+    function GetCvtCompClassName: string; override;
+    function GetDescription: string; override;
+  published
+    [Impl]
+    function ConvertTbF_4201P(AProc, ASrc: string; var ADest: string): Integer;
+    [Impl]
+    function ConvertTbF_4203P(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
 implementation
@@ -484,19 +497,54 @@ begin
 
 end;
 
+function TCustomCustConvert.ConvertTbF_4407_2P(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_4407_2P') then
+    Exit;
+
+  if AProc.Contains('FormLinkMasterSetParams') then
+  begin
+    if ASrc.Trim = 'Open;' then
+    begin
+      ADest := ''#13#10 +
+        '      MasterFields := ''작업코드;계산서번호;세금계산서번호'';'#13#10 +
+        '      ParamByName(''작업코드'').DataType := ftFixedChar;'#13#10 +
+        '      ParamByName(''작업코드'').Size := 5;'#13#10 +
+        '      if Assigned(FindParam(''세금계산서번호'')) then'#13#10 +
+        '        ParamByName(''세금계산서번호'').DataType := ftInteger;'#13#10 +
+        '      if Assigned(FindParam(''계산서번호'')) then'#13#10 +
+        '        ParamByName(''계산서번호'').DataType := ftInteger;'#13#10 +
+        '      Open(*mig*);'
+        ;
+      Inc(Result);
+    end;
+  end
+  else if AProc.Contains('Rtrv') then
+  begin
+    if ASrc.Contains(''''''''' 작업코드') then
+    begin
+      ADest := ASrc.Replace(''''''''' 작업코드', '''''''+WorkCode+'''''' 작업코드');
+      Inc(Result);
+    end;
+  end;
+end;
+
 function TCustomCustConvert.ConvertTbF_509I(AProc, ASrc: string;
   var ADest: string): Integer;
 begin
   Result := 0;
 
-  if not SrcFilename.Contains('TbF_509I') then
-    Exit;
-
-  if ASrc.Trim = 'CodePickup_Company.QueryCode(Qry_Master.FieldByName(''서점코드'').AsString,nil);' then
-  begin
-    ADest := ASrc.Replace('Qry_Master.FieldByName(''서점코드'').AsString', 'TcxTextEdit(AEdit).Text');
-    Inc(Result);
-  end;
+//  if not SrcFilename.Contains('TbF_509I') then
+//    Exit;
+//
+//  if ASrc.Trim = 'CodePickup_Company.QueryCode(Qry_Master.FieldByName(''서점코드'').AsString,nil);' then
+//  begin
+//    ADest := ASrc.Replace('Qry_Master.FieldByName(''서점코드'').AsString', 'TcxTextEdit(AEdit).Text');
+//    Inc(Result);
+//  end;
 end;
 
 function TCustomCustConvert.GetCvtCompClassName: string;
@@ -509,10 +557,71 @@ begin
   Result := 'Cust 커스텀';
 end;
 
+{ TCustomNewSuppConvert }
+
+function TCustomNewSuppConvert.ConvertTbF_4201P(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_4201P') then
+    Exit;
+
+  if ASrc = '   with qry_Master do begin' then
+  begin
+    ADest := '' +
+      '   kbmMemMasterT.DisableControls;'#13#10 +
+      '   with qry_Master(*DC*) do begin';
+    Inc(Result);
+  end
+  else if ASrc = '   end;' then
+  begin
+    ADest := '' +
+      '   end(*EC*);'#13#10 +
+      '   kbmMemMasterT.EnableControls;';
+    Inc(Result);
+  end;
+end;
+
+function TCustomNewSuppConvert.ConvertTbF_4203P(AProc, ASrc: string;
+  var ADest: string): Integer;
+begin
+  Result := 0;
+
+  if not SrcFilename.Contains('TbF_4201P') then
+    Exit;
+
+  if ASrc = '   with qry_Master do begin' then
+  begin
+    ADest := '' +
+      '   kbmMemMasterT.DisableControls;'#13#10 +
+      '   with qry_Master(*DC*) do begin';
+    Inc(Result);
+  end
+  else if ASrc = '   end;' then
+  begin
+    ADest := '' +
+      '   end(*EC*);'#13#10 +
+      '   kbmMemMasterT.EnableControls;';
+    Inc(Result);
+  end;
+end;
+
+function TCustomNewSuppConvert.GetCvtCompClassName: string;
+begin
+  Result := 'TcxGrid';
+end;
+
+function TCustomNewSuppConvert.GetDescription: string;
+begin
+  Result := 'NewSupp 커스텀';
+end;
+
 initialization
   TConvertManager.Instance.Regist(TCustomBusConvert);
   TConvertManager.Instance.Regist(TCustomCustConvert);
   TConvertManager.Instance.Regist(TCustomMakeConvert);
   TConvertManager.Instance.Regist(TCustomBookStoreConvert);
+  TConvertManager.Instance.Regist(TCustomNewSuppConvert);
 
 end.

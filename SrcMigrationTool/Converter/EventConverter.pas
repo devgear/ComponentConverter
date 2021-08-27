@@ -254,7 +254,7 @@ begin
   Result := 0;
   if not AProc.Contains('EditKeyDown') then
     Exit;
-
+Exit; // ¹Ì»ç¿ë
   if ASrc.Contains('Controller.FocusedItemIndex :=') then
   begin
     if ASrc.Contains('Key := 0;') then
@@ -327,7 +327,6 @@ begin
       Break;
   end;
 
-  ADest := ASrc.Replace(Src, 'FocusedItem');
   if not HasDefine then
   begin
     ADest := ''
@@ -337,6 +336,16 @@ begin
       + '  else'#13#10
       + '    FocusedItem := TcxGridDBBandedColumn(APrevFocusedItem);'#13#10
       + ADest;
+  end
+  else
+  begin
+    if ASrc.Trim.StartsWith('FocusedItem := ') then
+    begin
+      Result := 0;
+      Exit;
+    end;
+
+    ADest := ASrc.Replace(Src, 'FocusedItem');
   end;
 end;
 

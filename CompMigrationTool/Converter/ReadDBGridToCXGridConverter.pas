@@ -293,9 +293,15 @@ begin
       GroupText := GroupText.Replace('[[VISIBLE]]', BoolToStr(GroupInfo.Visible, True));
       GroupText := GroupText.Replace('[[WIDTH]]',   IntToStr(GroupInfo.Width));
       if Seq < GrpFixedCount then
-        GroupText := GroupText.Replace('[[FIXED_KIND]]', 'fkLeft')
+      begin
+        GroupText := GroupText.Replace('[[FIXED_KIND]]', 'fkLeft');
+        GroupText := GroupText.Replace('[[STYLE_CONTENT]]', 'Styles.Content = dmDataBase.cxStyleHeader');
+      end
       else
+      begin
         GroupText := GroupText.Replace('[[FIXED_KIND]]', 'fkNone');
+        GroupText := GroupText.Replace('[[STYLE_CONTENT]]', '');
+      end;
 
       if GroupInfo.TitleColor = '' then
         GroupText := GroupText.Replace('[[STYLE_HEADER]]', '')
@@ -654,6 +660,12 @@ begin
       , ['TbF_203I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
       , ['TbF_502I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
       , ['TbF_509I.dfm', 'RealDBGrid1', 'OnKeyPress', 'OnKeyPressToDown']
+
+      , ['TbF_309I.dfm', 'RealDBGrid1', 'OnDblClick', 'OnDblClickKeep']
+      , ['TbF_324I.dfm', 'RealDBGrid1', 'OnDblClick', 'OnDblClickKeep']
+      , ['TbF_310I.dfm', 'RealDBGrid1', 'OnDblClick', 'OnDblClickKeep']
+      , ['TbF_325I.dfm', 'RealDBGrid1', 'OnDblClick', 'OnDblClickKeep']
+      , ['TbF_318I.dfm', 'RealDBGrid1', 'OnDblClick', 'OnDblClickKeep']
     ];
   end
   else if Path.Contains('acct') then
