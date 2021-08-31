@@ -57,10 +57,13 @@ type
     function ConvertIntfSource(ASrc: string; var ADest: string): Integer; virtual;
 
     function IsContainsRegEx(ASrc: string; ASearchPattern: string): Boolean;
+    function IsContainsRegExValue(ASrc: string; ASearchPattern: string; var Value: string): Boolean;
     function IsContainsRegExCompName(ASrc: string; ASearchPattern: string; var CompName: string): Boolean;
 //    function GetCompName(ASrc: string): string;
 //    function GetIndex(ASrc: string): string;
     function TryRegExGridConvert(ASrc: string; ASearchPattern, AReplacePattern: string; var ADest: string): Boolean;
+
+    procedure DoNewProcStart; virtual;   // 새로운 Proc 시작
 
     property ConvData: TConvertData read FConvData;
     property SrcFilename: string read GetFilename;
@@ -242,6 +245,10 @@ begin
   end;
 end;
 
+procedure TConverter.DoNewProcStart;
+begin
+end;
+
 function TConverter.ConvertIntfSource(ASrc: string; var ADest: string): Integer;
 var
   Cnt: Integer;
@@ -333,6 +340,19 @@ begin
     CompName  := TConvUtils.GetCompName(ASrc);
 end;
 
+function TConverter.IsContainsRegExValue(ASrc, ASearchPattern: string;
+  var Value: string): Boolean;
+var
+  Matchs: TMatchCollection;
+begin
+  Result := False;
+  Matchs := TRegEx.Matches(ASrc, ASearchPattern, [roIgnoreCase]);
+  Result := Matchs.Count > 0;
+
+  if Result then
+    Value := Matchs[0].Value;
+end;
+
 function TConverter.TryRegExGridConvert(ASrc, ASearchPattern,
   AReplacePattern: string; var ADest: string): Boolean;
 var
@@ -377,7 +397,7 @@ var
   Src, Dest, CompTag, Converted, CompClassName, BaseClassName: string;
   I, ImplIdx, Idx, Cnt: Integer;
   HasComp: Boolean;
-  FProcName: string;
+  ProcName, FProcName: string;
 begin
   Result := 0;
 
@@ -430,9 +450,14 @@ begin
     if Src.StartsWith('procedure ') or Src.StartsWith('function ') then
     begin
       Idx := Pos('.', Src);
-      FProcName := Copy(Src, Idx+1, Pos('(', Src)-Idx-1);
-      if FProcName = '' then
-        FProcName := Copy(Src, Idx+1, Pos(';', Src)-Idx-1);
+      ProcName := Copy(Src, Idx+1, Pos('(', Src)-Idx-1);
+      if ProcName = '' then
+        ProcName := Copy(Src, Idx+1, Pos(';', Src)-Idx-1);
+
+      if FProcName <> ProcName then
+        DoNewProcStart;
+
+      FProcName := ProcName;
     end;
 
     FCurrIndex := I;

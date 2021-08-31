@@ -43,6 +43,9 @@ type
     function ConvertAnsiFormat(AProc, ASrc: string; var ADest: string): Integer;
 
     [Impl]
+    function ConvertAnsiCopy(AProc, ASrc: string; var ADest: string): Integer;
+
+    [Impl]
     function ConvertEtc(AProc, ASrc: string; var ADest: string): Integer;
   end;
 
@@ -70,6 +73,7 @@ type
 implementation
 
 uses
+  System.RegularExpressions,
   SrcConverterTypes,
   SrcConvertUtils,
   System.SysUtils;
@@ -306,6 +310,36 @@ begin
   Inc(Result, ReplaceKeywords(SrcFilename, ADest, Datas));
 end;
 
+// 한글이 포함된 문자열에서 copy 사용하는 경우 AnsiCopy로 변경
+  // 콤보박스.Text에서 조회하는 경우
+  // Day, Month와 같이 숫자를 대상으로하는 경우 제외
+function TEtcConverter.ConvertAnsiCopy(AProc, ASrc: string;
+  var ADest: string): Integer;
+const
+  SEARCH_PATTERN  = '[\s\(\+][Cc]opy\(\w+\.[Tt]ext\,\d+\,\d+\)';
+var
+  I: Integer;
+  Matchs: TMatchCollection;
+  Value: string;
+begin
+  Result := 0;
+
+  Matchs := TRegEx.Matches(ASrc, SEARCH_PATTERN, [roIgnoreCase]);
+  if Matchs.Count > 0 then
+  begin
+    for I := 0 to Matchs.Count - 1 do
+    begin
+      Value := Matchs[I].Value;
+
+      if Value.Contains('Day') or Value.Contains('DAY') or Value.Contains('Month') then
+        Continue;
+
+      ADest := ASrc.Replace(Value, Value.Replace('Copy(', 'AnsiCopy(').Replace('copy(', 'AnsiCopy('));
+      Inc(Result);
+    end;
+  end;
+end;
+
 function TEtcConverter.ConvertAnsiFormat(AProc, ASrc: string;
   var ADest: string): Integer;
 {
@@ -315,13 +349,12 @@ function TEtcConverter.ConvertAnsiFormat(AProc, ASrc: string;
 }
 const
   SEARCH_PATTERN  = '[\=\+(\s]Format\(''%\-[\d]+s''';
-  REPLACE_FORMAT  = 'up_ExcelExportFromGridType2([[COMP_NAME]]DBBandedTableView1,';
 begin
   Result := 0;
 
   if IsContainsRegEx(ASrc, SEARCH_PATTERN) then
   begin
-    ADest := ASrc.Replace('Format(', 'AnsiFormat(');
+    ADest := ASrc.Replace('Format(', 'AnsiFormat(').Replace('format(', 'AnsiFormat(');
     Inc(Result);
   end;
 end;
