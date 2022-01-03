@@ -13,14 +13,12 @@ type
     // UpdateSQL에 설정
   TConverterUpdateSQLConnection = class(TConverter)
   private
-    FParser: TObjectTextParser;
-//    FConvData: TConvertData;
     FConnStr: string;
   protected
     // TFDUpdateSQL에 Connection(또는 ConnectionName)이 없는 컴포넌트 정보 찾기
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetRemoveUses: TArray<string>; override;
     // 컴포넌트 이름 취득 후 UpdateObject에 해당 이름이 설정된 TFDQuery 찾기
@@ -35,15 +33,13 @@ implementation
 uses
   ConvertUtils;
 
-{ TConvertercxGrid }
-{
-  inherited PnlSkinSetting: TPanel
-    Top = 97
-    Width = 1065
-    ExplicitTop = 97
-    ExplicitWidth = 1065
-  end
-}
+{ TConverterUpdateSQLConnection }
+
+function TConverterUpdateSQLConnection.GetDescription: string;
+begin
+  Result := 'FDUpdateSQL: 커넥션 설정';
+end;
+
 function TConverterUpdateSQLConnection.FindComponentInDfm(AData: TConvertData): Boolean;
 var
   I: Integer;
@@ -67,7 +63,6 @@ begin
     end;
     CompName := GetNameFromObjectText(AData.SrcDfm[AData.CompStartIndex]);
 
-    SIdx := 0;
     EIdx := 0;
     IsCorrect := False;
     while True do
@@ -101,7 +96,7 @@ begin
   end;
 end;
 
-function TConverterUpdateSQLConnection.GetComponentClassName: string;
+function TConverterUpdateSQLConnection.GetTargetCompClassName: string;
 begin
   Result := 'TFDUpdateSQL';
 end;
@@ -117,11 +112,6 @@ begin
     ACompText.Insert(1, FConnStr);
   Result := True;
   Output := ACompText.Text;
-end;
-
-function TConverterUpdateSQLConnection.GetDescription: string;
-begin
-  Result := 'FDUpdateSQL: 커넥션 설정';
 end;
 
 function TConverterUpdateSQLConnection.GetRemoveUses: TArray<string>;

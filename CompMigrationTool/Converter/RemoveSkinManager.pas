@@ -3,59 +3,91 @@ unit RemoveSkinManager;
 interface
 
 uses
-  CompConverter, System.SysUtils, System.Classes, Vcl.Forms;
+  CompConverterTypes, CompConverter,
+  System.SysUtils, System.Classes, Vcl.Forms;
 
 type
-  TConverterRemoveSkinManager = class(TConverter)
+  TConverterRemoveSkinManager = class(TRemoveConverter)
   protected
-    function GetDescription: string; override;
-
-    function GetComponentClassName: string; override;
-    function GetConvertCompClassName: string; override;
-    function GetRemoveUses: TArray<string>; override;
-    function GetAddedUses: TArray<string>; override;
-
-    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
+    function GetTargetCompClassName: string; override;
   end;
 
+  TConverterRemoveSkinProvider = class(TRemoveConverter)
+  protected
+    function GetTargetCompClassName: string; override;
+  end;
+
+  TConverterRmPnlSkinSetting = class(TRemoveConverter)
+  protected
+    function FindComponentInDfm(AData: TConvertData): Boolean; override;
+
+    function GetTargetCompClassName: string; override;
+
+    function GetDescription: string; override;
+  end;
 
 implementation
 
-{ TConverterRealGridToCXGrid }
+uses
+  ConvertUtils;
 
-function TConverterRemoveSkinManager.GetAddedUses: TArray<string>;
-begin
-  Result := [];
-end;
+{ TConverterRemoveSkinManager }
 
-function TConverterRemoveSkinManager.GetComponentClassName: string;
+function TConverterRemoveSkinManager.GetTargetCompClassName: string;
 begin
   Result := 'TsSkinManager';
 end;
 
-function TConverterRemoveSkinManager.GetConvertCompClassName: string;
+{ TConverterRemoveSkinProvider }
+
+function TConverterRemoveSkinProvider.GetTargetCompClassName: string;
 begin
-  Result := ''; // 제거
+  Result := 'TsSkinProvider';
 end;
 
-function TConverterRemoveSkinManager.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
+{ TConverterRmPnlSkinSetting }
+{
+  inherited PnlSkinSetting: TPanel
+    Top = 97
+    Width = 1065
+    ExplicitTop = 97
+    ExplicitWidth = 1065
+  end
+}
+function TConverterRmPnlSkinSetting.FindComponentInDfm(AData: TConvertData): Boolean;
+var
+  CompName: string;
 begin
+  CompName := 'PnlSkinSetting';
+
+  Result := False;
+
+  AData.CompStartIndex := GetCompStartIndexFromCompName(AData.SrcDfm, AData.CompStartIndex+1, CompName);
+  if AData.CompStartIndex <= 0 then
+    Exit;
+
+  AData.IsInherited := AData.SrcDfm[AData.CompStartIndex].Contains('inherited');
+
+  AData.CompEndIndex := GetCompEndIndex(AData.SrcDfm, AData.CompStartIndex+1);
+  AData.CompName := GetNameFromObjectText(AData.SrcDfm[AData.CompStartIndex]);
+
   Result := True;
-  Output := '';
 end;
 
-function TConverterRemoveSkinManager.GetDescription: string;
+function TConverterRmPnlSkinSetting.GetTargetCompClassName: string;
 begin
-  Result := 'TsSkinManager 제거';
+  Result := 'TPanel';
 end;
 
-function TConverterRemoveSkinManager.GetRemoveUses: TArray<string>;
+function TConverterRmPnlSkinSetting.GetDescription: string;
 begin
-  Result := [];
+  Result := 'PnlSkinSetting: TPanel 제거';
 end;
 
 initialization
   TConvertManager.Instance.Regist(TConverterRemoveSkinManager);
+  TConvertManager.Instance.Regist(TConverterRemoveSkinProvider);
+  TConvertManager.Instance.Regist(TConverterRmPnlSkinSetting);
 
 end.
 

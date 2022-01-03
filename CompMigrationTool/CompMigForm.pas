@@ -45,10 +45,9 @@ type
   private
     { Private declarations }
     FRootPath: string;
-    FFileInfos: TList<TFileInfo>;   // 로드한 파일 정보 목록(재조회 또는 종료 시 초기화 필요)
+    FDfmFileDatas: TObjectList<TDfmFileData>;   // 로드한 파일 정보 목록(재조회 또는 종료 시 초기화 필요)
 
-    procedure LoadFilelist(APath: string = '');
-    procedure ClearFielInfos;
+    procedure LoadFileDatasAndDisplayListView(APath: string = '');
   public
     { Public declarations }
   end;
@@ -78,7 +77,7 @@ begin
   FileOpenDialog1.Options := [fdoPickFolders, fdoPathMustExist,
                               fdoForceFileSystem];
 
-  FFileInfos := TList<TFileInfo>.Create;
+  FDfmFileDatas := TObjectList<TDfmFileData>.Create(True);
 
   for Converter in TConvertManager.Instance.ConvertInstances do
   begin
@@ -93,18 +92,17 @@ end;
 
 procedure TfrmCompMigTool.FormDestroy(Sender: TObject);
 begin
-  ClearFielInfos;
-  FFileInfos.Free;
+  FDfmFileDatas.Free;
 end;
 
 procedure TfrmCompMigTool.btnLoadFilesClick(Sender: TObject);
 begin
-  lvFiles.Items.Clear;;
-  ClearFielInfos;
-
   FRootPath := edtRootPath.Text;
   TConvertManager.Instance.RootPath := FRootPath;
-  LoadFilelist;
+
+  lvFiles.Items.Clear;;
+  FDfmFileDatas.Clear;
+  LoadFileDatasAndDisplayListView;
 
   btnRunConvert.Enabled := (lvFiles.Items.Count > 0);
 
@@ -115,9 +113,9 @@ end;
 procedure TfrmCompMigTool.btnRunConvertClick(Sender: TObject);
 var
   I: Integer;
-  Data: TFileInfo;
+  Data: TDfmFileData;
   Convs: TArray<TConverter>;
-  TotalCount, UpdateCount: Integer;
+  TotalCount, UpdatedCount: Integer;
   R: TRect;
 begin
   Convs := [];
@@ -132,22 +130,22 @@ begin
 
   TConvertManager.Instance.Init;
   TConvertManager.Instance.UseBackup := chkBackup.Checked;
-
   TEnv.Instance.UseBackup := chkBackup.Checked;
+
   // 선택 파일을 위 컨버터들로 전환실행
   for I := 0 to lvFiles.Items.Count - 1 do
   begin
     if not lvFiles.Items[I].Checked then
       Continue;
 
-    Data := TFileInfo(lvFiles.Items[I].Data);
-    UpdateCount := TConvertManager.Instance.RunConvert(Data, Convs);
-    if UpdateCount = 0 then
+    Data := TDfmFileData(lvFiles.Items[I].Data);
+    UpdatedCount := TConvertManager.Instance.RunConvert(Data, Convs);
+    if UpdatedCount = 0 then
       lvFiles.Items[I].SubItems[1] := '-'
     else
-      lvFiles.Items[I].SubItems[1] := Format('%d 건', [UpdateCount]);
+      lvFiles.Items[I].SubItems[1] := Format('%d 건', [UpdatedCount]);
 
-    TotalCount := TotalCount + UpdateCount;
+    TotalCount := TotalCount + UpdatedCount;
 
     // 스크롤 이동
     lvFiles.ItemIndex := I;
@@ -185,22 +183,13 @@ begin
     lvFiles.Items[I].Checked := chkAllFiles.Checked;
 end;
 
-procedure TfrmCompMigTool.ClearFielInfos;
-var
-  Data: TFileInfo;
-begin
-  for Data in FFileInfos do
-    Data.Free;
-  FFileInfos.Clear;
-end;
-
-procedure TfrmCompMigTool.LoadFilelist(APath: string);
+procedure TfrmCompMigTool.LoadFileDatasAndDisplayListView(APath: string);
 var
   DirPath, FilePath: string;
   SearchResult: TSearchRec;
   Item: TListItem;
   Group: TListGroup;
-  Info: TFileInfo;
+  Info: TDfmFileData;
 begin
   DirPath := TPath.Combine(FRootPath, APath);
   FilePath := TPath.Combine(DirPath, '*.dfm');
@@ -218,10 +207,10 @@ begin
       Item.SubItems.Add(FormatFloat('#,', SearchResult.Size) + ' bytes');
       Item.SubItems.Add('');
 
-      Info := TFileInfo.Create;
+      Info := TDfmFileData.Create;
       Info.FileName := SearchResult.Name;
       Info.Path := APath;
-      FFileInfos.Add(Info);
+      FDfmFileDatas.Add(Info);
       Item.Data := Pointer(Info);
 
     until FindNext(SearchResult) <> 0;
@@ -242,7 +231,7 @@ begin
       if not SearchResult.Attr in [faDirectory] then
         Exit;
 
-      LoadFilelist(TPath.Combine(APath, SearchResult.Name));
+      LoadFileDatasAndDisplayListView(TPath.Combine(APath, SearchResult.Name));
     until FindNext(SearchResult) <> 0;
     FindClose(SearchResult);
   end;
@@ -250,7 +239,7 @@ end;
 
 procedure TfrmCompMigTool.btnExtractPropsClick(Sender: TObject);
 begin
-  if FFileInfos.Count = 0 then
+  if FDfmFileDatas.Count = 0 then
   begin
     ShowMessage('파일을 먼저 불러오세요.');
     Exit;
@@ -258,7 +247,7 @@ begin
 
   if not Assigned(frmExtractProperties) then
     frmExtractProperties := TfrmExtractProperties.Create(Self);
-  frmExtractProperties.SetFileInfos(FFileInfos);
+  frmExtractProperties.SetFileInfos(FDfmFileDatas);
   frmExtractProperties.Show;
 end;
 

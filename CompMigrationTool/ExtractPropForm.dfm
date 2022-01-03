@@ -10,7 +10,6 @@ object frmExtractProperties: TfrmExtractProperties
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96

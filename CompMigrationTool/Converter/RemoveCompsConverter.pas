@@ -6,68 +6,29 @@ uses
   CompConverter, System.SysUtils, System.Classes, Vcl.Forms;
 
 type
-  TBaseCompRemoveConverter = class(TConverter)
+  TfrxDesignerRemoveConv = class(TRemoveConverter)
   protected
-    function GetDescription: string; override;
-
-    function GetComponentClassName: string; override;
-    function GetConvertCompClassName: string; override;
-    function GetRemoveUses: TArray<string>; override;
-
-    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
+    function GetTargetCompClassName: string; override;
   end;
 
-  TfrxDesignerRemoveConv = class(TBaseCompRemoveConverter)
+  TfrxXLSExportRemoveConv = class(TRemoveConverter)
   protected
-    function GetComponentClassName: string; override;
-  end;
-
-  TfrxXLSExportRemoveConv = class(TBaseCompRemoveConverter)
-  protected
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetRemoveUses: TArray<string>; override;
   end;
 
 implementation
 
-{ TConverterRealGridToCXGrid }
-
-function TBaseCompRemoveConverter.GetComponentClassName: string;
-begin
-  Result := 'TConnectDialog';
-end;
-
-function TBaseCompRemoveConverter.GetConvertCompClassName: string;
-begin
-  Result := ''; // 제거
-end;
-
-function TBaseCompRemoveConverter.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
-begin
-  Result := True;
-  Output := '';
-end;
-
-function TBaseCompRemoveConverter.GetDescription: string;
-begin
-  Result := GetComponentClassName + ' 제거';
-end;
-
-function TBaseCompRemoveConverter.GetRemoveUses: TArray<string>;
-begin
-  Result := [];
-end;
-
 { TfrxDesignerRemoveConv }
 
-function TfrxDesignerRemoveConv.GetComponentClassName: string;
+function TfrxDesignerRemoveConv.GetTargetCompClassName: string;
 begin
   Result := 'TfrxDesigner';
 end;
 
 { TfrxXLSExportRemoveConv }
 
-function TfrxXLSExportRemoveConv.GetComponentClassName: string;
+function TfrxXLSExportRemoveConv.GetTargetCompClassName: string;
 begin
   Result := 'TfrxXLSExport';
 end;

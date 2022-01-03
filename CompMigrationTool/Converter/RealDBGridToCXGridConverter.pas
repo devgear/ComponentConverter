@@ -1,4 +1,4 @@
-unit ReadDBGridToCXGridConverter;
+unit RealDBGridToCXGridConverter;
 
 interface
 
@@ -19,7 +19,7 @@ type
 
     function GetCustomHiddenColumns(AFilename, AGridName: string): TArray<string>;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetConvertCompList(AMainCompName: string): string; override;
 
@@ -29,7 +29,6 @@ type
     function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
 
     // PAS 파일에 이벤트 추가
-    function IsWantWriteEvnetCodeToPas: Boolean; override;
     function GetCompEventInfos(AFormClass: string): TArray<TCompEventInfo>; override;
   public
     destructor Destroy; override;
@@ -83,7 +82,6 @@ var
   TagInfo: TEventTagInfo;
   CodeInfo: TCompEventInfo;
   ProcTag, PropName: string;
-  I: Integer;
 begin
   GridName  := FParser.CompName;
   ViewName  := GridName + 'DBBandedTableView1';
@@ -164,7 +162,7 @@ begin
 
 end;
 
-function TConverterRealDBGridToCXGrid.GetComponentClassName: string;
+function TConverterRealDBGridToCXGrid.GetTargetCompClassName: string;
 begin
   Result := 'TRealDBGrid';
 end;
@@ -559,7 +557,7 @@ begin
     Inc(Idx);
   end;
 
-  HiddenColumns := GetCustomHiddenColumns(FConvData.FileInfo.Filename, GridName);
+  HiddenColumns := GetCustomHiddenColumns(FConvData.DfmFileData.Filename, GridName);
   for I := 0 to Length(HiddenColumns) - 1 do
   begin
     ColText := TAG_CXGRID_COLUMN_HIDDEN;
@@ -751,7 +749,7 @@ begin
 
   for Target in Targets do
   begin
-    if (FconvData.FileInfo.Filename = Target[0])
+    if (FconvData.DfmFileData.Filename = Target[0])
       and (FParser.CompName = Target[1])
       and(APropName = Target[2]) then
         Exit(Target[3]);
@@ -869,11 +867,6 @@ end;
 function TConverterRealDBGridToCXGrid.GetRemoveUses: TArray<string>;
 begin
   Result := ['URGrids', 'URDBGrid', 'URMGrid'];
-end;
-
-function TConverterRealDBGridToCXGrid.IsWantWriteEvnetCodeToPas: Boolean;
-begin
-  Result := True;
 end;
 
 initialization

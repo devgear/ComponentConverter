@@ -16,7 +16,7 @@ type
 
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
@@ -29,7 +29,7 @@ type
   protected
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
 
     function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
@@ -65,7 +65,7 @@ begin
   Result := [];
 end;
 
-function TConverterFDQryDirectExecute.GetComponentClassName: string;
+function TConverterFDQryDirectExecute.GetTargetCompClassName: string;
 begin
   Result := 'TFDQuery';
 end;
@@ -76,9 +76,6 @@ begin
 end;
 
 function TConverterFDQryDirectExecute.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
-var
-  I, SIdx, EIdx: Integer;
-  S: string;
 begin
   ACompText.Insert(1, '    ResourceOptions.AssignedValues = [rvDirectExecute]'#13#10'    ResourceOptions.DirectExecute = True');
 
@@ -125,7 +122,7 @@ begin
   end;
 end;
 
-function TConverterFDAutoIncSeed.GetComponentClassName: string;
+function TConverterFDAutoIncSeed.GetTargetCompClassName: string;
 begin
   Result := 'TFDAutoIncField';
 end;

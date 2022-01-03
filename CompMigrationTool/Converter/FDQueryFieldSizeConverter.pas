@@ -10,13 +10,12 @@ uses
 type
   TConverterFDQueryFldSize = class(TConverter)
   private
-    FParser: TObjectTextParser;
+//    FParser: TObjectTextParser;
 //    FConvData: TConvertData;
-    FConnStr: string;
   protected
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetRemoveUses: TArray<string>; override;
     // 컴포넌트 이름 취득 후 UpdateObject에 해당 이름이 설정된 TFDQuery 찾기
@@ -27,14 +26,10 @@ type
   end;
 
   TConverterFDQueryParamSize = class(TConverter)
-  private
-    FParser: TObjectTextParser;
-//    FConvData: TConvertData;
-    FConnStr: string;
   protected
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetRemoveUses: TArray<string>; override;
     // 컴포넌트 이름 취득 후 UpdateObject에 해당 이름이 설정된 TFDQuery 찾기
@@ -57,7 +52,7 @@ begin
   Result := inherited;
 end;
 
-function TConverterFDQueryFldSize.GetComponentClassName: string;
+function TConverterFDQueryFldSize.GetTargetCompClassName: string;
 begin
   Result := 'TStringField';
 end;
@@ -108,6 +103,7 @@ begin
   FieldName := '';
   FieldSize := -1;
 
+  Idx := 0;
   for I := 1 to ACompText.Count - 1 do
   begin
     S := ACompText[I];
@@ -191,7 +187,7 @@ begin
   Result := inherited;
 end;
 
-function TConverterFDQueryParamSize.GetComponentClassName: string;
+function TConverterFDQueryParamSize.GetTargetCompClassName: string;
 begin
   Result := 'TFDQuery';
 end;
@@ -222,6 +218,7 @@ var
   ParamSize: Integer;
   Info: TFieldSizeChage;
 begin
+  Idx := 0;
   Result := False;
   ParamName := '';
   ParamSize := -1;

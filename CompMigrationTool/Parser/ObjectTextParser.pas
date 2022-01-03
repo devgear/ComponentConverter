@@ -243,13 +243,13 @@ procedure TObjectTextParser.FindValueBinary(WriteData: TStreamProc);
 var
   Stream: TMemoryStream;
 
-  Count: Int32;
+//  Count: Int32;
 begin
   Stream := TMemoryStream.Create;
   try
     WriteData(Stream);
 //    WriteValue(vaBinary);
-    Count := Stream.Size;
+//    Count := Stream.Size;
 //    Write(Count, SizeOf(Count));
 //    Write(Stream.Memory^, Count);
   finally
@@ -363,14 +363,14 @@ var
       while Parser.NextToken = '+' do
       begin
         Parser.NextToken;
-        if not (Parser.Token in [System.Classes.toString, toWString]) then
+        if not CharInSet(Parser.Token, [System.Classes.toString, toWString]) then
           Parser.CheckToken(System.Classes.toString);
         Result := Result + Parser.TokenWideString;
       end;
     end;
 
   begin
-    if Parser.Token in [System.Classes.toString, toWString] then
+    if CharInSet(Parser.Token, [System.Classes.toString, toWString]) then
       FindValueString(CombineString)
     else
     begin

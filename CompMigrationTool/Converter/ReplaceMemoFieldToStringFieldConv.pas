@@ -17,7 +17,7 @@ type
 
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
@@ -55,8 +55,6 @@ const
     , (FN: 'TaF_757P';            CN: 'Qry_ChangeMemoField')
   );
 var
-  I: Integer;
-  S: string;
   Target: TTargetComp;
 begin
   Result := inherited;
@@ -66,7 +64,7 @@ begin
 
   for Target in TARGET_COMPS do
   begin
-    if not AData.FileInfo.Filename.Contains(Target.FN) then
+    if not AData.DfmFileData.Filename.Contains(Target.FN) then
       Continue;
 
     if AData.CompName.ToLower = Target.CN.ToLower then
@@ -81,7 +79,7 @@ begin
   Result := [];
 end;
 
-function TConverterMemoToStrField.GetComponentClassName: string;
+function TConverterMemoToStrField.GetTargetCompClassName: string;
 begin
   Result := 'TMemoField';
 end;
@@ -93,11 +91,11 @@ end;
 
 function TConverterMemoToStrField.GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean;
 var
-  I, SIdx, EIdx: Integer;
+  I: Integer;
   S: string;
 begin
   // TMemoField > TStringField
-  ACompText[0] := ACompText[0].Replace(GetComponentClassName, GetConvertCompClassName);
+  ACompText[0] := ACompText[0].Replace(GetTargetCompClassName, GetConvertCompClassName);
   for I := 1 to ACompText.Count - 1 do
   begin
     S := ACompText[I];

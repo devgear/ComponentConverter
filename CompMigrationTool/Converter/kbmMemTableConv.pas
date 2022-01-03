@@ -22,7 +22,7 @@ type
 
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetRemoveUses: TArray<string>; override;
     function GetAddedUses: TArray<string>; override;
@@ -84,7 +84,7 @@ begin
   Result := ['kbmMemTableHelper'];
 end;
 
-function TConverterkbmMemTable.GetComponentClassName: string;
+function TConverterkbmMemTable.GetTargetCompClassName: string;
 begin
   Result := 'TFDMemTable';
 end;

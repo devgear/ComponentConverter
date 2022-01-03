@@ -13,7 +13,7 @@ type
   protected
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
 
     function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
@@ -26,7 +26,7 @@ type
   protected
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
 
     function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
@@ -39,7 +39,7 @@ type
   protected
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
 
     function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
@@ -51,7 +51,7 @@ type
   protected
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
 
     function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
@@ -61,7 +61,7 @@ type
 
   TConverterComboBoxStyle = class(TConverter)
   protected
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
 
     function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
@@ -74,7 +74,7 @@ type
   protected
     function FindComponentInDfm(AData: TConvertData): Boolean; override;
 
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
 
     function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; override;
@@ -119,7 +119,7 @@ begin
   Result := False;
 end;
 
-function TConverterLabelColor.GetComponentClassName: string;
+function TConverterLabelColor.GetTargetCompClassName: string;
 begin
   Result := 'TLabel';
 end;
@@ -181,7 +181,7 @@ begin
   Result := False;
 end;
 
-function TConverterGroupBoxColor.GetComponentClassName: string;
+function TConverterGroupBoxColor.GetTargetCompClassName: string;
 begin
   Result := 'TGroupBox';
 end;
@@ -239,7 +239,7 @@ begin
   Result := False;
 end;
 
-function TConverterDBGrid.GetComponentClassName: string;
+function TConverterDBGrid.GetTargetCompClassName: string;
 begin
   Result := 'TDBGrid';
 end;
@@ -297,7 +297,7 @@ begin
   Result := False;
 end;
 
-function TConverterStaticTextColor.GetComponentClassName: string;
+function TConverterStaticTextColor.GetTargetCompClassName: string;
 begin
   Result := 'TStaticText';
 end;
@@ -322,7 +322,7 @@ end;
 
 { TConverterComboBoxStyle }
 
-function TConverterComboBoxStyle.GetComponentClassName: string;
+function TConverterComboBoxStyle.GetTargetCompClassName: string;
 begin
   Result := 'TComboBox';
 end;
@@ -384,7 +384,7 @@ begin
   end;
 end;
 
-function TConverterPanelParentBackground.GetComponentClassName: string;
+function TConverterPanelParentBackground.GetTargetCompClassName: string;
 begin
   Result := 'TPanel';
 end;

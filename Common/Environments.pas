@@ -28,7 +28,7 @@ type
     property Recursively: Boolean read GetRecursively write SetRecursively;
     property UseBackup: Boolean read GetUseBackup write SetUseBackup;
 
-    property ClassName: string read GetClassName write SetClassName;
+    property ClsName: string read GetClassName write SetClassName;
     property PropertyName: string read GetPropertyName write SetPropertyName;
     property LogLevel: Integer read GetLogLevel write SetLogLevel;
   end;

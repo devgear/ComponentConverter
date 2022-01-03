@@ -49,13 +49,13 @@ type
   private
     { Private declarations }
     FDataList: TStringList;
-    FFileInfos: TList<TFileInfo>;
+    FFileInfos: TList<TDfmFileData>;
 
     procedure WriteLog(const AValue: string); overload;
     procedure WriteLog(const AValue: string; const Args: array of const); overload;
   public
     { Public declarations }
-    procedure SetFileInfos(AFileInfos: TList<TFileInfo>);
+    procedure SetFileInfos(AFileInfos: TList<TDfmFileData>);
   end;
 
 var
@@ -76,8 +76,8 @@ type
   end;
 var
   I: Integer;
-  S, P, V: string;
-  Info: TFileInfo;
+  S: string;
+  Info: TDfmFileData;
   Comp, ClassName: string;
   DfmFile: TStringList;
   Idx: Integer;
@@ -152,9 +152,8 @@ type
   end;
 var
   I: Integer;
-  S, P, V: string;
-  Info: TFileInfo;
-  Comp, ClassName: string;
+  Info: TDfmFileData;
+  ClassName: string;
   DfmFile: TStringList;
   Strs: TStringList;
   Idx: Integer;
@@ -220,7 +219,7 @@ type
 var
   I: Integer;
   S, P, V: string;
-  Info: TFileInfo;
+  Info: TDfmFileData;
   Comp, ClassName, PropName: string;
   DfmFile: TStringList;
   Idx: Integer;
@@ -237,7 +236,7 @@ begin
   ClassName := edtClassName.Text;
   PropName := edtPropertyKeyword.Text;
 
-  TEnv.Instance.ClassName := ClassName;
+  TEnv.Instance.ClsName := ClassName;
   TEnv.Instance.PropertyName := PropName;
 
   FDataList.Clear;
@@ -305,7 +304,7 @@ procedure TfrmExtractProperties.FormCreate(Sender: TObject);
 begin
   FDataList := TStringList.Create;
 
-  edtClassName.Text       := TEnv.Instance.ClassName;
+  edtClassName.Text       := TEnv.Instance.ClsName;
   edtPropertyKeyword.Text := TEnv.Instance.PropertyName;
 end;
 
@@ -314,7 +313,7 @@ begin
   FDataList.Free;
 end;
 
-procedure TfrmExtractProperties.SetFileInfos(AFileInfos: TList<TFileInfo>);
+procedure TfrmExtractProperties.SetFileInfos(AFileInfos: TList<TDfmFileData>);
 begin
   FFileInfos := AFileInfos;
 end;
@@ -337,7 +336,7 @@ type
   end;
 var
   I, ImplIdx: Integer;
-  Info: TFileInfo;
+  Info: TDfmFileData;
   SrcFile: TStringList;
   S, CompClassName, ProcName, CompName, CompTag: string;
   SearchProcName, SearchKeyword: string;
@@ -349,6 +348,7 @@ begin
   SearchProcName := 'KeyPress';
   SearchKeyword := 'Key = #13';
 
+  ImplIdx := 0;
   SrcFile := TStringList.Create;
   for Info in FFileInfos do
   begin

@@ -6,7 +6,7 @@ uses
   CompConverterTypes, CompConverter, System.SysUtils, System.Classes, Vcl.Forms;
 
 type
-  TConverterwControl = class(TConverter)
+  TConverterWControlToCxControl = class(TConverter)
   protected
     function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
     function GetRemoveUses: TArray<string>; override;
@@ -27,9 +27,9 @@ object cxCurrencyEdit1: TcxCurrencyEdit
   Width = 81
 end
 }
-  TConverterwNumEdit = class(TConverterwControl)
+  TConverterwNumEdit = class(TConverterWControlToCxControl)
   protected
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
@@ -50,9 +50,9 @@ object cxLabel1: TcxLabel
   Width = 129
 end
 }
-  TConverterwLabel = class(TConverterwControl)
+  TConverterwLabel = class(TConverterWControlToCxControl)
   protected
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
@@ -85,34 +85,34 @@ object cxCurrencyEdit5: TcxCurrencyEdit
   Width = 91
 end
 }
-  TConverterwNumLabel = class(TConverterwControl)
+  TConverterwNumLabel = class(TConverterWControlToCxControl)
   protected
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
     function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
   end;
 
-  TConverterwEdit = class(TConverterwControl)
+  TConverterwEdit = class(TConverterWControlToCxControl)
   protected
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
   end;
 
-  TConverterwMaskEdit = class(TConverterwControl)
+  TConverterwMaskEdit = class(TConverterWControlToCxControl)
   protected
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
     function GetConvertedCompStrs(var ACompText: TStrings): Boolean; override;
   end;
 
-  TConverterwDateEdit = class(TConverterwControl)
+  TConverterwDateEdit = class(TConverterWControlToCxControl)
   protected
-    function GetComponentClassName: string; override;
+    function GetTargetCompClassName: string; override;
     function GetConvertCompClassName: string; override;
     function GetAddedUses: TArray<string>; override;
 
@@ -123,12 +123,12 @@ implementation
 
 { TConverterwControl }
 
-function TConverterwControl.GetConvertedCompStrs(var ACompText: TStrings): Boolean;
+function TConverterWControlToCxControl.GetConvertedCompStrs(var ACompText: TStrings): Boolean;
 var
   I: Integer;
   S: string;
 begin
-  ACompText[0] := ACompText[0].Replace(GetComponentClassName, GetConvertCompClassName);
+  ACompText[0] := ACompText[0].Replace(GetTargetCompClassName, GetConvertCompClassName);
 
   for I := 1 to ACompText.Count - 2 do
   begin
@@ -172,7 +172,7 @@ begin
   Result := True;
 end;
 
-function TConverterwControl.GetRemoveUses: TArray<string>;
+function TConverterWControlToCxControl.GetRemoveUses: TArray<string>;
 begin
   Result := ['URNEdit', 'URCtrls', 'UREdits', 'URLabels'];
 end;
@@ -184,7 +184,7 @@ begin
   Result := ['cxCurrencyEdit'];
 end;
 
-function TConverterwNumEdit.GetComponentClassName: string;
+function TConverterwNumEdit.GetTargetCompClassName: string;
 begin
   Result := 'TwNumEdit';
 end;
@@ -217,7 +217,7 @@ begin
   Result := ['cxLabel'];
 end;
 
-function TConverterwLabel.GetComponentClassName: string;
+function TConverterwLabel.GetTargetCompClassName: string;
 begin
   Result := 'TwLabel';
 end;
@@ -248,7 +248,7 @@ begin
   Result := ['cxCurrencyEdit'];
 end;
 
-function TConverterwNumLabel.GetComponentClassName: string;
+function TConverterwNumLabel.GetTargetCompClassName: string;
 begin
   Result := 'TwNumLabel';
 end;
@@ -287,7 +287,7 @@ begin
   Result := ['cxTextEdit'];
 end;
 
-function TConverterwEdit.GetComponentClassName: string;
+function TConverterwEdit.GetTargetCompClassName: string;
 begin
   Result := 'TwEdit';
 end;
@@ -304,7 +304,7 @@ begin
   Result := ['cxTextEdit', 'cxMaskEdit'];
 end;
 
-function TConverterwMaskEdit.GetComponentClassName: string;
+function TConverterwMaskEdit.GetTargetCompClassName: string;
 begin
   Result := 'TwMaskEdit';
 end;
@@ -333,7 +333,7 @@ begin
   Result := ['cxCalendar'];
 end;
 
-function TConverterwDateEdit.GetComponentClassName: string;
+function TConverterwDateEdit.GetTargetCompClassName: string;
 begin
   Result := 'TwDateEdit';
 end;

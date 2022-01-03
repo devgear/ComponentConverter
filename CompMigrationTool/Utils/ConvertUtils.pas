@@ -61,7 +61,7 @@ function UnicodeStrToStr(AUnicode: string): string;
 procedure SearchUsesIndex(ASourceCode: TStringList; var UsesIdx: TUsesIndex);
 
 function GetCompStartIndex(ADfmFile: TStrings; AStartIdx: Integer; ACompClassName: string): Integer;
-function GetCompStartIndexFromCompNamee(ADfmFile: TStrings; AStartIdx: Integer; ACompName: string): Integer;
+function GetCompStartIndexFromCompName(ADfmFile: TStrings; AStartIdx: Integer; ACompName: string): Integer;
 function GetCompEndIndex(ADfmFile: TStrings; AStartIdx: Integer): Integer;
 function GetPropValueFromPropText(APropText: string; var Prop, Value: string): Boolean;
 
@@ -578,7 +578,7 @@ end;
   컴포넌트 이름으로 찾기
   inherited PnlSkinSetting: TPanel    // ACompName : PnlSkinSetting
 }
-function GetCompStartIndexFromCompNamee(ADfmFile: TStrings; AStartIdx: Integer; ACompName: string): Integer;
+function GetCompStartIndexFromCompName(ADfmFile: TStrings; AStartIdx: Integer; ACompName: string): Integer;
 var
   I: Integer;
   S: string;
