@@ -66,7 +66,7 @@ function TConverterRealDBGridToCXGrid.GetCompEventInfos(
     Result := Copy(ACode, SIdx, EIdx-SIdx);
   end;
 
-  function _InArray(AArray: TArray<TCompEventInfo>; AItem: string): Boolean;
+  function ContainItem(AArray: TArray<TCompEventInfo>; AItem: string): Boolean;
   var
     Conv: TCompEventInfo;
   begin
@@ -91,7 +91,7 @@ begin
   for RGEvent in FParser.EventInfos do
   begin
     // 이미 구현된 이벤트 재사용 필요
-    if _InArray(FConvData.TotalEventInfos, RGEvent.Value) then
+    if ContainItem(FConvData.TotalEventInfos, RGEvent.Value) then
       Continue;
 
     PropName := GetCustomEventPropName(RGEvent.Prop);
@@ -355,20 +355,20 @@ begin
     GridText := GridText.Replace('[[STYLE_FOOTER]]',        'dmDataBase.cxStyleFooter9');
 
   Options := FParser.SetProp['Options'];
-  GridText := GridText.Replace('[[wgoConfirmDelete]]',    BoolToStr(InArray(Options, 'wgoConfirmDelete'), True));
-  GridText := GridText.Replace('[[wgoEnterToTab]]',       BoolToStr(InArray(Options, 'wgoEnterToTab'), True));
-  GridText := GridText.Replace('[[wgoFocusRect]]',        BoolToStr(InArray(Options, 'wgoFocusRect'), True));
-  GridText := GridText.Replace('[[wgoRowSelect]]',        BoolToStr(InArray(Options, 'wgoRowSelect'), True));
-//  GridText := GridText.Replace('[[wgoColSizing]]',        BoolToStr(InArray(Options, 'wgoColSizing'), True));
+  GridText := GridText.Replace('[[wgoConfirmDelete]]',    BoolToStr(TArray.Contains<string>(Options, 'wgoConfirmDelete'), True));
+  GridText := GridText.Replace('[[wgoEnterToTab]]',       BoolToStr(TArray.Contains<string>(Options, 'wgoEnterToTab'), True));
+  GridText := GridText.Replace('[[wgoFocusRect]]',        BoolToStr(TArray.Contains<string>(Options, 'wgoFocusRect'), True));
+  GridText := GridText.Replace('[[wgoRowSelect]]',        BoolToStr(TArray.Contains<string>(Options, 'wgoRowSelect'), True));
+//  GridText := GridText.Replace('[[wgoColSizing]]',        BoolToStr(TArray.Contains<string>(Options, 'wgoColSizing'), True));
   GridText := GridText.Replace('[[wgoColSizing]]',        'True'); // 2021-6-30: 모든 컬럼 True로 설정키로 결정
-  GridText := GridText.Replace('[[wgoRowSizing]]',        BoolToStr(InArray(Options, 'wgoRowSizing'), True));
-  GridText := GridText.Replace('[[wgoAlwaysShowEditor]]', BoolToStr(InArray(Options, 'wgoAlwaysShowEditor'), True));
-  GridText := GridText.Replace('[[wgoEditing]]',          BoolToStr(InArray(Options, 'wgoEditing'), True));
-  GridText := GridText.Replace('[[wgoInserting]]',        BoolToStr(InArray(Options, 'wgoInserting'), True));
-  GridText := GridText.Replace('[[wgoColMoving]]',        BoolToStr(InArray(Options, 'wgoColMoving'), True));
-  GridText := GridText.Replace('[[wgoMultiSelect]]',      BoolToStr(InArray(Options, 'wgoMultiSelect'), True));
-  GridText := GridText.Replace('[[wgoCancelOnExit]]',     BoolToStr(InArray(Options, 'wgoCancelOnExit'), True));
-  GridText := GridText.Replace('[[wgoDeleting]]',         BoolToStr(InArray(Options, 'wgoDeleting'), True));
+  GridText := GridText.Replace('[[wgoRowSizing]]',        BoolToStr(TArray.Contains<string>(Options, 'wgoRowSizing'), True));
+  GridText := GridText.Replace('[[wgoAlwaysShowEditor]]', BoolToStr(TArray.Contains<string>(Options, 'wgoAlwaysShowEditor'), True));
+  GridText := GridText.Replace('[[wgoEditing]]',          BoolToStr(TArray.Contains<string>(Options, 'wgoEditing'), True));
+  GridText := GridText.Replace('[[wgoInserting]]',        BoolToStr(TArray.Contains<string>(Options, 'wgoInserting'), True));
+  GridText := GridText.Replace('[[wgoColMoving]]',        BoolToStr(TArray.Contains<string>(Options, 'wgoColMoving'), True));
+  GridText := GridText.Replace('[[wgoMultiSelect]]',      BoolToStr(TArray.Contains<string>(Options, 'wgoMultiSelect'), True));
+  GridText := GridText.Replace('[[wgoCancelOnExit]]',     BoolToStr(TArray.Contains<string>(Options, 'wgoCancelOnExit'), True));
+  GridText := GridText.Replace('[[wgoDeleting]]',         BoolToStr(TArray.Contains<string>(Options, 'wgoDeleting'), True));
 
   //////////////////////////////////////////////////////////////////////////////
   // 컬럼 설정

@@ -31,12 +31,14 @@ type
     chkAllConverter: TCheckBox;
     btnExtractProps: TButton;
     Button1: TButton;
+
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+
     procedure btnSelectDirClick(Sender: TObject);
     procedure btnLoadFilesClick(Sender: TObject);
     procedure chkAllConverterClick(Sender: TObject);
     procedure chkAllFilesClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure btnRunConvertClick(Sender: TObject);
     procedure btnExtractPropsClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -62,18 +64,37 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmCompMigTool.btnExtractPropsClick(Sender: TObject);
+procedure TfrmCompMigTool.FormCreate(Sender: TObject);
+var
+  Item: TListItem;
+  Converter: TConverter;
 begin
-  if FFileInfos.Count = 0 then
+  TLogger.Instance.LogLevel := llInfo;
+
+  edtRootPath.Text        := TEnv.Instance.RootPath;
+  chkRecursively.Checked  := TEnv.Instance.Recursively;
+  chkBackup.Checked       := TEnv.Instance.UseBackup;
+
+  FileOpenDialog1.Options := [fdoPickFolders, fdoPathMustExist,
+                              fdoForceFileSystem];
+
+  FFileInfos := TList<TFileInfo>.Create;
+
+  for Converter in TConvertManager.Instance.ConvertInstances do
   begin
-    ShowMessage('파일을 먼저 불러오세요.');
-    Exit;
+    Item := lvConverter.Items.Add;
+    Item.Caption := Converter.Description;
+    Item.Checked := True;
+    Item.Data := Converter;
   end;
 
-  if not Assigned(frmExtractProperties) then
-    frmExtractProperties := TfrmExtractProperties.Create(Self);
-  frmExtractProperties.SetFileInfos(FFileInfos);
-  frmExtractProperties.Show;
+  btnRunConvert.Enabled := False;
+end;
+
+procedure TfrmCompMigTool.FormDestroy(Sender: TObject);
+begin
+  ClearFielInfos;
+  FFileInfos.Free;
 end;
 
 procedure TfrmCompMigTool.btnLoadFilesClick(Sender: TObject);
@@ -127,6 +148,7 @@ begin
       lvFiles.Items[I].SubItems[1] := Format('%d 건', [UpdateCount]);
 
     TotalCount := TotalCount + UpdateCount;
+
     // 스크롤 이동
     lvFiles.ItemIndex := I;
     R := lvFiles.Selected.DisplayRect(drBounds);
@@ -147,13 +169,6 @@ begin
   edtRootPath.Text := FileOpenDialog1.FileName;
 end;
 
-procedure TfrmCompMigTool.Button1Click(Sender: TObject);
-begin
-  if not Assigned(frmBandHeader) then
-    frmBandHeader := TfrmBandHeader.Create(Self);
-  frmBandHeader.Show;
-end;
-
 procedure TfrmCompMigTool.chkAllConverterClick(Sender: TObject);
 var
   I: Integer;
@@ -168,40 +183,6 @@ var
 begin
   for I := 0 to lvFiles.Items.Count - 1 do
     lvFiles.Items[I].Checked := chkAllFiles.Checked;
-end;
-
-procedure TfrmCompMigTool.FormCreate(Sender: TObject);
-var
-  Item: TListItem;
-  Converter: TConverter;
-begin
-  TLogger.Instance.LogLevel := llInfo;
-
-  edtRootPath.Text :=       TEnv.Instance.RootPath;
-  chkRecursively.Checked := TEnv.Instance.Recursively;
-  chkBackup.Checked :=      TEnv.Instance.UseBackup;
-
-  FileOpenDialog1.Options := [fdoPickFolders, fdoPathMustExist,
-    fdoForceFileSystem];
-
-  FFileInfos := TList<TFileInfo>.Create;
-
-  for Converter in TConvertManager.Instance.ConvertInstance do
-  begin
-    Item := lvConverter.Items.Add;
-    Item.Caption := Converter.Description;
-    Item.Checked := True;
-    Item.Data := Converter;
-  end;
-
-//  edtRootPath.Text := '';
-  btnRunConvert.Enabled := False;
-end;
-
-procedure TfrmCompMigTool.FormDestroy(Sender: TObject);
-begin
-  ClearFielInfos;
-  FFileInfos.Free;
 end;
 
 procedure TfrmCompMigTool.ClearFielInfos;
@@ -219,7 +200,7 @@ var
   SearchResult: TSearchRec;
   Item: TListItem;
   Group: TListGroup;
-  Data: TFileInfo;
+  Info: TFileInfo;
 begin
   DirPath := TPath.Combine(FRootPath, APath);
   FilePath := TPath.Combine(DirPath, '*.dfm');
@@ -237,11 +218,11 @@ begin
       Item.SubItems.Add(FormatFloat('#,', SearchResult.Size) + ' bytes');
       Item.SubItems.Add('');
 
-      Data := TFileInfo.Create;
-      Data.FileName := SearchResult.Name;
-      Data.Path := APath;
-      FFileInfos.Add(Data);
-      Item.Data := Pointer(Data);
+      Info := TFileInfo.Create;
+      Info.FileName := SearchResult.Name;
+      Info.Path := APath;
+      FFileInfos.Add(Info);
+      Item.Data := Pointer(Info);
 
     until FindNext(SearchResult) <> 0;
     FindClose(SearchResult);
@@ -265,6 +246,27 @@ begin
     until FindNext(SearchResult) <> 0;
     FindClose(SearchResult);
   end;
+end;
+
+procedure TfrmCompMigTool.btnExtractPropsClick(Sender: TObject);
+begin
+  if FFileInfos.Count = 0 then
+  begin
+    ShowMessage('파일을 먼저 불러오세요.');
+    Exit;
+  end;
+
+  if not Assigned(frmExtractProperties) then
+    frmExtractProperties := TfrmExtractProperties.Create(Self);
+  frmExtractProperties.SetFileInfos(FFileInfos);
+  frmExtractProperties.Show;
+end;
+
+procedure TfrmCompMigTool.Button1Click(Sender: TObject);
+begin
+  if not Assigned(frmBandHeader) then
+    frmBandHeader := TfrmBandHeader.Create(Self);
+  frmBandHeader.Show;
 end;
 
 end.

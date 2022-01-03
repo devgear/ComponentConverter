@@ -3,9 +3,9 @@
 uses
   Vcl.Forms,
   CompMigForm in 'CompMigForm.pas' {frmCompMigTool},
-  CompConverter in 'Converter\CompConverter.pas',
+  CompConverter in 'Core\CompConverter.pas',
   ConvertUtils in 'Utils\ConvertUtils.pas',
-  CompConverterTypes in 'Converter\Types\CompConverterTypes.pas',
+  CompConverterTypes in 'Core\CompConverterTypes.pas',
   ObjectTextParser in 'Parser\ObjectTextParser.pas',
   RealGridParser in 'Parser\RealGridParser.pas',
   cxGridTagDefine in 'Converter\Types\cxGridTagDefine.pas',

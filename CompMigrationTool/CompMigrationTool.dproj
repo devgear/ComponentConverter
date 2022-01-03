@@ -105,9 +105,9 @@
             <Form>frmCompMigTool</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="Converter\CompConverter.pas"/>
+        <DCCReference Include="Core\CompConverter.pas"/>
         <DCCReference Include="Utils\ConvertUtils.pas"/>
-        <DCCReference Include="Converter\Types\CompConverterTypes.pas"/>
+        <DCCReference Include="Core\CompConverterTypes.pas"/>
         <DCCReference Include="Parser\ObjectTextParser.pas"/>
         <DCCReference Include="Parser\RealGridParser.pas"/>
         <DCCReference Include="Converter\Types\cxGridTagDefine.pas"/>

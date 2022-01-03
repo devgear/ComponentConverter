@@ -10,10 +10,10 @@ unit ConvertUtils;
 interface
 
 uses
-  System.TypInfo,
+  System.TypInfo, System.Rtti,
   System.SysUtils, System.Types, System.Classes, Vcl.Clipbrd,
-  System.Rtti,
-  System.StrUtils;
+  System.StrUtils,
+  System.Generics.Defaults, System.Generics.Collections;
 
 
 type
@@ -28,6 +28,12 @@ type
   TTargetComp = record
     FN,
     CN: string;
+  end;
+
+  TArrayHelper = class helper for TArray
+  public
+    class function IndexOf<T>(Values: TArray<T>; Item: T): Integer; static;
+    class function Contains<T>(Values: TArray<T>; Item: T): Boolean; static;
   end;
 
 /// <summary>들여쓰기 추가(맨 앞줄에 공백을 ACount 만큼 추가)</summary>
@@ -67,7 +73,7 @@ function GetFormNameFromDfmText(ADfmFirstLineText: string): string;
 
 function IsEqualsCompCode(ACompName, ACompType, ACode: string): Boolean;
 
-function InArray(AArray: TArray<string>; AValue: string): Boolean;
+//function InArray(AArray: TArray<string>; AValue: string): Boolean;  overload;
 
 implementation
 
@@ -666,18 +672,34 @@ begin
               ADfmFirstLineText.IndexOf(':') + 2,
               ADfmFirstLineText.Length).Trim;
 end;
+//
+//function InArray(AArray: TArray<string>; AValue: string): Boolean;
+//var
+//  Item: string;
+//begin
+//  Result := False;
+//  for Item in AArray do
+//  begin
+//    if Item.ToLower = AValue.ToLower then
+//      Exit(True);
+//  end;
+//
+//end;
 
-function InArray(AArray: TArray<string>; AValue: string): Boolean;
-var
-  Item: string;
+{ TArrayHelper }
+
+class function TArrayHelper.Contains<T>(Values: TArray<T>; Item: T): Boolean;
 begin
-  Result := False;
-  for Item in AArray do
-  begin
-    if Item.ToLower = AValue.ToLower then
-      Exit(True);
-  end;
+  Result := IndexOf<T>(Values, Item) <> -1;
+end;
 
+class function TArrayHelper.IndexOf<T>(Values: TArray<T>; Item: T): Integer;
+begin
+  for Result := Low(Values) to High(Values) do
+    if TComparer<T>.Default.Compare(Values[Result], Item) = 0 then
+      Exit;
+
+  Result := -1;
 end;
 
 end.

@@ -191,6 +191,7 @@ begin
   try
     ConvData.LoadFromFile(FRootPath);
 
+    AConverters.Contains
     for Converter in FConverterInstances do
       if _InArray(AConverters, Converter) then
         Result := Result + Converter.Convert(ConvData);

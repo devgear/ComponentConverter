@@ -235,7 +235,7 @@ object frmCompMigTool: TfrmCompMigTool
       Top = 8
       Width = 75
       Height = 25
-      Caption = 'Button1'
+      Caption = 'Band Header'
       TabOrder = 3
       OnClick = Button1Click
     end
