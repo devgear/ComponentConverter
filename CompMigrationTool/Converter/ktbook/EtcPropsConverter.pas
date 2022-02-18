@@ -407,12 +407,12 @@ begin
   Result := 'Panel.ParentBackgound ¼³Á¤';
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TConverterLabelColor);
-  TConvertManager.Instance.Regist(TConverterGroupBoxColor);
-  TConvertManager.Instance.Regist(TConverterDBGrid);
-  TConvertManager.Instance.Regist(TConverterStaticTextColor);
-  TConvertManager.Instance.Regist(TConverterComboBoxStyle);
-  TConvertManager.Instance.Regist(TConverterPanelParentBackground);
+//initialization
+//  TConvertManager.Instance.Regist(TConverterLabelColor);
+//  TConvertManager.Instance.Regist(TConverterGroupBoxColor);
+//  TConvertManager.Instance.Regist(TConverterDBGrid);
+//  TConvertManager.Instance.Regist(TConverterStaticTextColor);
+//  TConvertManager.Instance.Regist(TConverterComboBoxStyle);
+//  TConvertManager.Instance.Regist(TConverterPanelParentBackground);
 
 end.

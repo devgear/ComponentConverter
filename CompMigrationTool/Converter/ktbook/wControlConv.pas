@@ -360,14 +360,14 @@ begin
   end;
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TConverterwNumEdit);
-  TConvertManager.Instance.Regist(TConverterwLabel);
-  TConvertManager.Instance.Regist(TConverterwNumLabel);
-  TConvertManager.Instance.Regist(TConverterwEdit);
-  TConvertManager.Instance.Regist(TConverterwMaskEdit);
-  TConvertManager.Instance.Regist(TConverterwDateEdit);
+//initialization
+//  TConvertManager.Instance.Regist(TConverterwNumEdit);
+//  TConvertManager.Instance.Regist(TConverterwLabel);
+//  TConvertManager.Instance.Regist(TConverterwNumLabel);
+//  TConvertManager.Instance.Regist(TConverterwEdit);
+//  TConvertManager.Instance.Regist(TConverterwMaskEdit);
+//  TConvertManager.Instance.Regist(TConverterwDateEdit);
 
-finalization
+//finalization
 
 end.

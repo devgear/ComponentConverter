@@ -13,20 +13,18 @@ uses
   Environments in '..\Common\Environments.pas',
   ExtractPropForm in 'ExtractPropForm.pas' {frmExtractProperties},
   Logger in '..\Common\Logger.pas',
-  RealDBGridToCXGridConverter in 'Converter\RealDBGridToCXGridConverter.pas',
   cxDBGridTagDefine in 'Converter\Types\cxDBGridTagDefine.pas',
-  RemoveSkinManager in 'Converter\RemoveSkinManager.pas',
-  RemoveCompsConverter in 'Converter\RemoveCompsConverter.pas',
-  UpdateSQLConnectionConv in 'Converter\UpdateSQLConnectionConv.pas',
-  kbmMemTableConv in 'Converter\kbmMemTableConv.pas',
-  wControlConv in 'Converter\wControlConv.pas',
   wControlDefine in 'Converter\Types\wControlDefine.pas',
-  ReplaceMemoFieldToStringFieldConv in 'Converter\ReplaceMemoFieldToStringFieldConv.pas',
-  FireDACConv in 'Converter\FireDACConv.pas',
-  EtcPropsConverter in 'Converter\EtcPropsConverter.pas',
-  FDQueryFieldSizeConverter in 'Converter\FDQueryFieldSizeConverter.pas',
   cxGridViewParser in 'Parser\cxGridViewParser.pas',
-  GridBandHeaderMergeForm in 'GridBandHeaderMergeForm.pas' {frmBandHeader};
+  GridBandHeaderMergeForm in 'GridBandHeaderMergeForm.pas' {frmBandHeader},
+  RODynamicRequestConverter in 'Converter\RODynamicRequestConverter.pas',
+  kbmMemTableConv in 'Converter\ktbook\kbmMemTableConv.pas',
+  RealDBGridToCXGridConverter in 'Converter\ktbook\RealDBGridToCXGridConverter.pas',
+  FireDACConv in 'Converter\ktbook\FireDACConv.pas',
+  ReplaceMemoFieldToStringFieldConv in 'Converter\ktbook\ReplaceMemoFieldToStringFieldConv.pas',
+  wControlConv in 'Converter\ktbook\wControlConv.pas',
+  DACDSDataTableConverter in 'Converter\DACDSDataTableConverter.pas',
+  DaBinAdapterConverter in 'Converter\DaBinAdapterConverter.pas';
 
 {$R *.res}
 

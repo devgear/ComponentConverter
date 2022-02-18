@@ -117,8 +117,8 @@ begin
   Result := [];
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TConverterMemoToStrField);
+//initialization
+//  TConvertManager.Instance.Regist(TConverterMemoToStrField);
 
 end.
 

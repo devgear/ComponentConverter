@@ -84,10 +84,10 @@ begin
   Result := 'PnlSkinSetting: TPanel Á¦°Å';
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TConverterRemoveSkinManager);
-  TConvertManager.Instance.Regist(TConverterRemoveSkinProvider);
-  TConvertManager.Instance.Regist(TConverterRmPnlSkinSetting);
+//initialization
+//  TConvertManager.Instance.Regist(TConverterRemoveSkinManager);
+//  TConvertManager.Instance.Regist(TConverterRemoveSkinProvider);
+//  TConvertManager.Instance.Regist(TConverterRmPnlSkinSetting);
 
 end.
 

@@ -38,9 +38,9 @@ begin
   Result := ['frxExportXLS'];
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TfrxDesignerRemoveConv);
-  TConvertManager.Instance.Regist(TfrxXLSExportRemoveConv);
+//initialization
+//  TConvertManager.Instance.Regist(TfrxDesignerRemoveConv);
+//  TConvertManager.Instance.Regist(TfrxXLSExportRemoveConv);
 
 end.
 

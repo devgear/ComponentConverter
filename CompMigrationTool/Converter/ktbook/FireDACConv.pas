@@ -145,9 +145,9 @@ begin
   Result := 'TFDAutoIncField.Seed Àç¼³Àý';
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TConverterFDQryDirectExecute);
-  TConvertManager.Instance.Regist(TConverterFDAutoIncSeed);
+//initialization
+//  TConvertManager.Instance.Regist(TConverterFDQryDirectExecute);
+//  TConvertManager.Instance.Regist(TConverterFDAutoIncSeed);
 
 end.
 

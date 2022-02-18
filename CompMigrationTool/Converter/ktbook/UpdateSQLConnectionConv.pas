@@ -119,7 +119,7 @@ begin
   Result := [];
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TConverterUpdateSQLConnection);
+//initialization
+//  TConvertManager.Instance.Regist(TConverterUpdateSQLConnection);
 
 end.

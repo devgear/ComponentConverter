@@ -38,6 +38,8 @@ type
 
 /// <summary>들여쓰기 추가(맨 앞줄에 공백을 ACount 만큼 추가)</summary>
 procedure WriteIndent(var AList: TStringList; ACount: Integer);
+function GetIndent(ASource: string): string;
+function GetIndentCount(ASource: string): Integer;
 /// <summary>오브젝트 텍스트(DFM 문자열)인 AParent에 AChild 추가(마지막 end 이전 줄에)</summary>
 /// <code>
 ///  object Parent: TPanel
@@ -65,6 +67,8 @@ function GetCompStartIndexFromCompName(ADfmFile: TStrings; AStartIdx: Integer; A
 function GetCompEndIndex(ADfmFile: TStrings; AStartIdx: Integer): Integer;
 function GetPropValueFromPropText(APropText: string; var Prop, Value: string): Boolean;
 
+function FindCompWithPropInDfm(ADfmFile: TStrings; AClassName, AProperty: string; var CompName: string): Boolean;
+
 // 한라인의 uses구문(AUsesText)에서 유닛네임을 제거한다.(쉼표, 주석에 주의)
 function RemoveUses(AUsesText: string; AUnitName: string): string;
 function IsIncludeUnitNameInUses(AUnitName: string; AUsesLine: string): Boolean;
@@ -87,6 +91,30 @@ begin
     Indent := Indent + ' ';
   for I := 0 to AList.Count - 1 do
     AList[I] := Indent + ALIst[I];
+end;
+
+function GetIndent(ASource: string): string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 1 to Length(ASource) do
+    if ASource[I] <> ' ' then
+      Exit
+    else
+      Result := Result + ' ';
+end;
+
+function GetIndentCount(ASource: string): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := 1 to Length(ASource) do
+    if ASource[I] <> ' ' then
+      Exit
+    else
+      Inc(Result);
 end;
 
 procedure InsertChildCompText(AParent, AChild: TStringList);
@@ -629,6 +657,35 @@ begin
     Prop := Trim(Strs[0]);
     Value := Trim(Strs[1]);
     Result := True;
+  end;
+end;
+
+function FindCompWithPropInDfm(ADfmFile: TStrings; AClassName, AProperty: string; var CompName: string): Boolean;
+var
+  I, SIdx, EIdx: Integer;
+  S: string;
+begin
+  Result := False;
+
+  SIdx := 1;
+  EIdx := 0;
+  while SIdx > 0 do
+  begin
+    SIdx := GetCompStartIndex(ADfmFile, EIdx, AClassName);
+    if SIdx = -1 then
+      Break;
+    EIdx := GetCompEndIndex(ADfmFile, SIdx+1);
+
+    for I := SIdx to EIdx do
+    begin
+      S := ADfmFile[I].Trim;
+      if S = AProperty then
+      begin
+        CompName := GetNameFromObjectText(ADfmFile[SIdx]);
+        Exit(True);
+      end;
+    end;
+
   end;
 end;
 

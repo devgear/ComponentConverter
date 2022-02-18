@@ -20,26 +20,37 @@ type
     procedure InsertCompCodeToPas(AInsertLine: Integer; ASource: TStrings; ACompCode: string);
   protected
     FConvData: TConvertData;
-    // DFM 파일에서 변환할 컴포넌트 탐색(반복 변환 방지 코드 재구현 필요)
-    function FindComponentInDfm(AData: TConvertData): Boolean; virtual;
-    // 변환기 설명
-    function GetDescription: string; virtual;
 
+    // ##################################################
+    // 재정의 필수
+    // ##################################################
     // [상속필요] 상속한 클래스에서 처리할 컴포넌트 이름 반환
     //  변환 대상 컴포넌트 클래스 이름(예: TRealGrid)
     function GetTargetCompClassName: string; virtual; abstract;
     //  변환할 컴포넌트 클래스 이름(예: TcxGrid)
     function GetConvertCompClassName: string; virtual; abstract;
+
+
+    // ##################################################
+    // 필요시(옵션) 재정의
+    // ##################################################
+    // DFM 파일에서 변환할 컴포넌트 탐색(반복 변환 방지 코드 재구현 필요)
+    function FindComponentInDfm(AData: TConvertData): Boolean; virtual;
+
+    /// <summary>컴포넌트 문자열(ACompText)를 변환 후 Output으로 반환하도록 재정의</summary>
+    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; virtual;
+    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; virtual;
+
+
+    // 변환기 설명
+    function GetDescription: string; virtual;
+
     //  하나의 컴포넌트를 여러개의 컴포넌트로 변환 시 추가 컴포넌트 내용
     function GetConvertCompList(AMainCompName: string): string; virtual;
     //  제거할 Uses 구문
     function GetRemoveUses: TArray<string>; virtual;
     //  추가할 Uses 구문
     function GetAddedUses: TArray<string>; virtual;
-
-    /// <summary>컴포넌트 문자열(ACompText)를 변환 후 Output으로 반환하도록 재정의</summary>
-    function GetConvertedCompText(ACompText: TStrings; var Output: string): Boolean; virtual;
-    function GetConvertedCompStrs(var ACompText: TStrings): Boolean; virtual;
 
     // 컴포넌트 이벤트코드 정보/변환정보 반환
     function GetCompEventInfos(AFormClass: string): TArray<TCompEventInfo>; virtual;
@@ -275,14 +286,16 @@ var
   Output: string;
 begin
   Result := False;
-  // 상속받은 폼의 컴포넌트는 컴포넌트 클래스명만 변경, 제거인 경우 제외
-  // inherited RealGrid2: TRealGrid [31]
-  if AData.IsInherited and (GetConvertCompClassName <> '') then
+  if  GetConvertCompClassName <> '' then
   begin
     AData.SrcDfm[AData.CompStartIndex] := AData.SrcDfm[AData.CompStartIndex].Replace(
         GetTargetCompClassName,
         GetConvertCompClassName);
-    Exit;
+
+    // 상속받은 폼의 컴포넌트는 컴포넌트 클래스명만 변경, 제거인 경우 제외
+    // inherited RealGrid2: TRealGrid [31]
+    if AData.IsInherited then
+      Exit;
   end;
 
   AData.ConvDfm.Clear;

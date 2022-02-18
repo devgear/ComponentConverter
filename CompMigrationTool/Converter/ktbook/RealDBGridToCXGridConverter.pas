@@ -869,7 +869,7 @@ begin
   Result := ['URGrids', 'URDBGrid', 'URMGrid'];
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TConverterRealDBGridToCXGrid);
+//initialization
+//  TConvertManager.Instance.Regist(TConverterRealDBGridToCXGrid);
 
 end.

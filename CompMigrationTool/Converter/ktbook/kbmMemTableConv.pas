@@ -151,8 +151,8 @@ begin
   Result := [];
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TConverterkbmMemTable);
+//initialization
+//  TConvertManager.Instance.Regist(TConverterkbmMemTable);
 
 end.
 

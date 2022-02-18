@@ -282,8 +282,8 @@ begin
   Result := [];
 end;
 
-initialization
-  TConvertManager.Instance.Regist(TConverterFDQueryFldSize);
+//initialization
+//  TConvertManager.Instance.Regist(TConverterFDQueryFldSize);
 //  TConvertManager.Instance.Regist(TConverterFDQueryParamSize);
 
 end.
